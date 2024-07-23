@@ -43,6 +43,12 @@ fi
 
 # Step 3: Optimize System
 
+echo "The following optimizations will be performed if you choose to optimize the system:"
+echo "1. Enable parallel downloads in pacman.conf."
+echo "2. Install pacman-contrib for additional pacman utilities."
+echo "3. Enable paccache.timer for automatic cleaning of the package cache."
+echo "4. Update the system."
+
 read -p "Do you want to optimize the system before installing additional applications? [y/N]: " optimize_choice
 if [[ "$optimize_choice" == [Yy]* ]]; then
     echo "Optimizing system..."
