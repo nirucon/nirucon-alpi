@@ -45,17 +45,21 @@ fi
 
 echo "The following optimizations and updates will be performed if you choose to optimize the system:"
 echo "1. Enable parallel downloads in pacman.conf"
-echo "2. Install pacman-contrib for additional pacman utilities"
-echo "3. Enable paccache.timer for automatic cleaning of the package cache"
-echo "4. Update the system"
+echo "2. Enable Color, ILoveCandy, and VerbosePkgLists in pacman.conf"
+echo "3. Install pacman-contrib for additional pacman utilities"
+echo "4. Enable paccache.timer for automatic cleaning of the package cache"
+echo "5. Update the system"
 
 read -p "Do you want to optimize and update the system before installing additional applications? [y/N]: " optimize_choice
 if [[ "$optimize_choice" == [Yy]* ]]; then
     echo "Optimizing system..."
 
-    # Enable parallel downloads
-    echo "Enabling parallel downloads in pacman.conf..."
+    # Enable parallel downloads, Color, ILoveCandy, and VerbosePkgLists
+    echo "Enabling parallel downloads, Color, ILoveCandy, and VerbosePkgLists in pacman.conf..."
     sudo sed -i 's/^#ParallelDownloads = 5/ParallelDownloads = 5/' /etc/pacman.conf
+    sudo sed -i 's/^#Color/Color/' /etc/pacman.conf
+    sudo sed -i 's/^#ILoveCandy/ILoveCandy/' /etc/pacman.conf
+    sudo sed -i 's/^#VerbosePkgLists/VerbosePkgLists/' /etc/pacman.conf
 
     # Install pacman-contrib and enable paccache.timer
     echo "Installing pacman-contrib and enabling paccache.timer for automatic package cache cleaning..."
