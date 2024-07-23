@@ -1,0 +1,122 @@
+#!/bin/bash
+
+# Step 1: Welcome Message
+echo "Welcome to Nicklas Rudolfsson's post-install script \"My Suckless Arch\" for Arch Linux."
+echo "This is tailored for my own needs. Feel free to use and modify, but I disclaim all responsibility; proceed at your own risk!"
+echo "Contact me via: n@rudolfsson.net"
+echo "Script version: 2024-07-23.01"
+echo ""
+
+# Step 2: Base Programs Installation
+
+echo "Installing git, wget, and AUR helper yay along with dependencies..."
+
+# Install git, wget, yay dependencies
+sudo pacman -S --needed git wget base-devel
+
+# Install yay
+cd /opt
+sudo git clone https://aur.archlinux.org/yay.git
+sudo chown -R $(whoami):$(whoami) yay
+cd yay
+makepkg -si
+
+# Install other essential packages
+echo "Installing essential packages: nano"
+sudo pacman -S --needed nano
+
+# Clone necessary files
+echo "Cloning the suckless-arch repository..."
+git clone https://github.com/nirucon/suckless-arch ~/Git/suckless-arch
+
+echo "The following packages and applications will be installed to ensure the system functions as intended:"
+echo "From pacman: xorg-server xorg-xinit xorg-xrandr xorg-xsetroot lxappearance arc-gtk-theme arc-icon-theme pcmanfm arandr nitrogen picom openssh cmus scrot gnupg pass brightnessctl mpv dunst unzip nano alsa-utils pavucontrol xarchiver"
+echo "From aur: ttf-font-awesome ttf-mononoki-nerd brave-bin maim nextcloud-client xautolock spotify rofi fastfetch matcha-gtk-theme Qogir-icon-theme timeshift-autosnap"
+
+# Install listed packages via pacman
+sudo pacman -S --needed xorg-server xorg-xinit xorg-xrandr xorg-xsetroot lxappearance arc-gtk-theme arc-icon-theme pcmanfm arandr nitrogen picom openssh cmus scrot gnupg pass brightnessctl mpv dunst unzip nano alsa-utils pavucontrol xarchiver
+
+# Install listed packages via yay
+yay -S ttf-font-awesome ttf-mononoki-nerd brave-bin maim nextcloud-client xautolock spotify rofi fastfetch matcha-gtk-theme Qogir-icon-theme timeshift-autosnap
+
+# Step 3: Optional Applications Installation
+
+echo "Now you will go through a series of options for various categories of applications that can be installed based on your needs."
+
+# Function to handle user choices for optional packages
+install_optional() {
+    local prompt="$1"
+    local packages_pacman=("$2")
+    local packages_yay=("$3")
+    read -p "$prompt [y/N]: " choice
+    if [[ "$choice" == [Yy]* ]]; then
+        if [ ${#packages_pacman[@]} -ne 0 ]; then
+            echo "Installing packages via pacman: ${packages_pacman[@]}"
+            sleep 3
+            sudo pacman -S --needed "${packages_pacman[@]}"
+        fi
+        if [ ${#packages_yay[@]} -ne 0 ]; then
+            echo "Installing packages via yay: ${packages_yay[@]}"
+            sleep 3
+            yay -S "${packages_yay[@]}"
+        fi
+    fi
+}
+
+# DAW Apps
+install_optional "Do you want to install DAW apps?" "" "reaper qpwgraph yabridge yabridgectl realtime-privileges"
+
+# DAW Plugins
+install_optional "Do you want to install DAW plugins?" "" "pro-audio lv2-plugins vst-plugins vst3-plugins"
+
+# Web Dev
+install_optional "Do you want to install web development tools?" "filezilla bluefish" ""
+
+# Image and Video Editing
+install_optional "Do you want to install image and video editing tools?" "obs-studio kdenlive gimp" ""
+
+# Communication
+install_optional "Do you want to install communication tools?" "thunderbird irssi signal-desktop" ""
+
+# Oh-My-Bash
+read -p "Do you want to install Oh-My-Bash? [y/N]: " choice
+if [[ "$choice" == [Yy]* ]]; then
+    bash -c "$(wget https://raw.githubusercontent.com/ohmybash/oh-my-bash/master/tools/install.sh -O -)"
+fi
+
+echo "Packages and applications are installed."
+
+# Step 4: Suckless Installation
+
+read -p "Do you want to install Suckless DWM, dot-files, and related tools? [y/N]: " choice
+if [[ "$choice" == [Yy]* ]]; then
+    echo "Installing Suckless software..."
+
+    # Create necessary directories
+    mkdir -p ~/.config/suckless ~/.dwm ~/Music ~/Downloads ~/Pictures ~/Videos
+
+    # Copy Suckless related files
+    cp -r ~/Git/suckless-arch/bar-dwm ~/Git/suckless-arch/dmenu ~/Git/suckless-arch/st ~/Git/suckless-arch/slock ~/Git/suckless-arch/dwm ~/.config/suckless
+
+    # Compile and install Suckless software
+    sudo make -C ~/.config/suckless/dwm clean install
+    sudo make -C ~/.config/suckless/dmenu clean install
+    sudo make -C ~/.config/suckless/slock clean install
+    sudo make -C ~/.config/suckless/st clean install
+
+    # Copy configuration files
+    cp ~/Git/suckless-arch/.xinitrc ~/
+    cp ~/Git/suckless-arch/.bashrc ~/
+    cp ~/Git/suckless-arch/.bash_aliases ~/
+    cp ~/Git/suckless-arch/autostart.sh ~/.dwm/
+    sudo cp ~/Git/suckless-arch/issue /etc/
+
+    # Set executable permissions
+    chmod +x ~/.dwm/autostart.sh ~/.config/suckless/bar-dwm/bar_dwm.sh
+
+    echo "All installed. You can now start DWM by typing startx"
+else
+    echo "All done!"
+fi
+
+echo "Script finished."
