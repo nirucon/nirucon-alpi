@@ -41,12 +41,32 @@ else
     echo "yay is already installed"
 fi
 
+# Step 3: Optimize System
+
+read -p "Do you want to optimize the system before installing additional applications? [y/N]: " optimize_choice
+if [[ "$optimize_choice" == [Yy]* ]]; then
+    echo "Optimizing system..."
+
+    # Enable parallel downloads
+    echo "Enabling parallel downloads in pacman.conf..."
+    sudo sed -i 's/^#ParallelDownloads = 5/ParallelDownloads = 5/' /etc/pacman.conf
+
+    # Install pacman-contrib and enable paccache.timer
+    echo "Installing pacman-contrib and enabling paccache.timer for automatic package cache cleaning..."
+    sudo pacman -S --needed pacman-contrib
+    sudo systemctl enable paccache.timer
+
+    # Update the system
+    echo "Updating the system..."
+    sudo pacman -Syu
+fi
+
 # Install other essential packages
 echo "Installing essential packages: nano"
 sudo pacman -S --needed nano
 
 # Clone necessary files
-echo "Cloning Nicklas suckless-arch repository..."
+echo "Cloning the suckless-arch repository..."
 git clone https://github.com/nirucon/suckless-arch ~/Git/suckless-arch
 
 echo "The following packages and applications will be installed to ensure the system functions as intended:"
@@ -59,7 +79,7 @@ sudo pacman -S --needed xorg-server xorg-xinit xorg-xrandr xorg-xsetroot lxappea
 # Install listed packages via yay
 yay -S ttf-font-awesome ttf-mononoki-nerd brave-bin maim nextcloud-client xautolock spotify rofi fastfetch matcha-gtk-theme Qogir-icon-theme timeshift-autosnap
 
-# Step 3: Optional Applications Installation
+# Step 4: Optional Applications Installation
 
 echo "Now you will go through a series of options for various categories of applications that can be installed based on your needs."
 
@@ -109,7 +129,7 @@ fi
 
 echo "Packages and applications are installed."
 
-# Step 4: Suckless Installation
+# Step 5: Suckless Installation
 
 read -p "Do you want to install Suckless DWM, dot-files, and related tools? [y/N]: " choice
 if [[ "$choice" == [Yy]* ]]; then
