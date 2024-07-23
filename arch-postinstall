@@ -128,18 +128,31 @@ install_optional "Do you want to install image and video editing tools?" "obs-st
 # Communication
 install_optional "Do you want to install communication tools?" "thunderbird irssi signal-desktop" ""
 
-# Oh-My-Bash
-read -p "Do you want to install Oh-My-Bash (including my .bashrc and .bash_aliases)? [y/N]: " choice
+# Step 5: Install custom grub theme
+
+read -p "Do you want to install a custom grub theme? [y/N]: " choice
 if [[ "$choice" == [Yy]* ]]; then
-    bash -c "$(wget https://raw.githubusercontent.com/ohmybash/oh-my-bash/master/tools/install.sh -O -)"
-    # Copy configuration files
-    cp ~/Git/suckless-arch/.bashrc ~/
-    cp ~/Git/suckless-arch/.bash_aliases ~/
+    echo "Installing custom grub theme..."
+
+    # Clone the theme repository
+    git clone https://github.com/ShikherVerma/grub2-theme-minimal.git ~/Git/grub2-theme-minimal
+
+    # Create grub themes directory if it doesn't exist
+    sudo mkdir -p /boot/grub/themes
+
+    # Copy the theme to grub themes directory
+    sudo cp -r ~/Git/grub2-theme-minimal/minimal /boot/grub/themes/minimal
+
+    # Update grub configuration to use the new theme
+    sudo sed -i 's|^#GRUB_THEME=.*|GRUB_THEME="/boot/grub/themes/minimal/theme.txt"|' /etc/default/grub
+
+    # Apply grub configuration
+    sudo grub-mkconfig -o /boot/grub/grub.cfg
+
+    echo "Custom grub theme installed."
 fi
 
-echo "Packages and applications are installed."
-
-# Step 5: Suckless installation
+# Step 6: Suckless installation
 
 read -p "Do you want to install Suckless DWM, my dot-files and some related stuff? [y/N]: " choice
 if [[ "$choice" == [Yy]* ]]; then
