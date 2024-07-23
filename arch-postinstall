@@ -50,8 +50,8 @@ echo "3. Install pacman-contrib for additional pacman utilities"
 echo "4. Enable paccache.timer for automatic cleaning of the package cache"
 echo "5. Update the system"
 
-read -p "Do you want to optimize and update the system before installing additional applications? [y/N]: " optimize_choice
-if [[ "$optimize_choice" == [Yy]* ]]; then
+read -p "Do you want to optimize and update the system before installing additional applications? [Y/n]: " optimize_choice
+if [[ "$optimize_choice" == [Yy]* ]] || [[ -z "$optimize_choice" ]]; then
     echo "Optimizing system..."
 
     # Enable parallel downloads, Color, ILoveCandy, and VerbosePkgLists
@@ -96,10 +96,10 @@ echo "Now you will go through a series of options for various categories of appl
 # Function to handle user choices for optional packages
 install_optional() {
     local prompt="$1"
-    local packages_pacman=("$2")
-    local packages_yay=("$3")
-    read -p "$prompt [y/N]: " choice
-    if [[ "$choice" == [Yy]* ]]; then
+    local packages_pacman=("${!2}")
+    local packages_yay=("${!3}")
+    read -p "$prompt [Y/n]: " choice
+    if [[ "$choice" == [Yy]* ]] || [[ -z "$choice" ]]; then
         if [ ${#packages_pacman[@]} -ne 0 ]; then
             echo "Installing packages via pacman: ${packages_pacman[@]}"
             sleep 3
@@ -114,24 +114,34 @@ install_optional() {
 }
 
 # DAW Apps
-install_optional "Do you want to install DAW apps?" "" "reaper qpwgraph yabridge yabridgectl realtime-privileges"
+daw_apps_pacman=()
+daw_apps_yay=(reaper qpwgraph yabridge yabridgectl realtime-privileges)
+install_optional "Do you want to install DAW apps?" daw_apps_pacman[@] daw_apps_yay[@]
 
 # DAW Plugins
-install_optional "Do you want to install DAW plugins?" "" "pro-audio lv2-plugins vst-plugins vst3-plugins"
+daw_plugins_pacman=()
+daw_plugins_yay=(pro-audio lv2-plugins vst-plugins vst3-plugins)
+install_optional "Do you want to install DAW plugins?" daw_plugins_pacman[@] daw_plugins_yay[@]
 
 # Web Dev
-install_optional "Do you want to install web development tools?" "filezilla bluefish" ""
+web_dev_pacman=(filezilla bluefish)
+web_dev_yay=()
+install_optional "Do you want to install web development tools?" web_dev_pacman[@] web_dev_yay[@]
 
 # Image and Video Editing
-install_optional "Do you want to install image and video editing tools?" "obs-studio kdenlive gimp" ""
+image_video_pacman=(obs-studio kdenlive gimp)
+image_video_yay=()
+install_optional "Do you want to install image and video editing tools?" image_video_pacman[@] image_video_yay[@]
 
 # Communication
-install_optional "Do you want to install communication tools?" "thunderbird irssi signal-desktop" ""
+communication_pacman=(thunderbird irssi signal-desktop)
+communication_yay=()
+install_optional "Do you want to install communication tools?" communication_pacman[@] communication_yay[@]
 
 # Step 5: Install custom grub theme
 
-read -p "Do you want to install a custom grub theme? [y/N]: " choice
-if [[ "$choice" == [Yy]* ]]; then
+read -p "Do you want to install a custom grub theme? [Y/n]: " choice
+if [[ "$choice" == [Yy]* ]] || [[ -z "$choice" ]]; then
     echo "Installing custom grub theme..."
 
     # Clone the theme repository
@@ -154,8 +164,8 @@ fi
 
 # Step 6: Suckless installation
 
-read -p "Do you want to install Suckless DWM, my dot-files and some related stuff? [y/N]: " choice
-if [[ "$choice" == [Yy]* ]]; then
+read -p "Do you want to install Suckless DWM, my dot-files and some related stuff? [Y/n]: " choice
+if [[ "$choice" == [Yy]* ]] || [[ -z "$choice" ]]; then
     echo "Installing Suckless software..."
 
     # Create necessary directories
@@ -172,15 +182,6 @@ if [[ "$choice" == [Yy]* ]]; then
 
     # Copy configuration files
     cp ~/Git/suckless-arch/.xinitrc ~/
-    cp ~/Git/suckless-arch/autostart.sh ~/.dwm/
-    sudo cp ~/Git/suckless-arch/issue /etc/
-
-    # Set executable permissions
-    chmod +x ~/.dwm/autostart.sh ~/.config/suckless/bar-dwm/bar_dwm.sh
-
-    echo "All installed. You can now start DWM by typing startx"
-else
-    echo "All done!"
 fi
 
-echo "Script finished."
+echo "Script completed."
