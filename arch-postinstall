@@ -9,24 +9,44 @@ echo ""
 
 # Step 2: Base Programs Installation
 
-echo "Installing git, wget, and AUR helper yay along with dependencies..."
+echo "Checking and installing git, wget, and AUR helper yay along with dependencies..."
 
-# Install git, wget, yay dependencies
-sudo pacman -S --needed git wget base-devel
+# Install git and wget if not already installed
+if ! command -v git &> /dev/null; then
+    echo "Installing git..."
+    sudo pacman -S --needed git
+else
+    echo "git is already installed"
+fi
+
+if ! command -v wget &> /dev/null; then
+    echo "Installing wget..."
+    sudo pacman -S --needed wget
+else
+    echo "wget is already installed"
+fi
+
+# Install yay dependencies
+sudo pacman -S --needed base-devel
 
 # Install yay
-cd /opt
-sudo git clone https://aur.archlinux.org/yay.git
-sudo chown -R $(whoami):$(whoami) yay
-cd yay
-makepkg -si
+if ! command -v yay &> /dev/null; then
+    echo "Installing yay..."
+    cd /opt
+    sudo git clone https://aur.archlinux.org/yay.git
+    sudo chown -R $(whoami):$(whoami) yay
+    cd yay
+    makepkg -si
+else
+    echo "yay is already installed"
+fi
 
 # Install other essential packages
 echo "Installing essential packages: nano"
 sudo pacman -S --needed nano
 
 # Clone necessary files
-echo "Cloning the suckless-arch repository..."
+echo "Cloning Nicklas suckless-arch repository..."
 git clone https://github.com/nirucon/suckless-arch ~/Git/suckless-arch
 
 echo "The following packages and applications will be installed to ensure the system functions as intended:"
@@ -82,6 +102,9 @@ install_optional "Do you want to install communication tools?" "thunderbird irss
 read -p "Do you want to install Oh-My-Bash? [y/N]: " choice
 if [[ "$choice" == [Yy]* ]]; then
     bash -c "$(wget https://raw.githubusercontent.com/ohmybash/oh-my-bash/master/tools/install.sh -O -)"
+    # Copy configuration files
+    cp ~/Git/suckless-arch/.bashrc ~/
+    cp ~/Git/suckless-arch/.bash_aliases ~/
 fi
 
 echo "Packages and applications are installed."
@@ -106,8 +129,6 @@ if [[ "$choice" == [Yy]* ]]; then
 
     # Copy configuration files
     cp ~/Git/suckless-arch/.xinitrc ~/
-    cp ~/Git/suckless-arch/.bashrc ~/
-    cp ~/Git/suckless-arch/.bash_aliases ~/
     cp ~/Git/suckless-arch/autostart.sh ~/.dwm/
     sudo cp ~/Git/suckless-arch/issue /etc/
 
