@@ -41,7 +41,7 @@ else
     echo "yay is already installed"
 fi
 
-# Step 3: Optimize System
+# Step 3: Optimize and update system
 
 echo "The following optimizations and updates will be performed if you choose to optimize the system:"
 echo "1. Enable parallel downloads in pacman.conf"
@@ -68,7 +68,7 @@ if [[ "$optimize_choice" == [Yy]* ]]; then
 fi
 
 # Install other essential packages
-echo "Installing essential packages: nano"
+echo "Installing essential packages: nano vim"
 sudo pacman -S --needed nano
 
 # Clone necessary files
@@ -125,7 +125,7 @@ install_optional "Do you want to install image and video editing tools?" "obs-st
 install_optional "Do you want to install communication tools?" "thunderbird irssi signal-desktop" ""
 
 # Oh-My-Bash
-read -p "Do you want to install Oh-My-Bash? [y/N]: " choice
+read -p "Do you want to install Oh-My-Bash (including my .bashrc and .bash_aliases)? [y/N]: " choice
 if [[ "$choice" == [Yy]* ]]; then
     bash -c "$(wget https://raw.githubusercontent.com/ohmybash/oh-my-bash/master/tools/install.sh -O -)"
     # Copy configuration files
@@ -135,9 +135,9 @@ fi
 
 echo "Packages and applications are installed."
 
-# Step 5: Suckless Installation
+# Step 5: Suckless installation
 
-read -p "Do you want to install Suckless DWM, my dot-files and some related tools? [y/N]: " choice
+read -p "Do you want to install Suckless DWM, my dot-files and some related stuff? [y/N]: " choice
 if [[ "$choice" == [Yy]* ]]; then
     echo "Installing Suckless software..."
 
