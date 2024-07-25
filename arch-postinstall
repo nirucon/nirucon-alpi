@@ -4,7 +4,7 @@
 echo "Welcome to Nicklas Rudolfsson's post-install script \"My Suckless Arch\" for Arch Linux."
 echo "This is tailored for my own needs. Feel free to use and modify, but I disclaim all responsibility; proceed at your own risk!"
 echo "Contact me via: n@rudolfsson.net"
-echo "Script version: 2024-07-23.01"
+echo "Script version: 2024-07-25.01"
 echo ""
 
 # Step 2: Base Programs Installation
@@ -80,7 +80,7 @@ echo "Cloning the suckless-arch repository..."
 git clone https://github.com/nirucon/suckless-arch ~/Git/suckless-arch
 
 echo "The following packages and applications will be installed to ensure the system functions as intended:"
-echo "From pacman: xorg-server xorg-xinit xorg-xrandr xorg-xsetroot lxappearance arc-gtk-theme arc-icon-theme pcmanfm arandr nitrogen picom openssh cmus scrot gnupg pass brightnessctl mpv dunst unzip nano alsa-utils pavucontrol xarchiver"
+echo "From pacman: xorg-server xorg-xinit xorg-xrandr xorg-xsetroot lxappearance pcmanfm arandr nitrogen picom openssh cmus scrot gnupg pass brightnessctl mpv dunst unzip nano alsa-utils pavucontrol xarchiver"
 echo "From aur: ttf-font-awesome ttf-mononoki-nerd brave-bin maim nextcloud-client xautolock spotify rofi fastfetch timeshift-autosnap"
 
 # Install listed packages via pacman
@@ -182,6 +182,45 @@ if [[ "$choice" == [Yy]* ]] || [[ -z "$choice" ]]; then
 
     # Copy configuration files
     cp ~/Git/suckless-arch/.xinitrc ~/
+fi
+
+# Step 7: Install noir theme and icons
+
+read -r -p "Do you want to install a noir theme and icons? [Y/n] " response
+response=${response,,} # tolower
+
+if [[ "$response" =~ ^(yes|y| ) ]] || [[ -z "$response" ]]; then
+    echo "Installing Equilux theme and Papirus Dark Grey icons..."
+
+    # Install Equilux theme
+    git clone https://github.com/ddnexus/equilux-theme
+    cd equilux-theme
+    sudo ./install.sh
+    cd ..
+    rm -rf equilux-theme
+
+    # Install Papirus Dark Grey icons
+    git clone https://github.com/Intika-KDE-Plasmoids/plasmoid-papirus-dark-grey-icon-theme
+    sudo mkdir -p /usr/share/icons/Papirus-Dark-Grey
+    sudo cp -r plasmoid-papirus-dark-grey-icon-theme/Papirus-Dark-Grey/* /usr/share/icons/Papirus-Dark-Grey/
+    rm -rf plasmoid-papirus-dark-grey-icon-theme
+
+    # Set Equilux theme and Papirus Dark Grey icons as default using lxappearance
+    if command -v lxappearance >/dev/null 2>&1; then
+        # Create a config file for lxappearance if it doesn't exist
+        mkdir -p ~/.config/gtk-3.0/
+        cat <<EOF > ~/.config/gtk-3.0/settings.ini
+[Settings]
+gtk-theme-name=Equilux
+gtk-icon-theme-name=Papirus-Dark-Grey
+EOF
+
+        echo "Theme and icons set successfully!"
+    else
+        echo "lxappearance is not installed. Please install it to set the theme and icons."
+    fi
+else
+    echo "Exiting script."
 fi
 
 echo "Script completed."
