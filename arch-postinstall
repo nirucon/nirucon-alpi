@@ -82,7 +82,9 @@ if [[ "$confirm_install" == [Yy]* ]] || [[ -z "$confirm_install" ]]; then
 
     # Install oh-my-bash
     echo "Installing oh-my-bash..."
-    bash -c "$(curl -fsSL https://raw.githubusercontent.com/ohmybash/oh-my-bash/master/tools/install.sh)" || { echo "oh-my-bash installation failed"; exit 1; }
+    git clone https://github.com/ohmybash/oh-my-bash.git ~/Git/oh-my-bash
+    bash ~/Git/oh-my-bash/tools/install.sh
+    rm -rf ~/Git/oh-my-bash
     echo "oh-my-bash installation completed."
 
     # Clone necessary files
