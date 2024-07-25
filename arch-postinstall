@@ -87,7 +87,7 @@ echo "From aur: ttf-font-awesome ttf-mononoki-nerd brave-bin maim nextcloud-clie
 sudo pacman -S --needed xorg-server xorg-xinit xorg-xrandr xorg-xsetroot lxappearance arc-gtk-theme arc-icon-theme pcmanfm arandr nitrogen picom openssh cmus scrot gnupg pass brightnessctl mpv dunst unzip nano alsa-utils pavucontrol xarchiver
 
 # Install listed packages via yay
-yay -S ttf-font-awesome ttf-mononoki-nerd brave-bin maim nextcloud-client xautolock spotify rofi fastfetch matcha-gtk-theme Qogir-icon-theme timeshift-autosnap
+yay -S ttf-font-awesome ttf-mononoki-nerd brave-bin maim nextcloud-client xautolock spotify rofi fastfetch timeshift-autosnap
 
 # Step 4: Optional Applications Installation
 
