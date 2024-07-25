@@ -94,7 +94,7 @@ if [[ "$confirm_install" == [Yy]* ]] || [[ -z "$confirm_install" ]]; then
     echo "From aur: ttf-font-awesome ttf-mononoki-nerd maim xautolock rofi fastfetch timeshift-autosnap"
 
     # Install listed packages via pacman
-    sudo pacman -S --needed xorg-server xorg-xinit xorg-xrandr xorg-xsetroot noto-fonts lxappearance arc-gtk-theme arc-icon-theme pcmanfm arandr nitrogen picom openssh cmus scrot gnupg pass brightnessctl mpv dunst unzip nano alsa-utils pavucontrol xarchiver
+    sudo pacman -S --needed xorg-server xorg-xinit xorg-xrandr xorg-xsetroot noto-fonts lxappearance pcmanfm arandr nitrogen picom openssh cmus scrot gnupg pass brightnessctl mpv dunst unzip nano alsa-utils pavucontrol xarchiver
 
     # Install listed packages via yay
     yay -S ttf-font-awesome ttf-mononoki-nerd maim xautolock rofi fastfetch timeshift-autosnap
