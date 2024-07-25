@@ -199,11 +199,15 @@ if [[ "$choice" == [Yy]* ]] || [[ -z "$choice" ]]; then
     # Copy configuration files
     cp ~/Git/suckless-arch/.xinitrc ~/
 
-    # Copy and make the 'sverigesradio' script executable
-    echo "Installing various scripts..."
-    sudo cp ~/Git/suckless-arch/sverigesradio /usr/local/bin/
+    # Clone and install the 'sverigesradio-dmenu' script
+    echo "Cloning and installing the 'sverigesradio-dmenu' script..."
+    git clone https://github.com/nirucon/sverigesradio-dmenu ~/Git/sverigesradio-dmenu
+    cd ~/Git/sverigesradio-dmenu
+    sudo cp sverigesradio /usr/local/bin/
     sudo chmod +x /usr/local/bin/sverigesradio
-    echo "The 'sverigesradio' script has been copied to /usr/local/bin and made executable."
+    cd ~
+    rm -rf ~/Git/sverigesradio-dmenu
+    echo "The 'sverigesradio-dmenu' script has been cloned, installed to /usr/local/bin, made executable, and the repository has been removed."
 
     # Install dwmexit-dmenu script
     echo "Installing dwmexit-dmenu script..."
