@@ -222,9 +222,11 @@ if [[ "$confirm_install" == [Yy]* ]] || [[ -z "$confirm_install" ]]; then
         sudo make -C ~/.config/suckless/slock clean install
         sudo make -C ~/.config/suckless/st clean install
 
-        # Copy configuration files
+        # Copy configurations and dot files
         cp ~/Git/suckless-arch/.xinitrc ~/
         cp ~/Git/suckless-arch/autostart.sh ~/.dwm
+        cp ~/Git/suckless-arch/.bashrc ~/
+        p ~/Git/suckless-arch/.bash_aliases ~/
         chmod +x ~/.dwm/autostart.sh ~/.config/suckless/bar-dwm/bar_dwm.sh
 
         # Clone and install the 'sverigesradio-dmenu' script
