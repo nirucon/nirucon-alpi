@@ -77,15 +77,8 @@ if [[ "$confirm_install" == [Yy]* ]] || [[ -z "$confirm_install" ]]; then
     fi
 
     # Install other essential packages
-    echo "Installing essential packages: nano vim"
+    echo "Installing some essential packages: nano vim"
     sudo pacman -S --needed nano vim
-
-    # Install oh-my-bash
-    #echo "Installing oh-my-bash..."
-    #git clone https://github.com/ohmybash/oh-my-bash.git ~/Git/oh-my-bash
-    #bash ~/Git/oh-my-bash/tools/install.sh
-    #rm -rf ~/Git/oh-my-bash
-    #echo "oh-my-bash installation completed."
 
     # Clone necessary files
     echo "Cloning the suckless-arch repository..."
