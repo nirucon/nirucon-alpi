@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Step 1: Welcome Message
-echo "Welcome to Nicklas Rudolfsson's post-install script \"My Suckless Arch\" for Arch Linux."
+echo "Welcome to NIRUCON-ALPI - Nicklas Rudolfsson's post-install script \"My Suckless Arch\" for Arch Linux."
 echo "This is tailored for my own needs. Feel free to use and modify, but I disclaim all responsibility; proceed at your own risk!"
 echo "Contact me via: n@rudolfsson.net"
 echo "Script version: 2024-07-25.01"
@@ -298,4 +298,4 @@ mkdir -p ~/.config/rofi
 wget -O ~/.config/rofi/config.rasi https://github.com/Avasz/rofi-themes-avasz/blob/master/darker-than-black/configs/darker-than-black_v2.rasi
 echo "Rofi theme installed and set."
 
-echo "Arch Post-Install script completed - now be creative!"
+echo "NIRUCON-ALPI Arch Linux Post-Install script completed - now be creative!"
