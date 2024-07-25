@@ -242,7 +242,7 @@ fi
 # Install and set the Rofi theme
 echo "Installing and setting the Rofi theme..."
 mkdir -p ~/.config/rofi
-wget -O ~/.config/rofi/config.rasi https://github.com/Avasz/rofi-themes-avasz/raw/master/darker-than-black/configs/darker-than-black_v3.rasi
+wget -O ~/.config/rofi/config.rasi https://github.com/Avasz/rofi-themes-avasz/blob/master/darker-than-black/configs/darker-than-black_v2.rasi
 echo "Rofi theme installed and set."
 
 echo "Script completed."
