@@ -81,11 +81,11 @@ if [[ "$confirm_install" == [Yy]* ]] || [[ -z "$confirm_install" ]]; then
     sudo pacman -S --needed nano vim
 
     # Install oh-my-bash
-    echo "Installing oh-my-bash..."
-    git clone https://github.com/ohmybash/oh-my-bash.git ~/Git/oh-my-bash
-    bash ~/Git/oh-my-bash/tools/install.sh
-    rm -rf ~/Git/oh-my-bash
-    echo "oh-my-bash installation completed."
+    #echo "Installing oh-my-bash..."
+    #git clone https://github.com/ohmybash/oh-my-bash.git ~/Git/oh-my-bash
+    #bash ~/Git/oh-my-bash/tools/install.sh
+    #rm -rf ~/Git/oh-my-bash
+    #echo "oh-my-bash installation completed."
 
     # Clone necessary files
     echo "Cloning the suckless-arch repository..."
