@@ -157,14 +157,9 @@ if [[ "$confirm" == [Yy]* ]] || [[ -z "$confirm" ]]; then
     install_optional "Do you want to install DAW plugins?" daw_plugins_pacman[@] daw_plugins_yay[@]
 
     # Web Dev
-    web_dev_pacman=(filezilla bluefish)
-    web_dev_yay=()
+    web_dev_pacman=(httpie)
+    web_dev_yay=(visual-studio-code-bin webstorm)
     install_optional "Do you want to install web development tools?" web_dev_pacman[@] web_dev_yay[@]
-
-    # Image and Video Editing
-    image_video_pacman=(obs-studio kdenlive gimp)
-    image_video_yay=()
-    install_optional "Do you want to install image and video editing tools?" image_video_pacman[@] image_video_yay[@]
 
     # Communication
     communication_pacman=(thunderbird irssi signal-desktop)
@@ -172,7 +167,6 @@ if [[ "$confirm" == [Yy]* ]] || [[ -z "$confirm" ]]; then
     install_optional "Do you want to install communication tools?" communication_pacman[@] communication_yay[@]
 
     # Step 5: Install custom grub theme
-
     read -p "Do you want to install a custom grub theme? [Y/n]: " choice
     if [[ "$choice" == [Yy]* ]] || [[ -z "$choice" ]]; then
         echo "Installing custom grub theme..."
@@ -196,7 +190,6 @@ if [[ "$confirm" == [Yy]* ]] || [[ -z "$confirm" ]]; then
     fi
 
     # Step 6: Suckless installation
-
     read -p "Do you want to install Suckless DWM, my dot-files and some related stuff? [Y/n]: " choice
     if [[ "$choice" == [Yy]* ]] || [[ -z "$choice" ]]; then
         echo "Installing Suckless software..."
@@ -242,7 +235,6 @@ if [[ "$confirm" == [Yy]* ]] || [[ -z "$confirm" ]]; then
         echo "The 'dwmexit-dmenu' script has been installed and the repository has been removed."
         
         # Install cmus themes
-
         echo "Setting up cmus themes..."
 
         # Clone the cmus themes repository
@@ -271,7 +263,6 @@ if [[ "$confirm" == [Yy]* ]] || [[ -z "$confirm" ]]; then
     fi
 
     # Step 7: Install noir theme and icons
-
     read -r -p "Do you want to install noir themes and icons? [Y/n] " response
     response=${response,,} # tolower
 
