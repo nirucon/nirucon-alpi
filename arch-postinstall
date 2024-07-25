@@ -80,6 +80,10 @@ if [[ "$confirm_install" == [Yy]* ]] || [[ -z "$confirm_install" ]]; then
     echo "Installing essential packages: nano vim"
     sudo pacman -S --needed nano vim
 
+    # Install oh-my-bash
+    echo "Installinging oh-my-bash"
+    bash -c "$(curl -fsSL https://raw.githubusercontent.com/ohmybash/oh-my-bash/master/tools/install.sh)"
+
     # Clone necessary files
     echo "Cloning the suckless-arch repository..."
     git clone https://github.com/nirucon/suckless-arch ~/Git/suckless-arch
