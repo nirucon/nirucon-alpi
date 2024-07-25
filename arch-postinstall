@@ -226,7 +226,8 @@ if [[ "$confirm_install" == [Yy]* ]] || [[ -z "$confirm_install" ]]; then
         cp ~/Git/suckless-arch/.xinitrc ~/
         cp ~/Git/suckless-arch/autostart.sh ~/.dwm
         cp ~/Git/suckless-arch/.bashrc ~/
-        p ~/Git/suckless-arch/.bash_aliases ~/
+        cp ~/Git/suckless-arch/.bash_aliases ~/
+        sudo cp ~/Git/suckless-arch/issue /etc/
         chmod +x ~/.dwm/autostart.sh ~/.config/suckless/bar-dwm/bar_dwm.sh
 
         # Clone and install the 'sverigesradio-dmenu' script
