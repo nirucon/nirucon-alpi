@@ -198,6 +198,12 @@ if [[ "$choice" == [Yy]* ]] || [[ -z "$choice" ]]; then
 
     # Copy configuration files
     cp ~/Git/suckless-arch/.xinitrc ~/
+
+    # Copy and make the 'sverigesradio' script executable
+    echo "Installing various scripts..."
+    sudo cp ~/Git/suckless-arch/sverigesradio /usr/local/bin/
+    sudo chmod +x /usr/local/bin/sverigesradio
+    echo "The 'sverigesradio' script has been copied to /usr/local/bin and made executable."
 fi
 
 # Step 7: Install noir theme and icons
