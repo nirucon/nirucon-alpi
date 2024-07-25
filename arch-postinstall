@@ -1,301 +1,320 @@
 #!/bin/bash
 
 # Step 1: Welcome Message
+echo "
+       _                                        _       _
+ _ __ (_)_ __ _   _  ___ ___  _ __         __ _| |_ __ (_)
+| '_ \| | '__| | | |/ __/ _ \| '_ \ _____ / _` | | '_ \| |
+| | | | | |  | |_| | (_| (_) | | | |_____| (_| | | |_) | |
+|_| |_|_|_|   \__,_|\___\___/|_| |_|      \__,_|_| .__/|_|
+                                                 |_|
+
+"
+
 echo "Welcome to NIRUCON-ALPI - Nicklas Rudolfsson's post-install script \"My Suckless Arch\" for Arch Linux."
 echo "This is tailored for my own needs. Feel free to use and modify, but I disclaim all responsibility; proceed at your own risk!"
 echo "Contact me via: n@rudolfsson.net"
 echo "Script version: 2024-07-25.01"
 echo ""
 
-# Step 2: Base Programs Installation
+# Confirm to continue
+read -p "Are you sure you want to continue? [Y/n]: " confirm
+if [[ "$confirm" == [Yy]* ]] || [[ -z "$confirm" ]]; then
+    echo "The installation will take a few minutes depending on your computer's speed and internet connection. You should stay and watch the screen as there will be some Yes/No questions you need to answer. Enjoy and good luck!"
+    echo ""
 
-echo "Checking and installing (if needed) git, wget, and AUR helper yay along with dependencies..."
+    # Step 2: Base Programs Installation
+    echo "Checking and installing (if needed) git, wget, and AUR helper yay along with dependencies..."
 
-# Install git and wget if not already installed
-if ! command -v git &> /dev/null; then
-    echo "Installing git..."
-    sudo pacman -S --needed git
-else
-    echo "git is already installed"
-fi
-
-if ! command -v wget &> /dev/null; then
-    echo "Installing wget..."
-    sudo pacman -S --needed wget
-else
-    echo "wget is already installed"
-fi
-
-# Install yay dependencies
-sudo pacman -S --needed base-devel
-
-# Install yay
-if ! command -v yay &> /dev/null; then
-    echo "Installing yay..."
-    cd /opt
-    sudo git clone https://aur.archlinux.org/yay.git
-    sudo chown -R $(whoami):$(whoami) yay
-    cd yay
-    makepkg -si
-else
-    echo "yay is already installed"
-fi
-
-# Step 3: Optimize and update system
-
-echo "The following optimizations and updates will be performed if you choose to optimize the system:"
-echo "1. Enable parallel downloads in pacman.conf"
-echo "2. Enable Color, ILoveCandy, and VerbosePkgLists in pacman.conf"
-echo "3. Install pacman-contrib for additional pacman utilities"
-echo "4. Enable paccache.timer for automatic cleaning of the package cache"
-echo "5. Update the system"
-
-read -p "Do you want to optimize and update the system before installing additional applications? [Y/n]: " optimize_choice
-if [[ "$optimize_choice" == [Yy]* ]] || [[ -z "$optimize_choice" ]]; then
-    echo "Optimizing system..."
-
-    # Enable parallel downloads, Color, ILoveCandy, and VerbosePkgLists
-    echo "Enabling parallel downloads, Color, ILoveCandy, and VerbosePkgLists in pacman.conf..."
-    sudo sed -i 's/^#ParallelDownloads = 5/ParallelDownloads = 5/' /etc/pacman.conf
-    sudo sed -i 's/^#Color/Color/' /etc/pacman.conf
-    sudo sed -i 's/^#ILoveCandy/ILoveCandy/' /etc/pacman.conf
-    sudo sed -i 's/^#VerbosePkgLists/VerbosePkgLists/' /etc/pacman.conf
-
-    # Install pacman-contrib and enable paccache.timer
-    echo "Installing pacman-contrib and enabling paccache.timer for automatic package cache cleaning..."
-    sudo pacman -S --needed pacman-contrib
-    sudo systemctl enable paccache.timer
-
-    # Update the system
-    echo "Updating the system..."
-    sudo pacman -Syu
-fi
-
-# Install other essential packages
-echo "Installing essential packages: nano vim"
-sudo pacman -S --needed nano
-
-# Clone necessary files
-echo "Cloning the suckless-arch repository..."
-git clone https://github.com/nirucon/suckless-arch ~/Git/suckless-arch
-
-echo "The following packages and applications will be installed to ensure the system functions as intended:"
-echo "From pacman: xorg-server xorg-xinit xorg-xrandr xorg-xsetroot noto-fonts lxappearance pcmanfm arandr nitrogen picom openssh cmus scrot gnupg pass brightnessctl mpv dunst unzip nano alsa-utils pavucontrol xarchiver"
-echo "From aur: ttf-font-awesome ttf-mononoki-nerd brave-bin maim nextcloud-client xautolock spotify rofi fastfetch timeshift-autosnap"
-
-# Install listed packages via pacman
-sudo pacman -S --needed xorg-server xorg-xinit xorg-xrandr xorg-xsetroot noto-fonts lxappearance arc-gtk-theme arc-icon-theme pcmanfm arandr nitrogen picom openssh cmus scrot gnupg pass brightnessctl mpv dunst unzip nano alsa-utils pavucontrol xarchiver
-
-# Install listed packages via yay
-yay -S ttf-font-awesome ttf-mononoki-nerd brave-bin maim nextcloud-client xautolock spotify rofi fastfetch timeshift-autosnap
-
-# Step 4: Optional Applications Installation
-
-echo "Now you will go through a series of options for various categories of applications that can be installed based on your needs."
-
-# Function to handle user choices for optional packages
-install_optional() {
-    local prompt="$1"
-    local packages_pacman=("${!2}")
-    local packages_yay=("${!3}")
-    read -p "$prompt [Y/n]: " choice
-    if [[ "$choice" == [Yy]* ]] || [[ -z "$choice" ]]; then
-        if [ ${#packages_pacman[@]} -ne 0 ]; then
-            echo "Installing packages via pacman: ${packages_pacman[@]}"
-            sleep 3
-            sudo pacman -S --needed "${packages_pacman[@]}"
-        fi
-        if [ ${#packages_yay[@]} -ne 0 ]; then
-            echo "Installing packages via yay: ${packages_yay[@]}"
-            sleep 3
-            yay -S "${packages_yay[@]}"
-        fi
-    fi
-}
-
-# DAW Apps
-daw_apps_pacman=()
-daw_apps_yay=(reaper qpwgraph yabridge yabridgectl realtime-privileges)
-install_optional "Do you want to install DAW apps?" daw_apps_pacman[@] daw_apps_yay[@]
-
-# Verify if Pipewire is installed and create latency scripts
-if command -v pipewire &> /dev/null; then
-    echo "You have Pipewire installed and two executable latency scripts are now being created in /usr/local/bin/ to allow you to start Reaper with 128 or 256 latency. The scripts are named: reaper-pipewire-latency-128 and reaper-pipewire-latency-256."
-    sudo bash -c 'echo "PIPEWIRE_LATENCY=128/48000 reaper" > /usr/local/bin/reaper-pipewire-latency-128'
-    sudo bash -c 'echo "PIPEWIRE_LATENCY=256/48000 reaper" > /usr/local/bin/reaper-pipewire-latency-256'
-    sudo chmod +x /usr/local/bin/reaper-pipewire-latency-128
-    sudo chmod +x /usr/local/bin/reaper-pipewire-latency-256
-fi
-
-# Configure realtime-privileges
-echo "Configuring settings for realtime-privileges"
-if ! grep -q '^realtime:' /etc/group; then
-    sudo groupadd realtime
-fi
-sudo usermod -a -G realtime $USER
-
-# DAW Plugins
-daw_plugins_pacman=()
-daw_plugins_yay=(pro-audio lv2-plugins vst-plugins vst3-plugins)
-install_optional "Do you want to install DAW plugins?" daw_plugins_pacman[@] daw_plugins_yay[@]
-
-# Web Dev
-web_dev_pacman=(filezilla bluefish)
-web_dev_yay=()
-install_optional "Do you want to install web development tools?" web_dev_pacman[@] web_dev_yay[@]
-
-# Image and Video Editing
-image_video_pacman=(obs-studio kdenlive gimp)
-image_video_yay=()
-install_optional "Do you want to install image and video editing tools?" image_video_pacman[@] image_video_yay[@]
-
-# Communication
-communication_pacman=(thunderbird irssi signal-desktop)
-communication_yay=()
-install_optional "Do you want to install communication tools?" communication_pacman[@] communication_yay[@]
-
-# Step 5: Install custom grub theme
-
-read -p "Do you want to install a custom grub theme? [Y/n]: " choice
-if [[ "$choice" == [Yy]* ]] || [[ -z "$choice" ]]; then
-    echo "Installing custom grub theme..."
-
-    # Clone the theme repository
-    git clone https://github.com/ShikherVerma/grub2-theme-minimal.git ~/Git/grub2-theme-minimal
-
-    # Create grub themes directory if it doesn't exist
-    sudo mkdir -p /boot/grub/themes
-
-    # Copy the theme to grub themes directory
-    sudo cp -r ~/Git/grub2-theme-minimal/minimal /boot/grub/themes/minimal
-
-    # Update grub configuration to use the new theme
-    sudo sed -i 's|^#GRUB_THEME=.*|GRUB_THEME="/boot/grub/themes/minimal/theme.txt"|' /etc/default/grub
-
-    # Apply grub configuration
-    sudo grub-mkconfig -o /boot/grub/grub.cfg
-
-    echo "Custom grub theme installed."
-fi
-
-# Step 6: Suckless installation
-
-read -p "Do you want to install Suckless DWM, my dot-files and some related stuff? [Y/n]: " choice
-if [[ "$choice" == [Yy]* ]] || [[ -z "$choice" ]]; then
-    echo "Installing Suckless software..."
-
-    # Create necessary directories
-    mkdir -p ~/.config/suckless ~/.dwm ~/Music ~/Downloads ~/Pictures ~/Videos ~/Temp
-
-    # Copy Suckless related files
-    cp -r ~/Git/suckless-arch/bar-dwm ~/Git/suckless-arch/dmenu ~/Git/suckless-arch/st ~/Git/suckless-arch/slock ~/Git/suckless-arch/dwm ~/.config/suckless
-
-    # Compile and install Suckless software
-    sudo make -C ~/.config/suckless/dwm clean install
-    sudo make -C ~/.config/suckless/dmenu clean install
-    sudo make -C ~/.config/suckless/slock clean install
-    sudo make -C ~/.config/suckless/st clean install
-
-    # Copy configuration files
-    cp ~/Git/suckless-arch/.xinitrc ~/
-
-    # Clone and install the 'sverigesradio-dmenu' script
-    echo "Cloning and installing the 'sverigesradio-dmenu' script..."
-    git clone https://github.com/nirucon/sverigesradio-dmenu ~/Git/sverigesradio-dmenu
-    cd ~/Git/sverigesradio-dmenu
-    sudo cp sverigesradio /usr/local/bin/
-    sudo chmod +x /usr/local/bin/sverigesradio
-    cd ~
-    rm -rf ~/Git/sverigesradio-dmenu
-    echo "The 'sverigesradio-dmenu' script has been cloned, installed to /usr/local/bin, made executable, and the repository has been removed."
-
-    # Install dwmexit-dmenu script
-    echo "Installing dwmexit-dmenu script..."
-    # Clone the dwmexit-dmenu repository
-    git clone https://github.com/nirucon/dwmexit-dmenu ~/Git/dwmexit-dmenu
-    cd ~/Git/dwmexit-dmenu
-
-    # Copy the script to /usr/local/bin and overwrite if it exists
-    sudo cp -f dwmexit-dmenu /usr/local/bin/
-    sudo chmod +x /usr/local/bin/dwmexit-dmenu
-
-    # Clean up
-    cd ~
-    rm -rf ~/Git/dwmexit-dmenu
-    echo "The 'dwmexit-dmenu' script has been installed and the repository has been removed."
-    
-    # Install cmus themes
-
-    echo "Setting up cmus themes..."
-
-    # Clone the cmus themes repository
-    cd ~/Git
-    git clone https://github.com/nirucon/nirucon-cmus-themes.git ~/Git/nirucon-cmus-themes
-
-    # Create cmus configuration directory if it doesn't exist
-    mkdir -p ~/.config/cmus
-
-    # Copy *.theme files to cmus configuration directory
-    cp ~/Git/nirucon-cmus-themes/*.theme ~/.config/cmus/
-
-    # Remove the cloned repository
-    rm -rf ~/Git/nirucon-cmus-themes
-
-    # Set default theme to nirucon-noir.theme if it exists
-    if [ -f ~/.config/cmus/nirucon-noir.theme ]; then
-        echo "Setting nirucon-noir.theme as default theme..."
-        echo "set theme=nirucon-noir" >> ~/.config/cmus/rc
+    # Install git and wget if not already installed
+    if ! command -v git &> /dev/null; then
+        echo "Installing git..."
+        sudo pacman -S --needed git
     else
-        echo "nirucon-noir.theme not found. Default theme not set."
+        echo "git is already installed"
     fi
 
-    echo "CMUS themes setup complete."
+    if ! command -v wget &> /dev/null; then
+        echo "Installing wget..."
+        sudo pacman -S --needed wget
+    else
+        echo "wget is already installed"
+    fi
 
-fi
+    # Install yay dependencies
+    sudo pacman -S --needed base-devel
 
-# Step 7: Install noir theme and icons
+    # Install yay
+    if ! command -v yay &> /dev/null; then
+        echo "Installing yay..."
+        cd /opt
+        sudo git clone https://aur.archlinux.org/yay.git
+        sudo chown -R $(whoami):$(whoami) yay
+        cd yay
+        makepkg -si
+    else
+        echo "yay is already installed"
+    fi
 
-read -r -p "Do you want to install noir themes and icons? [Y/n] " response
-response=${response,,} # tolower
+    # Step 3: Optimize and update system
+    echo "The following optimizations and updates will be performed if you choose to optimize the system:"
+    echo "1. Enable parallel downloads in pacman.conf"
+    echo "2. Enable Color, ILoveCandy, and VerbosePkgLists in pacman.conf"
+    echo "3. Install pacman-contrib for additional pacman utilities"
+    echo "4. Enable paccache.timer for automatic cleaning of the package cache"
+    echo "5. Update the system"
 
-if [[ "$response" =~ ^(yes|y| ) ]] || [[ -z "$response" ]]; then
-    echo "Installing Equilux theme, Papirus Dark Grey icons, rofi theme..."
+    read -p "Do you want to optimize and update the system before installing additional applications? [Y/n]: " optimize_choice
+    if [[ "$optimize_choice" == [Yy]* ]] || [[ -z "$optimize_choice" ]]; then
+        echo "Optimizing system..."
 
-    # Install Equilux theme
-    git clone https://github.com/ddnexus/equilux-theme
-    cd equilux-theme
-    sudo ./install.sh
-    cd ..
-    rm -rf equilux-theme
+        # Enable parallel downloads, Color, ILoveCandy, and VerbosePkgLists
+        echo "Enabling parallel downloads, Color, ILoveCandy, and VerbosePkgLists in pacman.conf..."
+        sudo sed -i 's/^#ParallelDownloads = 5/ParallelDownloads = 5/' /etc/pacman.conf
+        sudo sed -i 's/^#Color/Color/' /etc/pacman.conf
+        sudo sed -i 's/^#ILoveCandy/ILoveCandy/' /etc/pacman.conf
+        sudo sed -i 's/^#VerbosePkgLists/VerbosePkgLists/' /etc/pacman.conf
 
-    # Install Papirus Dark Grey icons
-    git clone https://github.com/Intika-KDE-Plasmoids/plasmoid-papirus-dark-grey-icon-theme
-    sudo mkdir -p /usr/share/icons/Papirus-Dark-Grey
-    sudo cp -r plasmoid-papirus-dark-grey-icon-theme/Papirus-Dark-Grey/* /usr/share/icons/Papirus-Dark-Grey/
-    rm -rf plasmoid-papirus-dark-grey-icon-theme
+        # Install pacman-contrib and enable paccache.timer
+        echo "Installing pacman-contrib and enabling paccache.timer for automatic package cache cleaning..."
+        sudo pacman -S --needed pacman-contrib
+        sudo systemctl enable paccache.timer
 
-    # Set Equilux theme and Papirus Dark Grey icons as default using lxappearance
-    if command -v lxappearance >/dev/null 2>&1; then
-        # Create a config file for lxappearance if it doesn't exist
-        mkdir -p ~/.config/gtk-3.0/
-        cat <<EOF > ~/.config/gtk-3.0/settings.ini
+        # Update the system
+        echo "Updating the system..."
+        sudo pacman -Syu
+    fi
+
+    # Install other essential packages
+    echo "Installing essential packages: nano vim"
+    sudo pacman -S --needed nano
+
+    # Clone necessary files
+    echo "Cloning the suckless-arch repository..."
+    git clone https://github.com/nirucon/suckless-arch ~/Git/suckless-arch
+
+    echo "The following packages and applications will be installed to ensure the system functions as intended:"
+    echo "From pacman: xorg-server xorg-xinit xorg-xrandr xorg-xsetroot noto-fonts lxappearance pcmanfm arandr nitrogen picom openssh cmus scrot gnupg pass brightnessctl mpv dunst unzip nano alsa-utils pavucontrol xarchiver"
+    echo "From aur: ttf-font-awesome ttf-mononoki-nerd brave-bin maim nextcloud-client xautolock spotify rofi fastfetch timeshift-autosnap"
+
+    # Install listed packages via pacman
+    sudo pacman -S --needed xorg-server xorg-xinit xorg-xrandr xorg-xsetroot noto-fonts lxappearance arc-gtk-theme arc-icon-theme pcmanfm arandr nitrogen picom openssh cmus scrot gnupg pass brightnessctl mpv dunst unzip nano alsa-utils pavucontrol xarchiver
+
+    # Install listed packages via yay
+    yay -S ttf-font-awesome ttf-mononoki-nerd brave-bin maim nextcloud-client xautolock spotify rofi fastfetch timeshift-autosnap
+
+    # Step 4: Optional Applications Installation
+
+    echo "Now you will go through a series of options for various categories of applications that can be installed based on your needs."
+
+    # Function to handle user choices for optional packages
+    install_optional() {
+        local prompt="$1"
+        local packages_pacman=("${!2}")
+        local packages_yay=("${!3}")
+        read -p "$prompt [Y/n]: " choice
+        if [[ "$choice" == [Yy]* ]] || [[ -z "$choice" ]]; then
+            if [ ${#packages_pacman[@]} -ne 0 ]; then
+                echo "Installing packages via pacman: ${packages_pacman[@]}"
+                sleep 3
+                sudo pacman -S --needed "${packages_pacman[@]}"
+            fi
+            if [ ${#packages_yay[@]} -ne 0 ]; then
+                echo "Installing packages via yay: ${packages_yay[@]}"
+                sleep 3
+                yay -S "${packages_yay[@]}"
+            fi
+        fi
+    }
+
+    # DAW Apps
+    daw_apps_pacman=()
+    daw_apps_yay=(reaper qpwgraph yabridge yabridgectl realtime-privileges)
+    install_optional "Do you want to install DAW apps?" daw_apps_pacman[@] daw_apps_yay[@]
+
+    # Verify if Pipewire is installed and create latency scripts
+    if command -v pipewire &> /dev/null; then
+        echo "You have Pipewire installed and two executable latency scripts are now being created in /usr/local/bin/ to allow you to start Reaper with 128 or 256 latency. The scripts are named: reaper-pipewire-latency-128 and reaper-pipewire-latency-256."
+        sudo bash -c 'echo "PIPEWIRE_LATENCY=128/48000 reaper" > /usr/local/bin/reaper-pipewire-latency-128'
+        sudo bash -c 'echo "PIPEWIRE_LATENCY=256/48000 reaper" > /usr/local/bin/reaper-pipewire-latency-256'
+        sudo chmod +x /usr/local/bin/reaper-pipewire-latency-128
+        sudo chmod +x /usr/local/bin/reaper-pipewire-latency-256
+    fi
+
+    # Configure realtime-privileges
+    echo "Configuring settings for realtime-privileges"
+    if ! grep -q '^realtime:' /etc/group; then
+        sudo groupadd realtime
+    fi
+    sudo usermod -a -G realtime $USER
+
+    # DAW Plugins
+    daw_plugins_pacman=()
+    daw_plugins_yay=(pro-audio lv2-plugins vst-plugins vst3-plugins)
+    install_optional "Do you want to install DAW plugins?" daw_plugins_pacman[@] daw_plugins_yay[@]
+
+    # Web Dev
+    web_dev_pacman=(filezilla bluefish)
+    web_dev_yay=()
+    install_optional "Do you want to install web development tools?" web_dev_pacman[@] web_dev_yay[@]
+
+    # Image and Video Editing
+    image_video_pacman=(obs-studio kdenlive gimp)
+    image_video_yay=()
+    install_optional "Do you want to install image and video editing tools?" image_video_pacman[@] image_video_yay[@]
+
+    # Communication
+    communication_pacman=(thunderbird irssi signal-desktop)
+    communication_yay=()
+    install_optional "Do you want to install communication tools?" communication_pacman[@] communication_yay[@]
+
+    # Step 5: Install custom grub theme
+
+    read -p "Do you want to install a custom grub theme? [Y/n]: " choice
+    if [[ "$choice" == [Yy]* ]] || [[ -z "$choice" ]]; then
+        echo "Installing custom grub theme..."
+
+        # Clone the theme repository
+        git clone https://github.com/ShikherVerma/grub2-theme-minimal.git ~/Git/grub2-theme-minimal
+
+        # Create grub themes directory if it doesn't exist
+        sudo mkdir -p /boot/grub/themes
+
+        # Copy the theme to grub themes directory
+        sudo cp -r ~/Git/grub2-theme-minimal/minimal /boot/grub/themes/minimal
+
+        # Update grub configuration to use the new theme
+        sudo sed -i 's|^#GRUB_THEME=.*|GRUB_THEME="/boot/grub/themes/minimal/theme.txt"|' /etc/default/grub
+
+        # Apply grub configuration
+        sudo grub-mkconfig -o /boot/grub/grub.cfg
+
+        echo "Custom grub theme installed."
+    fi
+
+    # Step 6: Suckless installation
+
+    read -p "Do you want to install Suckless DWM, my dot-files and some related stuff? [Y/n]: " choice
+    if [[ "$choice" == [Yy]* ]] || [[ -z "$choice" ]]; then
+        echo "Installing Suckless software..."
+
+        # Create necessary directories
+        mkdir -p ~/.config/suckless ~/.dwm ~/Music ~/Downloads ~/Pictures ~/Videos ~/Temp
+
+        # Copy Suckless related files
+        cp -r ~/Git/suckless-arch/bar-dwm ~/Git/suckless-arch/dmenu ~/Git/suckless-arch/st ~/Git/suckless-arch/slock ~/Git/suckless-arch/dwm ~/.config/suckless
+
+        # Compile and install Suckless software
+        sudo make -C ~/.config/suckless/dwm clean install
+        sudo make -C ~/.config/suckless/dmenu clean install
+        sudo make -C ~/.config/suckless/slock clean install
+        sudo make -C ~/.config/suckless/st clean install
+
+        # Copy configuration files
+        cp ~/Git/suckless-arch/.xinitrc ~/
+
+        # Clone and install the 'sverigesradio-dmenu' script
+        echo "Cloning and installing the 'sverigesradio-dmenu' script..."
+        git clone https://github.com/nirucon/sverigesradio-dmenu ~/Git/sverigesradio-dmenu
+        cd ~/Git/sverigesradio-dmenu
+        sudo cp sverigesradio /usr/local/bin/
+        sudo chmod +x /usr/local/bin/sverigesradio
+        cd ~
+        rm -rf ~/Git/sverigesradio-dmenu
+        echo "The 'sverigesradio-dmenu' script has been cloned, installed to /usr/local/bin, made executable, and the repository has been removed."
+
+        # Install dwmexit-dmenu script
+        echo "Installing dwmexit-dmenu script..."
+        # Clone the dwmexit-dmenu repository
+        git clone https://github.com/nirucon/dwmexit-dmenu ~/Git/dwmexit-dmenu
+        cd ~/Git/dwmexit-dmenu
+
+        # Copy the script to /usr/local/bin and overwrite if it exists
+        sudo cp -f dwmexit-dmenu /usr/local/bin/
+        sudo chmod +x /usr/local/bin/dwmexit-dmenu
+
+        # Clean up
+        cd ~
+        rm -rf ~/Git/dwmexit-dmenu
+        echo "The 'dwmexit-dmenu' script has been installed and the repository has been removed."
+        
+        # Install cmus themes
+
+        echo "Setting up cmus themes..."
+
+        # Clone the cmus themes repository
+        cd ~/Git
+        git clone https://github.com/nirucon/nirucon-cmus-themes.git ~/Git/nirucon-cmus-themes
+
+        # Create cmus configuration directory if it doesn't exist
+        mkdir -p ~/.config/cmus
+
+        # Copy *.theme files to cmus configuration directory
+        cp ~/Git/nirucon-cmus-themes/*.theme ~/.config/cmus/
+
+        # Remove the cloned repository
+        rm -rf ~/Git/nirucon-cmus-themes
+
+        # Set default theme to nirucon-noir.theme if it exists
+        if [ -f ~/.config/cmus/nirucon-noir.theme ]; then
+            echo "Setting nirucon-noir.theme as default theme..."
+            echo "set theme=nirucon-noir" >> ~/.config/cmus/rc
+        else
+            echo "nirucon-noir.theme not found. Default theme not set."
+        fi
+
+        echo "CMUS themes setup complete."
+
+    fi
+
+    # Step 7: Install noir theme and icons
+
+    read -r -p "Do you want to install noir themes and icons? [Y/n] " response
+    response=${response,,} # tolower
+
+    if [[ "$response" =~ ^(yes|y| ) ]] || [[ -z "$response" ]]; then
+        echo "Installing Equilux theme, Papirus Dark Grey icons, rofi theme..."
+
+        # Install Equilux theme
+        git clone https://github.com/ddnexus/equilux-theme
+        cd equilux-theme
+        sudo ./install.sh
+        cd ..
+        rm -rf equilux-theme
+
+        # Install Papirus Dark Grey icons
+        git clone https://github.com/Intika-KDE-Plasmoids/plasmoid-papirus-dark-grey-icon-theme
+        sudo mkdir -p /usr/share/icons/Papirus-Dark-Grey
+        sudo cp -r plasmoid-papirus-dark-grey-icon-theme/Papirus-Dark-Grey/* /usr/share/icons/Papirus-Dark-Grey/
+        rm -rf plasmoid-papirus-dark-grey-icon-theme
+
+        # Set Equilux theme and Papirus Dark Grey icons as default using lxappearance
+        if command -v lxappearance >/dev/null 2>&1; then
+            # Create a config file for lxappearance if it doesn't exist
+            mkdir -p ~/.config/gtk-3.0/
+            cat <<EOF > ~/.config/gtk-3.0/settings.ini
 [Settings]
 gtk-theme-name=Equilux
 gtk-icon-theme-name=Papirus-Dark-Grey
 EOF
 
-        echo "Theme and icons set successfully!"
+            echo "Theme and icons set successfully!"
+        else
+            echo "lxappearance is not installed. Please install it to set the theme and icons."
+        fi
     else
-        echo "lxappearance is not installed. Please install it to set the theme and icons."
+        echo "Exiting script."
     fi
+
+    # Install and set the Rofi theme
+    echo "Installing and setting the Rofi theme..."
+    mkdir -p ~/.config/rofi
+    wget -O ~/.config/rofi/config.rasi https://github.com/Avasz/rofi-themes-avasz/blob/master/darker-than-black/configs/darker-than-black_v2.rasi
+    echo "Rofi theme installed and set."
+
+    echo "NIRUCON-ALPI Arch Linux Post-Install script completed - now be creative!"
+
 else
-    echo "Exiting script."
+    echo "Okay, sucker. Maybe another time ;) "
+    exit 1
 fi
-
-# Install and set the Rofi theme
-echo "Installing and setting the Rofi theme..."
-mkdir -p ~/.config/rofi
-wget -O ~/.config/rofi/config.rasi https://github.com/Avasz/rofi-themes-avasz/blob/master/darker-than-black/configs/darker-than-black_v2.rasi
-echo "Rofi theme installed and set."
-
-echo "NIRUCON-ALPI Arch Linux Post-Install script completed - now be creative!"
