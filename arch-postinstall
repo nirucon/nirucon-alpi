@@ -204,6 +204,22 @@ if [[ "$choice" == [Yy]* ]] || [[ -z "$choice" ]]; then
     sudo cp ~/Git/suckless-arch/sverigesradio /usr/local/bin/
     sudo chmod +x /usr/local/bin/sverigesradio
     echo "The 'sverigesradio' script has been copied to /usr/local/bin and made executable."
+
+    # Install dwmexit-dmenu script
+    echo "Installing dwmexit-dmenu script..."
+    # Clone the dwmexit-dmenu repository
+    git clone https://github.com/nirucon/dwmexit-dmenu ~/Git/dwmexit-dmenu
+    cd ~/Git/dwmexit-dmenu
+
+    # Copy the script to /usr/local/bin and overwrite if it exists
+    sudo cp -f dwmexit-dmenu /usr/local/bin/
+    sudo chmod +x /usr/local/bin/dwmexit-dmenu
+
+    # Clean up
+    cd ~
+    rm -rf ~/Git/dwmexit-dmenu
+    echo "The 'dwmexit-dmenu' script has been installed and the repository has been removed."
+
 fi
 
 # Step 7: Install noir theme and icons
