@@ -1,2 +1,2 @@
 # arch-postinstall
-My Arch Linux post install script
+A post-install script for Arch Linux, tailored to my specific needs. It includes system optimizations, the installation of suckless software like DWM (with custom colors), a selection of various applications focused on music, image, and media creation, and various other scripts. It is freely available for use and modify, but I disclaim all forms of liability. Use the script at your own risk.
