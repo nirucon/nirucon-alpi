@@ -240,16 +240,11 @@ if [[ "$confirm_install" == [Yy]* ]] || [[ -z "$confirm_install" ]]; then
         # Copy *.theme files to cmus configuration directory
         cp ~/Git/nirucon-cmus-themes/*.theme ~/.config/cmus/
 
+        # Copy the rc file to cmus configuration directory
+        cp ~/Git/nirucon-cmus-themes/rc ~/.config/cmus/
+
         # Remove the cloned repository
         rm -rf ~/Git/nirucon-cmus-themes
-
-        # Set default theme to nirucon-noir.theme if it exists
-        if [ -f ~/.config/cmus/nirucon-noir.theme ]; then
-            echo "Setting nirucon-noir.theme as default theme..."
-            echo "set theme=nirucon-noir" >> ~/.config/cmus/rc
-        else
-            echo "nirucon-noir.theme not found. Default theme not set."
-        fi
 
         echo "CMUS themes setup complete."
 
