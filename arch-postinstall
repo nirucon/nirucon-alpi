@@ -80,11 +80,11 @@ echo "Cloning the suckless-arch repository..."
 git clone https://github.com/nirucon/suckless-arch ~/Git/suckless-arch
 
 echo "The following packages and applications will be installed to ensure the system functions as intended:"
-echo "From pacman: xorg-server xorg-xinit xorg-xrandr xorg-xsetroot lxappearance pcmanfm arandr nitrogen picom openssh cmus scrot gnupg pass brightnessctl mpv dunst unzip nano alsa-utils pavucontrol xarchiver"
+echo "From pacman: xorg-server xorg-xinit xorg-xrandr xorg-xsetroot lxappearance pcmanfm arandr spectacle nitrogen picom openssh cmus scrot gnupg pass brightnessctl mpv dunst unzip nano alsa-utils pavucontrol xarchiver"
 echo "From aur: ttf-font-awesome ttf-mononoki-nerd brave-bin maim nextcloud-client xautolock spotify rofi fastfetch timeshift-autosnap"
 
 # Install listed packages via pacman
-sudo pacman -S --needed xorg-server xorg-xinit xorg-xrandr xorg-xsetroot lxappearance arc-gtk-theme arc-icon-theme pcmanfm arandr nitrogen picom openssh cmus scrot gnupg pass brightnessctl mpv dunst unzip nano alsa-utils pavucontrol xarchiver
+sudo pacman -S --needed xorg-server xorg-xinit xorg-xrandr xorg-xsetroot lxappearance arc-gtk-theme arc-icon-theme pcmanfm arandr spectacle nitrogen picom openssh cmus scrot gnupg pass brightnessctl mpv dunst unzip nano alsa-utils pavucontrol xarchiver
 
 # Install listed packages via yay
 yay -S ttf-font-awesome ttf-mononoki-nerd brave-bin maim nextcloud-client xautolock spotify rofi fastfetch timeshift-autosnap
