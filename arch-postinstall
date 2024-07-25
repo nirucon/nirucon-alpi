@@ -223,6 +223,33 @@ if [[ "$choice" == [Yy]* ]] || [[ -z "$choice" ]]; then
     cd ~
     rm -rf ~/Git/dwmexit-dmenu
     echo "The 'dwmexit-dmenu' script has been installed and the repository has been removed."
+    
+    # Install cmus themes
+
+    echo "Setting up cmus themes..."
+
+    # Clone the cmus themes repository
+    cd ~/Git
+    git clone https://github.com/nirucon/nirucon-cmus-themes.git ~/Git/nirucon-cmus-themes
+
+    # Create cmus configuration directory if it doesn't exist
+    mkdir -p ~/.config/cmus
+
+    # Copy *.theme files to cmus configuration directory
+    cp ~/Git/nirucon-cmus-themes/*.theme ~/.config/cmus/
+
+    # Remove the cloned repository
+    rm -rf ~/Git/nirucon-cmus-themes
+
+    # Set default theme to nirucon-noir.theme if it exists
+    if [ -f ~/.config/cmus/nirucon-noir.theme ]; then
+        echo "Setting nirucon-noir.theme as default theme..."
+        echo "set theme=nirucon-noir" >> ~/.config/cmus/rc
+    else
+        echo "nirucon-noir.theme not found. Default theme not set."
+    fi
+
+    echo "CMUS themes setup complete."
 
 fi
 
@@ -271,4 +298,4 @@ mkdir -p ~/.config/rofi
 wget -O ~/.config/rofi/config.rasi https://github.com/Avasz/rofi-themes-avasz/blob/master/darker-than-black/configs/darker-than-black_v2.rasi
 echo "Rofi theme installed and set."
 
-echo "Script completed."
+echo "Arch Post-Install script completed - now be creative!"
