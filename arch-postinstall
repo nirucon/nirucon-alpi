@@ -239,8 +239,11 @@ if [[ "$confirm_install" == [Yy]* ]] || [[ -z "$confirm_install" ]]; then
         # Create necessary directories
         mkdir -p ~/.config/suckless ~/.dwm ~/Music ~/Downloads ~/Pictures ~/Videos ~/Temp
 
+        # Clone nirubar-dwm
+        git clone https://github.com/nirucon/nirubar-dwm ~/Git/nirubar-dwm
+
         # Copy Suckless related files
-        cp -r ~/Git/suckless-arch/bar-dwm ~/Git/suckless-arch/dmenu ~/Git/suckless-arch/st ~/Git/suckless-arch/slock ~/Git/suckless-arch/dwm ~/.config/suckless
+        cp -r ~/Git/nirubar-dwm/ ~/Git/suckless-arch/dmenu ~/Git/suckless-arch/st ~/Git/suckless-arch/slock ~/Git/suckless-arch/dwm ~/.config/suckless
 
         # Compile and install Suckless software
         sudo make -C ~/.config/suckless/dwm clean install
@@ -254,7 +257,7 @@ if [[ "$confirm_install" == [Yy]* ]] || [[ -z "$confirm_install" ]]; then
         cp ~/Git/suckless-arch/.bashrc ~/
         cp ~/Git/suckless-arch/.bash_aliases ~/
         sudo cp ~/Git/suckless-arch/issue /etc/
-        chmod +x ~/.dwm/autostart.sh ~/.config/suckless/bar-dwm/bar_dwm.sh
+        chmod +x ~/.dwm/autostart.sh ~/.config/suckless/nirubar-dwm/nirubar-dwm
 
         # Clone and install the 'sverigesradio-dmenu' script
         echo "Cloning and installing the 'sverigesradio-dmenu' script..."
