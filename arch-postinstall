@@ -243,9 +243,9 @@ if [[ "$confirm_install" == [Yy]* ]] || [[ -z "$confirm_install" ]]; then
     fi
 
     # Step 6: Suckless installation
-    read -p "Do you want to install Suckless DWM, my dot-files and some related stuff? [Y/n]: " choice
+    read -p "Do you want to install Suckless dwm, dmenu, st, slock, nirubar-dwm, dmenu scripts, my dot-files and some related stuff? [Y/n]: " choice
     if [[ "$choice" == [Yy]* ]] || [[ -z "$choice" ]]; then
-        echo "Installing Suckless software..."
+        echo "Installing Suckless etc..."
 
         # Create necessary directories
         mkdir -p ~/.config/suckless ~/.dwm ~/Music ~/Downloads ~/Pictures ~/Videos ~/Temp ~/.config/dunst
@@ -283,6 +283,16 @@ if [[ "$confirm_install" == [Yy]* ]] || [[ -z "$confirm_install" ]]; then
         cd ~
         rm -rf ~/Git/sverigesradio-dmenu
         echo "The 'sverigesradio-dmenu' script has been cloned, installed to /usr/local/bin, made executable, and the repository has been removed."
+
+        # Clone and install the 'srpod-dmenu' script
+        echo "Cloning and installing the 'srpod-dmenu' script..."
+        git clone https://github.com/nirucon/srpod-dmenu ~/Git/srpod-dmenu
+        cd ~/Git/srpod-dmenu
+        sudo cp srpod-dmenu /usr/local/bin/
+        sudo chmod +x /usr/local/bin/srpod-dmenu
+        cd ~
+        rm -rf ~/Git/srpod-dmenu
+        echo "The 'srpod-dmenu' script has been cloned, installed to /usr/local/bin, made executable, and the repository has been removed."
 
         # Install dwmexit-dmenu script
         echo "Installing dwmexit-dmenu script..."
