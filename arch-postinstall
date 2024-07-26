@@ -207,17 +207,17 @@ if [[ "$confirm_install" == [Yy]* ]] || [[ -z "$confirm_install" ]]; then
     # Web Dev
     web_dev_pacman=(filezilla bluefish)
     web_dev_yay=()
-    install_optional "Do you want to install web development tools?" web_dev_pacman[@] web_dev_yay[@]
+    install_optional "Do you want to install Web development apps?" web_dev_pacman[@] web_dev_yay[@]
 
     # Image and Video Editing
     image_video_pacman=(obs-studio kdenlive gimp)
     image_video_yay=()
-    install_optional "Do you want to install image and video editing tools?" image_video_pacman[@] image_video_yay[@]
+    install_optional "Do you want to install Image and Video editing apps?" image_video_pacman[@] image_video_yay[@]
 
     # Communication
     communication_pacman=(thunderbird irssi signal-desktop)
     communication_yay=()
-    install_optional "Do you want to install communication tools?" communication_pacman[@] communication_yay[@]
+    install_optional "Do you want to install Communication apps?" communication_pacman[@] communication_yay[@]
 
     # Step 5: Install custom grub theme
     read -p "Do you want to install a custom grub theme? [Y/n]: " choice
