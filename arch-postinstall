@@ -248,13 +248,17 @@ if [[ "$confirm_install" == [Yy]* ]] || [[ -z "$confirm_install" ]]; then
         echo "Installing Suckless software..."
 
         # Create necessary directories
-        mkdir -p ~/.config/suckless ~/.dwm ~/Music ~/Downloads ~/Pictures ~/Videos ~/Temp
+        mkdir -p ~/.config/suckless ~/.dwm ~/Music ~/Downloads ~/Pictures ~/Videos ~/Temp ~/.config/dunstrc
 
         # Clone nirubar-dwm
         git clone https://github.com/nirucon/nirubar-dwm ~/Git/nirubar-dwm
 
+        # Clone dunstrc
+        git clone https://github.com/nirucon/dunstrc ~/Git/dunstrc
+
         # Copy Suckless related files
         cp -r ~/Git/nirubar-dwm/ ~/Git/suckless-arch/dmenu ~/Git/suckless-arch/st ~/Git/suckless-arch/slock ~/Git/suckless-arch/dwm ~/.config/suckless
+        cp -r ~/Git/dunstrc/* ~/.config/dunstrc
 
         # Compile and install Suckless software
         sudo make -C ~/.config/suckless/dwm clean install
