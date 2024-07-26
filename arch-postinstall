@@ -335,6 +335,27 @@ if [[ "$confirm_install" == [Yy]* ]] || [[ -z "$confirm_install" ]]; then
 
         echo "CMUS themes setup complete."
 
+        # pcmanfm.conf - source and destination paths
+        SOURCE_PATH=~/Git/suckless-arch/pcmanfm.conf
+        DESTINATION_DIR=~/.config/pcmanfm/default/
+        DESTINATION_FILE=${DESTINATION_DIR}pcmanfm.conf
+        
+        # Create the destination directory if it does not exist
+        if [ ! -d "$DESTINATION_DIR" ]; then
+            echo "Destination directory does not exist. Creating it now..."
+            mkdir -p "$DESTINATION_DIR"
+        fi
+        
+        # Copy the file to the destination directory
+        if [ -f "$SOURCE_PATH" ]; then
+            echo "Copying file from $SOURCE_PATH to $DESTINATION_FILE..."
+            cp "$SOURCE_PATH" "$DESTINATION_FILE"
+            echo "pcmanfm.conf copied successfully."
+        else
+            echo "pcmanfm.conf file does not exist: $SOURCE_PATH"
+            exit 1
+        fi
+
     fi
 
     # Step 7: Install noir theme and icons
