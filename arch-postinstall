@@ -280,6 +280,21 @@ if [[ "$confirm_install" == [Yy]* ]] || [[ -z "$confirm_install" ]]; then
         cd ~
         rm -rf ~/Git/dwmexit-dmenu
         echo "The 'dwmexit-dmenu' script has been installed and the repository has been removed."
+
+        # Install arch-optimizer-dmenu script
+        echo "Installing arch-optimizer-dmenu script..."
+        # Clone the dwmexit-dmenu repository
+        git clone https://github.com/nirucon/arch-optimizer-dmenu ~/Git/arch-optimizer-dmenu
+        cd ~/Git/arch-optimizer-dmenu
+
+        # Copy the script to /usr/local/bin and overwrite if it exists
+        sudo cp -f arch-optimizer-dmenu /usr/local/bin/
+        sudo chmod +x /usr/local/bin/arch-optimizer-dmenu
+
+        # Clean up
+        cd ~
+        rm -rf ~/Git/arch-optimizer-dmenu
+        echo "The 'arch-optimizer-dmenu' script has been installed and the repository has been removed."
         
         # Install cmus themes
         echo "Setting up cmus themes..."
