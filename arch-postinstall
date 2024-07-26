@@ -61,6 +61,7 @@ if [[ "$confirm_install" == [Yy]* ]] || [[ -z "$confirm_install" ]]; then
 
         # Enable parallel downloads, Color, ILoveCandy, and VerbosePkgLists
         echo "Enabling parallel downloads, Color, ILoveCandy, and VerbosePkgLists in pacman.conf..."
+        
         # Define the lines to be ensured in the file
         declare -A lines=(
           ["ParallelDownloads = 5"]="#ParallelDownloads = 5"
@@ -68,36 +69,41 @@ if [[ "$confirm_install" == [Yy]* ]] || [[ -z "$confirm_install" ]]; then
           ["VerbosePkgLists"]="#VerbosePkgLists"
         )
         
-        # Add ILoveCandy separately to the [options] section
-        options_file="/etc/pacman.conf"
-        multilib_file="/etc/pacman.conf"
+        # Define the file path
+        file="/etc/pacman.conf"
         
-        echo "Configuring $options_file..."
+        echo "Configuring $file..."
         
         # Function to ensure a line is present in the file
         ensure_line() {
-          local file="$1"
-          local line="$2"
-          local comment_line="$3"
+          local line="$1"
+          local comment_line="$2"
+          local section="$3"
         
-          if grep -q "^$line" "$file"; then
-            echo "Line '$line' already present."
-          elif grep -q "^$comment_line" "$file"; then
-            echo "Uncommenting '$comment_line' to '$line'."
-            sudo sed -i "s/^$comment_line/$line/" "$file"
+          # Check if we are in the correct section
+          if grep -q "\[$section\]" "$file"; then
+            if grep -q "^$line" "$file"; then
+              echo "Line '$line' already present."
+            elif grep -q "^$comment_line" "$file"; then
+              echo "Uncommenting '$comment_line' to '$line'."
+              sudo sed -i "s/^$comment_line/$line/" "$file"
+            else
+              echo "Adding '$line' to the section [$section]."
+              sudo sed -i "/\[$section\]/a $line" "$file"
+            fi
           else
-            echo "Adding '$line' to the file."
-            echo "$line" | sudo tee -a "$file" > /dev/null
+            echo "Section [$section] not found. Adding section and line."
+            echo -e "\n[$section]\n$line" | sudo tee -a "$file" > /dev/null
           fi
         }
         
-        # Update [options] section for global settings
-        ensure_line "$options_file" "ILoveCandy" "#ILoveCandy"
+        # Ensure the ILoveCandy line is in the [options] section
+        ensure_line "ILoveCandy" "#ILoveCandy" "options"
         
-        # Update the [multilib] section for multilib settings
-        ensure_line "$multilib_file" "ParallelDownloads = 5" "#ParallelDownloads = 5"
-        ensure_line "$multilib_file" "Color" "#Color"
-        ensure_line "$multilib_file" "VerbosePkgLists" "#VerbosePkgLists"
+        # Uncomment or add the other lines (these are not section-specific)
+        for line in "${!lines[@]}"; do
+          ensure_line "$line" "${lines[$line]}" "options"
+        done
         
         echo "pacman.conf configuration update complete."
         
@@ -109,6 +115,7 @@ if [[ "$confirm_install" == [Yy]* ]] || [[ -z "$confirm_install" ]]; then
         # Update the system
         echo "Updating the system..."
         sudo pacman -Syu
+
     fi
 
     # Install other essential packages
