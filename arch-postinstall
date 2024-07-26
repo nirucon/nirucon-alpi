@@ -250,15 +250,16 @@ if [[ "$confirm_install" == [Yy]* ]] || [[ -z "$confirm_install" ]]; then
         # Create necessary directories
         mkdir -p ~/.config/suckless ~/.dwm ~/Music ~/Downloads ~/Pictures ~/Videos ~/Temp ~/.config/dunst
 
-        # Clone nirubar-dwm
+        # Clone and overwrite the existing repositories
+        rm -rf ~/Git/nirubar-dwm
         git clone https://github.com/nirucon/nirubar-dwm ~/Git/nirubar-dwm
 
-        # Clone dunstrc
+        rm -rf ~/Git/dunstrc
         git clone https://github.com/nirucon/dunstrc ~/Git/dunstrc
 
-        # Copy Suckless related files
-        cp -r ~/Git/nirubar-dwm/ ~/Git/suckless-arch/dmenu ~/Git/suckless-arch/st ~/Git/suckless-arch/slock ~/Git/suckless-arch/dwm ~/.config/suckless
-        cp -r ~/Git/dunstrc/* ~/.config/dunst
+        # Copy Suckless related files and overwrite existing files
+        cp -rf ~/Git/nirubar-dwm/ ~/Git/suckless-arch/dmenu ~/Git/suckless-arch/st ~/Git/suckless-arch/slock ~/Git/suckless-arch/dwm ~/.config/suckless
+        cp -rf ~/Git/dunstrc/* ~/.config/dunst
 
         # Compile and install Suckless software
         sudo make -C ~/.config/suckless/dwm clean install
@@ -266,19 +267,20 @@ if [[ "$confirm_install" == [Yy]* ]] || [[ -z "$confirm_install" ]]; then
         sudo make -C ~/.config/suckless/slock clean install
         sudo make -C ~/.config/suckless/st clean install
 
-        # Copy configurations and dot files
-        cp ~/Git/suckless-arch/.xinitrc ~/
-        cp ~/Git/suckless-arch/autostart.sh ~/.dwm
-        cp ~/Git/suckless-arch/.bashrc ~/
-        cp ~/Git/suckless-arch/.bash_aliases ~/
-        sudo cp ~/Git/suckless-arch/issue /etc/
+        # Copy configurations and dot files, overwriting existing files
+        cp -f ~/Git/suckless-arch/.xinitrc ~/
+        cp -f ~/Git/suckless-arch/autostart.sh ~/.dwm
+        cp -f ~/Git/suckless-arch/.bashrc ~/
+        cp -f ~/Git/suckless-arch/.bash_aliases ~/
+        sudo cp -f ~/Git/suckless-arch/issue /etc/
         chmod +x ~/.dwm/autostart.sh ~/.config/suckless/nirubar-dwm/nirubar-dwm
 
         # Clone and install the 'sverigesradio-dmenu' script
         echo "Cloning and installing the 'sverigesradio-dmenu' script..."
+        rm -rf ~/Git/sverigesradio-dmenu
         git clone https://github.com/nirucon/sverigesradio-dmenu ~/Git/sverigesradio-dmenu
         cd ~/Git/sverigesradio-dmenu
-        sudo cp sverigesradio-dmenu /usr/local/bin/
+        sudo cp -f sverigesradio-dmenu /usr/local/bin/
         sudo chmod +x /usr/local/bin/sverigesradio-dmenu
         cd ~
         rm -rf ~/Git/sverigesradio-dmenu
@@ -286,9 +288,10 @@ if [[ "$confirm_install" == [Yy]* ]] || [[ -z "$confirm_install" ]]; then
 
         # Clone and install the 'srpod-dmenu' script
         echo "Cloning and installing the 'srpod-dmenu' script..."
+        rm -rf ~/Git/srpod-dmenu
         git clone https://github.com/nirucon/srpod-dmenu ~/Git/srpod-dmenu
         cd ~/Git/srpod-dmenu
-        sudo cp srpod-dmenu /usr/local/bin/
+        sudo cp -f srpod-dmenu /usr/local/bin/
         sudo chmod +x /usr/local/bin/srpod-dmenu
         cd ~
         rm -rf ~/Git/srpod-dmenu
@@ -296,49 +299,39 @@ if [[ "$confirm_install" == [Yy]* ]] || [[ -z "$confirm_install" ]]; then
 
         # Install dwmexit-dmenu script
         echo "Installing dwmexit-dmenu script..."
-        # Clone the dwmexit-dmenu repository
+        rm -rf ~/Git/dwmexit-dmenu
         git clone https://github.com/nirucon/dwmexit-dmenu ~/Git/dwmexit-dmenu
         cd ~/Git/dwmexit-dmenu
-
-        # Copy the script to /usr/local/bin and overwrite if it exists
         sudo cp -f dwmexit-dmenu /usr/local/bin/
         sudo chmod +x /usr/local/bin/dwmexit-dmenu
-
-        # Clean up
         cd ~
         rm -rf ~/Git/dwmexit-dmenu
         echo "The 'dwmexit-dmenu' script has been installed and the repository has been removed."
 
         # Install arch-optimizer-dmenu script
         echo "Installing arch-optimizer-dmenu script..."
-        # Clone the dwmexit-dmenu repository
+        rm -rf ~/Git/arch-optimizer-dmenu
         git clone https://github.com/nirucon/arch-optimizer-dmenu ~/Git/arch-optimizer-dmenu
         cd ~/Git/arch-optimizer-dmenu
-
-        # Copy the script to /usr/local/bin and overwrite if it exists
         sudo cp -f arch-optimizer-dmenu /usr/local/bin/
         sudo chmod +x /usr/local/bin/arch-optimizer-dmenu
-
-        # Clean up
         cd ~
         rm -rf ~/Git/arch-optimizer-dmenu
         echo "The 'arch-optimizer-dmenu' script has been installed and the repository has been removed."
-        
+
         # Install cmus themes
         echo "Setting up cmus themes..."
 
-        # Clone the cmus themes repository
-        cd ~/Git
+        # Clone the cmus themes repository and remove existing clone
+        rm -rf ~/Git/nirucon-cmus-themes
         git clone https://github.com/nirucon/nirucon-cmus-themes.git ~/Git/nirucon-cmus-themes
 
         # Create cmus configuration directory if it doesn't exist
         mkdir -p ~/.config/cmus
 
-        # Copy *.theme files to cmus configuration directory
-        cp ~/Git/nirucon-cmus-themes/*.theme ~/.config/cmus/
-
-        # Copy the rc file to cmus configuration directory
-        cp ~/Git/nirucon-cmus-themes/rc ~/.config/cmus/
+        # Copy *.theme files to cmus configuration directory and overwrite existing files
+        cp -f ~/Git/nirucon-cmus-themes/*.theme ~/.config/cmus/
+        cp -f ~/Git/nirucon-cmus-themes/rc ~/.config/cmus/
 
         # Remove the cloned repository
         rm -rf ~/Git/nirucon-cmus-themes
@@ -356,10 +349,10 @@ if [[ "$confirm_install" == [Yy]* ]] || [[ -z "$confirm_install" ]]; then
             mkdir -p "$DESTINATION_DIR"
         fi
         
-        # Copy the file to the destination directory
+        # Copy the file to the destination directory, overwriting if it exists
         if [ -f "$SOURCE_PATH" ]; then
             echo "Copying file from $SOURCE_PATH to $DESTINATION_FILE..."
-            cp "$SOURCE_PATH" "$DESTINATION_FILE"
+            cp -f "$SOURCE_PATH" "$DESTINATION_FILE"
             echo "pcmanfm.conf copied successfully."
         else
             echo "pcmanfm.conf file does not exist: $SOURCE_PATH"
@@ -367,6 +360,7 @@ if [[ "$confirm_install" == [Yy]* ]] || [[ -z "$confirm_install" ]]; then
         fi
 
     fi
+
 
     # Step 7: Install noir theme and icons
     read -r -p "Do you want to install noir themes and icons? [Y/n] " response
