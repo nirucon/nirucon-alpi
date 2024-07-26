@@ -127,11 +127,11 @@ if [[ "$confirm_install" == [Yy]* ]] || [[ -z "$confirm_install" ]]; then
     git clone https://github.com/nirucon/suckless-arch ~/Git/suckless-arch
 
     echo "The following packages and applications will be installed to ensure the system functions as intended:"
-    echo "From pacman: xorg-server xorg-xinit xorg-xrandr xorg-xsetroot noto-fonts lxappearance pcmanfm arandr nitrogen picom openssh cmus scrot gnupg pass brightnessctl mpv dunst unzip nano alsa-utils pavucontrol xarchiver xclip htop curl libnotify jq"
+    echo "From pacman: xorg-server xorg-xinit xorg-xrandr xorg-xsetroot noto-fonts noto-fonts-emoji lxappearance pcmanfm arandr nitrogen picom openssh cmus scrot gnupg pass brightnessctl mpv dunst unzip nano alsa-utils pavucontrol xarchiver xclip htop curl libnotify jq"
     echo "From aur: ttf-font-awesome ttf-mononoki-nerd maim xautolock rofi fastfetch timeshift-autosnap"
 
     # Install listed packages via pacman
-    sudo pacman -S --needed xorg-server xorg-xinit xorg-xrandr xorg-xsetroot noto-fonts lxappearance pcmanfm arandr nitrogen picom openssh cmus scrot gnupg pass brightnessctl mpv dunst unzip nano alsa-utils pavucontrol xarchiver xclip htop curl libnotify jq
+    sudo pacman -S --needed xorg-server xorg-xinit xorg-xrandr xorg-xsetroot noto-fonts noto-fonts-emoji lxappearance pcmanfm arandr nitrogen picom openssh cmus scrot gnupg pass brightnessctl mpv dunst unzip nano alsa-utils pavucontrol xarchiver xclip htop curl libnotify jq
 
     # Install listed packages via yay
     yay -S ttf-font-awesome ttf-mononoki-nerd maim xautolock rofi fastfetch timeshift-autosnap
