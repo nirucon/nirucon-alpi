@@ -31,8 +31,8 @@ This script automates the installation and configuration of:
    - Sets up essential system optimizations and updates.
 
 2. **Essential Package Installation**
-   - Installs core packages like `xorg`, `lxappearance`, and `picom`.
-   - Adds additional tools from AUR.
+   - Installs core packages like `xorg` and some more of my needed applications and tools.
+   - Adds additional applications from AUR.
 
 3. **Optional Applications**
    - Provides options to install various categories of applications:
@@ -73,7 +73,7 @@ The script will set up various suckless applications, including:
 - **st (Simple Terminal)**
 - **slock (Simple Lock)**
 
-It also installs and configures additional scripts like nirbar-dwm and dotfiles for a customized experience.
+It also installs and configures additional scripts like nirubar-dwm and dotfiles for a customized experience.
 
 ## Noir Theme and Icons
 
