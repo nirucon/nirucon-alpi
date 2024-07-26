@@ -61,10 +61,41 @@ if [[ "$confirm_install" == [Yy]* ]] || [[ -z "$confirm_install" ]]; then
 
         # Enable parallel downloads, Color, ILoveCandy, and VerbosePkgLists
         echo "Enabling parallel downloads, Color, ILoveCandy, and VerbosePkgLists in pacman.conf..."
-        sudo sed -i 's/^#ParallelDownloads = 5/ParallelDownloads = 5/' /etc/pacman.conf
-        sudo sed -i 's/^#Color/Color/' /etc/pacman.conf
-        sudo sed -i 's/^#ILoveCandy/ILoveCandy/' /etc/pacman.conf
-        sudo sed -i 's/^#VerbosePkgLists/VerbosePkgLists/' /etc/pacman.conf
+        # Define the lines to be ensured in the file
+        declare -A lines=(
+          ["ParallelDownloads = 5"]="#ParallelDownloads = 5"
+          ["Color"]="#Color"
+          ["ILoveCandy"]="#ILoveCandy"
+          ["VerbosePkgLists"]="#VerbosePkgLists"
+        )
+        
+        # Define the file path
+        file="/etc/pacman.conf"
+        
+        echo "Configuring $file..."
+        
+        # Function to ensure a line is present in the file
+        ensure_line() {
+          local line="$1"
+          local comment_line="$2"
+          
+          if grep -q "^$line" "$file"; then
+            echo "Line '$line' already present."
+          elif grep -q "^$comment_line" "$file"; then
+            echo "Uncommenting '$comment_line' to '$line'."
+            sudo sed -i "s/^$comment_line/$line/" "$file"
+          else
+            echo "Adding '$line' to the file."
+            echo "$line" | sudo tee -a "$file" > /dev/null
+          fi
+        }
+        
+        # Uncomment or add the lines
+        for line in "${!lines[@]}"; do
+          ensure_line "$line" "${lines[$line]}"
+        done
+        
+        echo "pacman.conf configuration update complete."
 
         # Install pacman-contrib and enable paccache.timer
         echo "Installing pacman-contrib and enabling paccache.timer for automatic package cache cleaning..."
