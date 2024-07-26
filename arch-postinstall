@@ -65,20 +65,21 @@ if [[ "$confirm_install" == [Yy]* ]] || [[ -z "$confirm_install" ]]; then
         declare -A lines=(
           ["ParallelDownloads = 5"]="#ParallelDownloads = 5"
           ["Color"]="#Color"
-          ["ILoveCandy"]="#ILoveCandy"
           ["VerbosePkgLists"]="#VerbosePkgLists"
         )
         
-        # Define the file path
-        file="/etc/pacman.conf"
+        # Add ILoveCandy separately to the [options] section
+        options_file="/etc/pacman.conf"
+        multilib_file="/etc/pacman.conf"
         
-        echo "Configuring $file..."
+        echo "Configuring $options_file..."
         
         # Function to ensure a line is present in the file
         ensure_line() {
-          local line="$1"
-          local comment_line="$2"
-          
+          local file="$1"
+          local line="$2"
+          local comment_line="$3"
+        
           if grep -q "^$line" "$file"; then
             echo "Line '$line' already present."
           elif grep -q "^$comment_line" "$file"; then
@@ -90,18 +91,21 @@ if [[ "$confirm_install" == [Yy]* ]] || [[ -z "$confirm_install" ]]; then
           fi
         }
         
-        # Uncomment or add the lines
-        for line in "${!lines[@]}"; do
-          ensure_line "$line" "${lines[$line]}"
-        done
+        # Update [options] section for global settings
+        ensure_line "$options_file" "ILoveCandy" "#ILoveCandy"
+        
+        # Update the [multilib] section for multilib settings
+        ensure_line "$multilib_file" "ParallelDownloads = 5" "#ParallelDownloads = 5"
+        ensure_line "$multilib_file" "Color" "#Color"
+        ensure_line "$multilib_file" "VerbosePkgLists" "#VerbosePkgLists"
         
         echo "pacman.conf configuration update complete."
-
+        
         # Install pacman-contrib and enable paccache.timer
         echo "Installing pacman-contrib and enabling paccache.timer for automatic package cache cleaning..."
         sudo pacman -S --needed pacman-contrib
         sudo systemctl enable paccache.timer
-
+        
         # Update the system
         echo "Updating the system..."
         sudo pacman -Syu
