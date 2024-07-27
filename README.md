@@ -18,17 +18,17 @@ Welcome to the **NIRUCON-ALPI** post-installation script, tailored for Arch Linu
 This script automates the installation and configuration of:
 
 - Essential base programs and system optimizations
-- A variety of suckless software (like DWM, dmenu, and st)
+- A variety of suckless software (like dwm, dmenu, slock and st)
 - Noir-themed aesthetics and icons
-- Various applications for music production, media editing, and development
+- Various applications for music production, media editing, development and more...
 
 **Disclaimer:** This script is tailored for my specific setup and preferences. While it is free to use and modify, it is provided as-is, and I disclaim all responsibility for any issues that may arise. Proceed with caution and at your own risk.
 
 ## Installation Steps
 
 1. **Base Programs Installation**
-   - Installs `git`, `wget`, and the AUR helper `yay`.
-   - Sets up essential system optimizations and updates.
+   - Installs `git`, `wget`, and the AUR helper `yay` (if not installed).
+   - Essential system optimizations and updates.
 
 2. **Essential Package Installation**
    - Installs core packages like `xorg` and some more of my needed applications and tools.
@@ -38,7 +38,7 @@ This script automates the installation and configuration of:
    - Provides options to install various categories of applications:
      - **Browser**
      - **Music Streaming**
-     - **Nextcloud Client**
+     - **File sync / Nextcloud Client**
      - **DAW Apps**
      - **DAW Plugins**
      - **Web Development Apps**
@@ -55,25 +55,17 @@ This script automates the installation and configuration of:
 6. **Noir Theme and Icons**
    - Installs noir themes and icons for a stylish, dark appearance.
 
-## Optional Configurations
-
-- **Browser:** Optionally install Brave browser.
-- **Music Streaming:** Optionally install Spotify.
-- **Nextcloud Sync:** Optionally install the Nextcloud client.
-- **DAW Applications:** Optionally install DAW software (Reaper) and configure realtime-privileges + latency scripts.
-- **Web Development:** Optionally install development tools like Bluefish and Filezilla for sftp/ftp.
-- **Media Editing:** Optionally install tools for image and video editing such as GIMP, Kdenlive, OBS.
-- **Communication:** Optionally install communication apps like Thunderbird, Signal, Irssi.
-
 ## Suckless Installation
 
-The script will set up various suckless applications, including:
-- **DWM (Dynamic Window Manager)**
+The script will set up various suckless software with my "noir theming", including:
+- **dwm (Dynamic Window Manager)**
 - **dmenu (Dynamic Menu)**
 - **st (Simple Terminal)**
 - **slock (Simple Lock)**
 
 It also installs and configures additional scripts like nirubar-dwm and dotfiles for a customized experience.
+
+Nirubar - status bar for dwm: https://github.com/nirucon/nirubar-dwm
 
 ## Noir Theme and Icons
 
