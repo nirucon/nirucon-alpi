@@ -2,7 +2,7 @@
 
 # NIRUCON-ALPI: Arch Linux Post-Install
 
-Welcome to the **NIRUCON-ALPI** post-installation script, tailored for Arch Linux users who want a streamlined setup focused on suckless software, noir theming, and tools for music recording and media production. This script is designed to automate the setup process of a custom environment with essential software and configurations. It’s built around my own preferences but is free for anyone to use at their own risk.
+Welcome to the **NIRUCON-ALPI** post-installation script, tailored for Arch Linux users who want a streamlined setup focused on suckless software, noir theming, and tools for music recording and media production. This script is designed to automate the setup process (with Y/n questions) of a custom environment with essential software and configurations. It’s built around my own preferences but is free for anyone to use at their own risk.
 
 ## Table of Contents
 
