@@ -20,20 +20,20 @@ if [[ "$confirm_install" == [Yy]* ]] || [[ -z "$confirm_install" ]]; then
     # Install git and wget if not already installed
     if ! command -v git &> /dev/null; then
         echo "Installing git..."
-        sudo pacman -S --needed git
+        sudo pacman -S --needed --noconfirm git
     else
         echo "git is already installed"
     fi
 
     if ! command -v wget &> /dev/null; then
         echo "Installing wget..."
-        sudo pacman -S --needed wget
+        sudo pacman -S --needed --noconfirm wget
     else
         echo "wget is already installed"
     fi
 
     # Install yay dependencies
-    sudo pacman -S --needed base-devel
+    sudo pacman -S --needed --noconfirm base-devel
 
     # Install yay
     if ! command -v yay &> /dev/null; then
@@ -109,7 +109,7 @@ if [[ "$confirm_install" == [Yy]* ]] || [[ -z "$confirm_install" ]]; then
         
         # Install pacman-contrib and enable paccache.timer
         echo "Installing pacman-contrib and enabling paccache.timer for automatic package cache cleaning..."
-        sudo pacman -S --needed pacman-contrib
+        sudo pacman -S --needed --noconfirm pacman-contrib
         sudo systemctl enable paccache.timer
         
         # Update the system
@@ -120,7 +120,7 @@ if [[ "$confirm_install" == [Yy]* ]] || [[ -z "$confirm_install" ]]; then
 
     # Install other essential packages
     echo "Installing some essential packages: nano vim"
-    sudo pacman -S --needed nano vim
+    sudo pacman -S --needed --noconfirm nano vim
 
     # Clone necessary files
     echo "Cloning the suckless-arch repository..."
@@ -131,10 +131,10 @@ if [[ "$confirm_install" == [Yy]* ]] || [[ -z "$confirm_install" ]]; then
     echo "From aur: ttf-font-awesome ttf-mononoki-nerd maim xautolock rofi fastfetch timeshift-autosnap"
 
     # Install listed packages via pacman
-    sudo pacman -S --needed xorg-server xorg-xinit xorg-xrandr xorg-xsetroot noto-fonts noto-fonts-emoji lxappearance qt5ct pcmanfm arandr nitrogen picom openssh cmus scrot gnupg pass brightnessctl mpv dunst unzip nano alsa-utils pavucontrol xarchiver xclip htop curl libnotify jq bc
+    sudo pacman -S --needed --noconfirm xorg-server xorg-xinit xorg-xrandr xorg-xsetroot noto-fonts noto-fonts-emoji lxappearance qt5ct pcmanfm arandr nitrogen picom openssh cmus scrot gnupg pass brightnessctl mpv dunst unzip nano alsa-utils pavucontrol xarchiver xclip htop curl libnotify jq bc
 
     # Install listed packages via yay
-    yay -S ttf-font-awesome ttf-mononoki-nerd maim xautolock rofi fastfetch timeshift-autosnap
+    yay -S --noconfirm ttf-font-awesome ttf-mononoki-nerd maim xautolock rofi fastfetch timeshift-autosnap
 
     # Step 4: Optional Applications Installation
 
@@ -150,12 +150,12 @@ if [[ "$confirm_install" == [Yy]* ]] || [[ -z "$confirm_install" ]]; then
             if [ ${#packages_pacman[@]} -ne 0 ]; then
                 echo "Installing packages via pacman: ${packages_pacman[@]}"
                 sleep 3
-                sudo pacman -S --needed "${packages_pacman[@]}"
+                sudo pacman -S --needed --noconfirm "${packages_pacman[@]}"
             fi
             if [ ${#packages_yay[@]} -ne 0 ]; then
                 echo "Installing packages via yay: ${packages_yay[@]}"
                 sleep 3
-                yay -S "${packages_yay[@]}"
+                yay -S --noconfirm "${packages_yay[@]}"
             fi
         fi
     }
