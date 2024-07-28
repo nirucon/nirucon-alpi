@@ -463,7 +463,7 @@ EOF
     fi
 
     # Final clean up
-    rm -fr ~/Git/dunstrc ~/Git/nirubar-dwm ~/Git/suckless-arch
+    rm -fr ~/Git/dunstrc ~/Git/nirubar-dwm ~/Git/suckless-arch ~/Git/nirucon-death-grubtheme
     echo "All cloned and downloaded files in ~/Git have been deleted, except for the arch-postinstall directory. You might want to run it again. Note: It is important to check if there is a new version of the script at https://github.com/nirucon/arch-postinstall."
     sleep 1
 
