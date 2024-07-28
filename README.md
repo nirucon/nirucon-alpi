@@ -1,4 +1,4 @@
-# arch-postinstall
+# nirucon-alpi
 
 # NIRUCON-ALPI: Arch Linux Post-Install
 
