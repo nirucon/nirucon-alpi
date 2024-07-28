@@ -49,6 +49,7 @@ This script automates the installation and configuration of:
 
 4. **Custom Grub Theme**
    - Installs a custom GRUB theme to enhance the boot menu appearance.
+   - https://github.com/nirucon/nirucon-death-grubtheme
 
 5. **Suckless Software**
    - Installs and configures suckless software such as DWM, dmenu, and st.
