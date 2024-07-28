@@ -410,6 +410,12 @@ EOF
             echo "Failed to download Rofi theme. Please check the URL or your internet connection."
     fi
 
+    # Final clean up
+    rm -fr ~/Git/arch-postinstall ~/Git/dunstrc ~/Git/nirubar-dwm ~/Git/suckless-arch
+    echo "Cloned and downloaded files deleted from ~/Git"
+
+    sleep 1
+
     echo "NIRUCON-ALPI Arch Linux Post Install Script Completed - NOW BE CREATIVE!"
 
 else
