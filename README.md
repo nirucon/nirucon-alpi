@@ -67,7 +67,7 @@ The script will set up various suckless software with my "noir theming", includi
 
 It also installs and configures additional scripts like nirubar-dwm and dotfiles for a customized experience.
 
-Nirubar - status bar for dwm: https://github.com/nirucon/nirubar-dwm
+nirubar - my status bar for dwm: https://github.com/nirucon/nirubar-dwm
 
 ## Noir Theme and Icons
 
