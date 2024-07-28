@@ -405,52 +405,26 @@ EOF
         # QT
 
         # Set Qt5 theme to Fusion and apply "darker" color scheme
-            mkdir -p ~/.config/qt5ct
-            cat <<EOL > ~/.config/qt5ct/qt5ct.conf
-            [Appearance]
-            color_scheme_path=
-            custom_palette=false
-            style=Fusion
-            
-            [Fonts]
-            fixed=@Variant(\0\0\0@\0\0\0\x12\0\x46\x61\x6e\x74\x61\x73\x79\0\0\0\0\0\0\0\0\0\0\0\x12\0\x66\0\x69\0\x78\x65\0\x64\0\0\0\0\0\0\0\0\0\0)
-            general=@Variant(\0\0\0@\0\0\0\x12\0\x46\x61\x6e\x74\x61\x73\x79\0\0\0\0\0\0\0\0\0\0\0\x12\0\x67\0\x65\x6e\0\x65\0\x72\0\x61\x6c\0\0\0\0\0\0\0\0\0\0)
-            
-            [Icons]
-            theme=breeze-dark
-            
-            [SettingsWindow]
-            geometry=@ByteArray(\0\0\0\xff\0\0\0\xd8\0\0\1\xb8\0\0\0\xe8\0\0\1\x6f\0\0\1\xb7\0\0\0\0\0\0\0\0\0\0\0\0)
-            scheme_name=Custom
-            style_name=Fusion
-            
-            [StandardDialogs]
-            use_native_dialogs=false
-            EOL
-            
-            # Set Qt6 theme to Fusion and apply "darker" color scheme
-            mkdir -p ~/.config/qt6ct
-            cat <<EOL > ~/.config/qt6ct/qt6ct.conf
-            [Appearance]
-            color_scheme_path=
-            custom_palette=false
-            style=Fusion
-            
-            [Fonts]
-            fixed=@Variant(\0\0\0@\0\0\0\x12\0\x46\x61\x6e\x74\x61\x73\x79\0\0\0\0\0\0\0\0\0\0\0\x12\0\x66\0\x69\0\x78\x65\0\x64\0\0\0\0\0\0\0\0\0\0)
-            general=@Variant(\0\0\0@\0\0\0\x12\0\x46\x61\x6e\x74\x61\x73\x79\0\0\0\0\0\0\0\0\0\0\0\x12\0\x67\0\x65\0\x6e\0\x65\0\x72\0\x61\x6c\0\0\0\0\0\0\0\0\0\0)
-            
-            [Icons]
-            theme=breeze-dark
-            
-            [SettingsWindow]
-            geometry=@ByteArray(\0\0\0\xff\0\0\0\xd8\0\0\1\xb8\0\0\0\xe8\0\0\1\x6f\0\0\1\xb7\0\0\0\0\0\0\0\0\0\0\0\0)
-            scheme_name=Custom
-            style_name=Fusion
-            
-            [StandardDialogs]
-            use_native_dialogs=false
-            EOL
+        echo "Setting up Qt5 and Qt6 theme settings..."
+        mkdir -p ~/.config/{qt5ct,qt6ct}
+        cat <<EOF > ~/.config/qt5ct/qt5ct.conf
+[Appearance]
+color_scheme_path=
+custom_palette=false
+icon_theme=breeze
+standard_dialogs=default
+style=Adwaita
+EOF
+
+    cat <<EOF > ~/.config/qt6ct/qt6ct.conf
+[Appearance]
+color_scheme_path=
+custom_palette=false
+icon_theme=breeze
+standard_dialogs=default
+style=Adwaita
+EOF
+        echo "QT theming installed."
 
         # Install and set the Rofi theme
             echo "Installing and setting the Rofi theme..."
