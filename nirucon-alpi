@@ -220,7 +220,7 @@ if [[ "$confirm_install" == [Yy]* ]] || [[ -z "$confirm_install" ]]; then
     install_optional "Do you want to install Communication apps?" communication_pacman[@] communication_yay[@]
 
     # Step 5: Install custom grub theme
-    read -p "Do you want to install a custom grub theme 'nirucon-death'? [Y/n]: " choice
+    read -p "Install custom grub theme - nirucon-death? [Y/n]: " choice
     if [[ "$choice" == [Yy]* ]] || [[ -z "$choice" ]]; then
         echo "Installing custom grub theme..."
 
