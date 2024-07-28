@@ -6,7 +6,7 @@ echo -e "       _\n _ __ (_)_ __ _   _  ___ ___  _ ___\n| '_ \\| | '__| | | |/ _
 echo "Welcome to NIRUCON-ALPI - Nicklas Rudolfsson's post-install script of 'My Suckless Setup' for Arch Linux."
 echo "This is tailored for MY own needs (focus on noir theming and music and media production). Feel free to use and modify, but I disclaim all responsibility; proceed at your own risk!"
 echo "Contact me via: n@rudolfsson.net"
-echo "Script version: 2024-07-25.01"
+echo "Script version: 2024-07-28.01"
 echo ""
 
 # Confirmation to proceed with installation
