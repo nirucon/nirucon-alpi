@@ -402,30 +402,6 @@ EOF
         echo "Exiting script."
     fi
 
-        # QT
-
-        # Set Qt5 theme to Fusion and apply "darker" color scheme
-        echo "Setting up Qt5 and Qt6 theme settings..."
-        mkdir -p ~/.config/{qt5ct,qt6ct}
-        cat <<EOF > ~/.config/qt5ct/qt5ct.conf
-[Appearance]
-color_scheme_path=
-custom_palette=false
-icon_theme=breeze
-standard_dialogs=default
-style=Adwaita
-EOF
-
-    cat <<EOF > ~/.config/qt6ct/qt6ct.conf
-[Appearance]
-color_scheme_path=
-custom_palette=false
-icon_theme=breeze
-standard_dialogs=default
-style=Adwaita
-EOF
-        echo "QT theming installed."
-
         # Install and set the Rofi theme
             echo "Installing and setting the Rofi theme..."
             mkdir -p ~/.config/rofi
