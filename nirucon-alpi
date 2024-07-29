@@ -128,13 +128,29 @@ if [[ "$confirm_install" == [Yy]* ]] || [[ -z "$confirm_install" ]]; then
 
     echo "The following packages and applications will be installed to ensure the system functions as intended:"
     echo "From pacman: xorg-server xorg-xinit xorg-xrandr xorg-xsetroot noto-fonts noto-fonts-emoji lxappearance qt6ct breeze-icons pcmanfm arandr nitrogen picom openssh cmus scrot gnupg pass brightnessctl mpv dunst unzip nano alsa-utils pavucontrol xarchiver xclip htop curl libnotify jq bc"
-    echo "From aur: ttf-font-awesome ttf-mononoki-nerd maim xautolock rofi fastfetch timeshift-autosnap"
+    echo "From aur: ttf-font-awesome ttf-mononoki-nerd maim xautolock rofi fastfetch"
 
     # Install listed packages via pacman
     sudo pacman -S --needed --noconfirm xorg-server xorg-xinit xorg-xrandr xorg-xsetroot noto-fonts noto-fonts-emoji lxappearance qt6ct breeze-icons pcmanfm arandr nitrogen picom openssh cmus scrot gnupg pass brightnessctl mpv dunst unzip nano alsa-utils pavucontrol xarchiver xclip htop curl libnotify jq bc
 
     # Install listed packages via yay
-    yay -S --noconfirm ttf-font-awesome ttf-mononoki-nerd maim xautolock rofi fastfetch timeshift-autosnap
+    yay -S --noconfirm ttf-font-awesome ttf-mononoki-nerd maim xautolock rofi fastfetch
+
+    # Check if btrfs and if so install timeshift-autosnap
+    install_timeshift_if_btrfs() {
+        # Check if btrfs is being used on the system
+        if grep -q 'btrfs' /etc/fstab; then
+            echo "btrfs filesystem detected. Installing timeshift-autosnap..."
+    
+            # Install timeshift-autosnap using yay
+            yay -S --needed --noconfirm timeshift-autosnap
+        else
+            echo "No btrfs filesystem detected. Skipping timeshift-autosnap installation."
+        fi
+    }
+    
+    # Call the function at the appropriate place in your script
+    install_timeshift_if_btrfs
 
     # Step 4: Optional Applications Installation
 
