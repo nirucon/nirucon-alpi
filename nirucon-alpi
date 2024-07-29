@@ -310,3 +310,101 @@ if [[ "$choice" == [Yy]* ]] || [[ -z "$choice" ]]; then
     mkdir -p ~/.config/cmus/
     cp -f ~/Git/suckless-arch/.config/cmus/* ~/.config/cmus/
 fi
+
+# Step 6: Install Noir Themes and Icons
+echo "Step 7: Install Noir Themes and Icons"
+
+# Prompt user for GTK themes and icons installation
+read -r -p "Do you want to install the GTK theme and icons? [Y/n]: " gtk_response
+gtk_response=${gtk_response,,} # Convert to lowercase
+
+# Prompt user for Rofi theme installation
+read -r -p "Do you want to install the Rofi custom theme? [Y/n]: " rofi_response
+rofi_response=${rofi_response,,} # Convert to lowercase
+
+# Install GTK theme and icons if user agrees
+if [[ "$gtk_response" =~ ^(yes|y| ) ]] || [[ -z "$gtk_response" ]]; then
+    echo "Installing Equilux theme and Papirus Dark Grey icons..."
+
+    # Install Equilux theme
+    git clone https://github.com/ddnexus/equilux-theme
+    if [ -d "equilux-theme" ]; then
+        cd equilux-theme
+        sudo ./install.sh
+        cd ..
+        rm -rf equilux-theme
+        echo "Equilux theme installed successfully."
+    else
+        echo "Failed to clone Equilux theme repository. Please check your internet connection."
+        exit 1
+    fi
+
+    # Install Papirus Dark Grey icons
+    git clone https://github.com/Intika-KDE-Plasmoids/plasmoid-papirus-dark-grey-icon-theme
+    if [ -d "plasmoid-papirus-dark-grey-icon-theme" ]; then
+        sudo mkdir -p /usr/share/icons/Papirus-Dark-Grey
+        sudo cp -r plasmoid-papirus-dark-grey-icon-theme/Papirus-Dark-Grey/* /usr/share/icons/Papirus-Dark-Grey/
+        rm -rf plasmoid-papirus-dark-grey-icon-theme
+        echo "Papirus Dark Grey icons installed successfully."
+    else
+        echo "Failed to clone Papirus Dark Grey icons repository. Please check your internet connection."
+        exit 1
+    fi
+
+    # Set Equilux theme and Papirus Dark Grey icons as default using lxappearance
+    if command -v lxappearance >/dev/null 2>&1; then
+        mkdir -p ~/.config/gtk-3.0/
+        cat <<EOF > ~/.config/gtk-3.0/settings.ini
+[Settings]
+gtk-theme-name=Equilux
+gtk-icon-theme-name=Papirus-Dark-Grey
+EOF
+        echo "GTK theme and icons set successfully!"
+    else
+        echo "lxappearance is not installed. Please install it to set the theme and icons."
+    fi
+else
+    echo "Skipping GTK theme and icons installation."
+fi
+
+# Install Rofi theme if user agrees
+if [[ "$rofi_response" =~ ^(yes|y| ) ]] || [[ -z "$rofi_response" ]]; then
+    echo "Installing and setting the Rofi custom theme..."
+
+    sudo mkdir -p /usr/share/rofi/themes
+    mkdir -p ~/.config/rofi
+    
+    wget -O /tmp/nirucon.rasi https://raw.githubusercontent.com/nirucon/nirucon-rofi/master/nirucon.rasi
+    if [ $? -eq 0 ]; then
+        sudo mv -f /tmp/nirucon.rasi /usr/share/rofi/themes/
+        echo "Rofi theme downloaded and moved successfully."
+    else
+        echo "Failed to download Rofi theme. Please check the URL or your internet connection."
+        exit 1
+    fi
+    
+    wget -O /tmp/config.rasi https://raw.githubusercontent.com/nirucon/nirucon-rofi/master/config.rasi
+    if [ $? -eq 0 ]; then
+        mv -f /tmp/config.rasi ~/.config/rofi/config.rasi
+        echo "Rofi default configuration downloaded and set successfully."
+    else
+        echo "Failed to download default Rofi configuration. Please check the URL or your internet connection."
+        exit 1
+    fi
+else
+    echo "Skipping Rofi custom theme installation."
+fi
+
+# Final clean up
+echo "Cleaning up temporary files..."
+rm -fr ~/Git/dunstrc ~/Git/nirubar-dwm ~/Git/suckless-arch ~/Git/nirucon-death-grubtheme
+echo "All cloned and downloaded files in ~/Git have been deleted, except for the nirucon-alpi directory. Check for new versions of the script at https://github.com/nirucon/nirucon-alpi"
+
+echo "NIRUCON-ALPI Arch Linux Post Install Script Completed - NOW BE CREATIVE!"
+
+else
+    echo "Too bad! Maybe another time ;)"
+
+    # Exit script
+    exit 0
+fi
