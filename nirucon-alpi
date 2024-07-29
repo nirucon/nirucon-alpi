@@ -432,11 +432,11 @@ EOF
         sudo mv /tmp/nirucon.rasi /usr/share/rofi/themes/
     
         # Download the default configuration file
-        wget -O /tmp/default.rasi https://raw.githubusercontent.com/nirucon/nirucon-rofi/master/default.rasi
+        wget -O /tmp/default.rasi https://raw.githubusercontent.com/nirucon/nirucon-rofi/master/config.rasi
         if [ $? -eq 0 ]; then
     
             # Copy the default theme to the user's config directory
-            mv /tmp/default.rasi ~/.config/rofi/config.rasi
+            mv /tmp/config.rasi ~/.config/rofi/config.rasi
     
             echo "Rofi theme installed and set to default."
         else
