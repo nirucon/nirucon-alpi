@@ -405,7 +405,7 @@ EOF
         # Install and set the Rofi theme
             echo "Installing and setting the Rofi theme..."
             mkdir -p ~/.config/rofi
-            wget -O ~/.config/rofi/config.rasi https://raw.githubusercontent.com/Avasz/rofi-themes-avasz/master/darker-than-black/configs/darker-than-black_v2.rasi
+            wget -O ~/.config/rofi/config.rasi https://github.com/nirucon/nirucon-rofi/blob/main/nirucon.rasi
             if [ $? -eq 0 ]; then
                 echo "Rofi theme installed and set."
     else
