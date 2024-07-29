@@ -434,10 +434,6 @@ EOF
         # Download the default configuration file
         wget -O /tmp/default.rasi https://raw.githubusercontent.com/nirucon/nirucon-rofi/master/default.rasi
         if [ $? -eq 0 ]; then
-            # Ensure the configuration directory exists
-            if [ ! -d ~/.config/rofi ]; then
-                mkdir -p ~/.config/rofi
-            fi
     
             # Copy the default theme to the user's config directory
             mv /tmp/default.rasi ~/.config/rofi/config.rasi
