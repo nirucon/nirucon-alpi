@@ -418,14 +418,25 @@ EOF
         echo "Exiting script."
     fi
 
-        # Install and set the Rofi theme
-            echo "Installing and setting the Rofi theme..."
-            mkdir -p ~/.config/rofi
-            wget -O ~/.config/rofi/config.rasi https://raw.githubusercontent.com/Avasz/rofi-themes-avasz/master/darker-than-black/configs/darker-than-black_v2.rasi
-            if [ $? -eq 0 ]; then
-                echo "Rofi theme installed and set."
+    # Install and set the Rofi theme
+    echo "Installing and setting the Rofi theme nirucon.rasi..."
+    
+    # Create directories if they don't exist
+    sudo mkdir -p /usr/share/rofi/themes
+    mkdir -p ~/.config/rofi
+    
+    # Download the theme
+    wget -O /tmp/nirucon.rasi https://raw.githubusercontent.com/nirucon/nirucon-rofi/master/nirucon.rasi
+    if [ $? -eq 0 ]; then
+        # Move the downloaded theme to the correct directory
+        sudo mv /tmp/nirucon.rasi /usr/share/rofi/themes/
+    
+        # Set the default theme in the Rofi config
+        echo 'rofi.theme: /usr/share/rofi/themes/nirucon.rasi' > ~/.config/rofi/config.rasi
+    
+        echo "Rofi theme installed and set to nirucon."
     else
-            echo "Failed to download Rofi theme. Please check the URL or your internet connection."
+        echo "Failed to download Rofi theme. Please check the URL or your internet connection."
     fi
 
     # Final clean up
