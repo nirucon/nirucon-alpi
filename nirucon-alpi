@@ -400,11 +400,5 @@ echo "Cleaning up temporary files..."
 rm -fr ~/Git/dunstrc ~/Git/nirubar-dwm ~/Git/suckless-arch ~/Git/nirucon-death-grubtheme
 echo "All cloned and downloaded files in ~/Git have been deleted, except for the nirucon-alpi directory. Check for new versions of the script at https://github.com/nirucon/nirucon-alpi"
 
+# DONE
 echo "NIRUCON-ALPI Arch Linux Post Install Script Completed - NOW BE CREATIVE!"
-
-else
-    echo "Too bad! Maybe another time ;)"
-
-    # Exit script
-    exit 0
-fi
