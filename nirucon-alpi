@@ -419,7 +419,7 @@ EOF
     fi
 
     # Install and set the Rofi theme
-    echo "Installing and setting the rofi theme nirucon.rasi ..."
+    echo "Installing and setting the Rofi theme nirucon.rasi ..."
     
     # Create directories if they don't exist
     sudo mkdir -p /usr/share/rofi/themes
@@ -428,22 +428,22 @@ EOF
     # Download the theme
     wget -O /tmp/nirucon.rasi https://raw.githubusercontent.com/nirucon/nirucon-rofi/master/nirucon.rasi
     if [ $? -eq 0 ]; then
-        # Move the downloaded theme to the correct directory
-        sudo mv /tmp/nirucon.rasi /usr/share/rofi/themes/
-    
-        # Download the default configuration file
-        wget -O /tmp/config.rasi https://raw.githubusercontent.com/nirucon/nirucon-rofi/master/config.rasi
-        if [ $? -eq 0 ]; then
-    
-            # Copy the default theme to the user's config directory
-            mv /tmp/config.rasi ~/.config/rofi/config.rasi
-    
-            echo "Rofi theme installed and set to default."
-        else
-            echo "Failed to download default Rofi configuration. Please check the URL or your internet connection."
-        fi
+        # Move the downloaded theme to the correct directory, overwriting if it exists
+        sudo mv -f /tmp/nirucon.rasi /usr/share/rofi/themes/
     else
         echo "Failed to download Rofi theme. Please check the URL or your internet connection."
+        exit 1
+    fi
+    
+    # Download the default configuration file
+    wget -O /tmp/config.rasi https://raw.githubusercontent.com/nirucon/nirucon-rofi/master/config.rasi
+    if [ $? -eq 0 ]; then
+        # Copy the default theme to the user's config directory, overwriting if it exists
+        mv -f /tmp/config.rasi ~/.config/rofi/config.rasi
+        echo "Rofi theme installed and set to default."
+    else
+        echo "Failed to download default Rofi configuration. Please check the URL or your internet connection."
+        exit 1
     fi
 
     # Final clean up
