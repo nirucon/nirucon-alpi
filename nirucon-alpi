@@ -167,8 +167,10 @@ install_optional() {
             echo "Installing packages via yay: ${packages_yay[@]}"
             yay -S --noconfirm "${packages_yay[@]}"
         fi
+        return 0
     else
         echo "Skipping installation for this category."
+        return 1
     fi
 }
 
@@ -190,10 +192,8 @@ install_optional "Do you want to install Nextcloud client?" nextcloud_sync_pacma
 # DAW Apps
 daw_apps_pacman=()
 daw_apps_yay=(reaper qpwgraph yabridge yabridgectl realtime-privileges)
-install_optional "Do you want to install DAW apps?" daw_apps_pacman[@] daw_apps_yay[@]
-
-# DAW Apps configuration if installed
-if [[ "${daw_apps_yay[@]}" =~ reaper ]]; then
+if install_optional "Do you want to install DAW apps?" daw_apps_pacman[@] daw_apps_yay[@]; then
+    # DAW Apps configuration if DAW apps are installed
     if command -v pipewire &> /dev/null; then
         echo "Configuring Pipewire latency scripts..."
         sudo bash -c 'echo "PIPEWIRE_LATENCY=128/48000 reaper" > /usr/local/bin/reaper-pipewire-latency-128'
