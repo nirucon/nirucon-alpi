@@ -180,18 +180,18 @@ if [[ "$confirm_install" == [Yy]* ]] || [[ -z "$confirm_install" ]]; then
             echo "No packages selected."
         fi
     
-        read -p "Are you sure you want to install these? (yes/no/change) [yes]: " final_choice
-        final_choice=${final_choice:-yes}  # Default to "yes" if no input
-        if [[ "$final_choice" == "yes" ]]; then
+        read -p "So are you sure you want to install these? [Y/n/change]: " final_choice
+        final_choice=${final_choice:-yes}  # Default to "Y" if no input
+        if [[ "$final_choice" == "Y" ]]; then
             break
-        elif [[ "$final_choice" == "no" ]]; then
+        elif [[ "$final_choice" == "n" ]]; then
             exit 0
         elif [[ "$final_choice" == "change" ]]; then
             pacman_packages=()
             yay_packages=()
             continue
         else
-            echo "Invalid choice, please enter 'yes', 'no', or 'change'."
+            echo "Invalid choice, please enter 'Y', 'n', or 'change'."
         fi
     done
     
