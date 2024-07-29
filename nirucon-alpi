@@ -402,14 +402,14 @@ EOF
         echo "Exiting script."
     fi
 
-        # Install and set the Rofi theme
-            echo "Installing and setting the Rofi theme..."
-            mkdir -p ~/.config/rofi
-            wget -O ~/.config/rofi/config.rasi https://github.com/nirucon/nirucon-rofi/blob/main/nirucon.rasi
-            if [ $? -eq 0 ]; then
-                echo "Rofi theme installed and set."
+    # Install and set the Rofi theme
+    echo "Installing and setting the Rofi theme..."
+    mkdir -p ~/.config/rofi
+    wget -O ~/.config/rofi/nirucon.rasi https://raw.githubusercontent.com/nirucon/nirucon-rofi/main/nirucon.rasi
+    if [ $? -eq 0 ]; then
+        echo "Rofi theme installed and set."
     else
-            echo "Failed to download Rofi theme. Please check the URL or your internet connection."
+        echo "Failed to download Rofi theme. Please check the URL or your internet connection."
     fi
 
     # Final clean up
