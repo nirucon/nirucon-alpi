@@ -1,3 +1,4 @@
+
 #!/bin/bash
 
 # Welcome Message
@@ -6,7 +7,7 @@ echo -e "       _\n _ __ (_)_ __ _   _  ___ ___  _ ___\n| '_ \\| | '__| | | |/ _
 echo "Welcome to NIRUCON-ALPI - Nicklas Rudolfsson's post-install script of 'My Suckless Setup' for Arch Linux."
 echo "This is tailored for MY own needs (focus on noir theming and music and media production). Feel free to use and modify, but I disclaim all responsibility; proceed at your own risk!"
 echo "Contact me via: n@rudolfsson.net"
-echo "Script version: 2024-07-28.01"
+echo "Script version: 2024-07-30.01"
 echo ""
 
 # Confirmation to proceed with installation
@@ -39,7 +40,7 @@ sudo pacman -S --needed --noconfirm base-devel
 
 # Install yay
 if ! command -v yay &> /dev/null; then
-    echo "Installing yay..."
+    echo "Installing AUR helper yay..."
     cd /opt
     sudo git clone https://aur.archlinux.org/yay.git
     sudo chown -R $(whoami):$(whoami) yay
@@ -120,14 +121,14 @@ sudo pacman -S --needed --noconfirm nano vim
 
 # Clone necessary files
 echo "Creating ~/Git (if it does not exist) and cloning the nirucon suckless-arch repository..."
-mkdir -p ~/Git && git clone https://github.com/nirucon/suckless-arch ~/Git/suckless-arch
+mkdir -p ~/Git && git clone https://github.com/nirucon/nirucon-suckless-arch ~/Git/nirucon-suckless-arch
 
 echo "The following packages and applications will be installed to ensure the system functions as intended:"
-echo "From pacman: xorg-server xorg-xinit xorg-xrandr xorg-xsetroot noto-fonts noto-fonts-emoji lxappearance qt6ct breeze-icons pcmanfm arandr nitrogen picom openssh cmus scrot gnupg pass brightnessctl mpv dunst unzip nano alsa-utils pavucontrol xarchiver xclip htop curl libnotify jq bc"
+echo "From pacman: xorg-server xorg-xinit xorg-xrandr xorg-xsetroot noto-fonts noto-fonts-emoji playerctl lxappearance qt6ct breeze-icons pcmanfm arandr nitrogen picom openssh cmus scrot gnupg pass brightnessctl mpv dunst unzip nano alsa-utils pavucontrol xarchiver xclip htop curl libnotify jq bc"
 echo "From aur: ttf-font-awesome ttf-mononoki-nerd maim xautolock rofi fastfetch"
 
 # Install listed packages via pacman
-sudo pacman -S --needed --noconfirm xorg-server xorg-xinit xorg-xrandr xorg-xsetroot noto-fonts noto-fonts-emoji lxappearance qt6ct breeze-icons pcmanfm arandr nitrogen picom openssh cmus scrot gnupg pass brightnessctl mpv dunst unzip nano alsa-utils pavucontrol xarchiver xclip htop curl libnotify jq bc
+sudo pacman -S --needed --noconfirm xorg-server xorg-xinit xorg-xrandr xorg-xsetroot noto-fonts noto-fonts-emoji playerctl lxappearance qt6ct breeze-icons pcmanfm arandr nitrogen picom openssh cmus scrot gnupg pass brightnessctl mpv dunst unzip nano alsa-utils pavucontrol xarchiver xclip htop curl libnotify jq bc
 
 # Install listed packages via yay
 yay -S --noconfirm ttf-font-awesome ttf-mononoki-nerd maim xautolock rofi fastfetch
@@ -144,7 +145,7 @@ install_timeshift_if_btrfs() {
 
 install_timeshift_if_btrfs
 
-# Section 4: Optional Applications Installation
+# Optional installations
 
 echo "Now you will go through a series of options for various categories of applications that can be installed based on your needs."
 
@@ -228,7 +229,7 @@ communication_pacman=(thunderbird irssi signal-desktop)
 communication_yay=()
 install_optional "Do you want to install Communication apps?" communication_pacman[@] communication_yay[@]
 
-# Section 5: Suckless Setup
+# Suckless Setup
 
 read -p "Do you want to install Suckless dwm, dmenu, st, slock, nirubar-dwm, dmenu scripts, my dot-files and some related stuff? [Y/n]: " choice
 if [[ "$choice" == [Yy]* ]] || [[ -z "$choice" ]]; then
@@ -245,8 +246,9 @@ if [[ "$choice" == [Yy]* ]] || [[ -z "$choice" ]]; then
     git clone https://github.com/nirucon/dunstrc ~/Git/dunstrc
 
     # Copy Suckless related files and overwrite existing files
-    cp -rf ~/Git/nirubar-dwm/ ~/Git/suckless-arch/dmenu ~/Git/suckless-arch/st ~/Git/suckless-arch/slock ~/Git/suckless-arch/dwm ~/.config/suckless
+    cp -rf ~/Git/nirubar-dwm/ ~/Git/nirucon-suckless-arch/dmenu ~/Git/nirucon-suckless-arch/st ~/Git/nirucon-suckless-arch/slock ~/Git/nirucon-suckless-arch/dwm ~/.config/suckless
     cp -rf ~/Git/dunstrc/* ~/.config/dunst
+    cp -fr ~/Git/nirucon-suckless-arch/nirucon-greeter ~/.config/
 
     # Compile and install Suckless software
     sudo make -C ~/.config/suckless/dwm clean install
@@ -255,12 +257,12 @@ if [[ "$choice" == [Yy]* ]] || [[ -z "$choice" ]]; then
     sudo make -C ~/.config/suckless/st clean install
 
     # Copy configurations and dot files, overwriting existing files
-    cp -f ~/Git/suckless-arch/.xinitrc ~/
-    cp -f ~/Git/suckless-arch/autostart.sh ~/.dwm
-    cp -f ~/Git/suckless-arch/.bashrc ~/
-    cp -f ~/Git/suckless-arch/.bash_aliases ~/
-    sudo cp -f ~/Git/suckless-arch/issue /etc/
-    chmod +x ~/.dwm/autostart.sh ~/.config/suckless/nirubar-dwm/nirubar-dwm
+    cp -f ~/Git/nirucon-suckless-arch/.xinitrc ~/
+    cp -f ~/Git/nirucon-suckless-arch/autostart.sh ~/.dwm
+    cp -f ~/Git/nirucon-suckless-arch/.bashrc ~/
+    cp -f ~/Git/nirucon-suckless-arch/.bash_aliases ~/
+    sudo cp -f ~/Git/nirucon-suckless-arch/issue /etc/
+    chmod +x ~/.dwm/autostart.sh ~/.config/suckless/nirubar-dwm/nirubar-dwm ~/.config/nirucon-greeter/greeter
 
     # Clone and install the 'sverigesradio-dmenu' script
     echo "Cloning and installing the 'sverigesradio-dmenu' script..."
@@ -339,7 +341,7 @@ else
     echo "Skipping custom grub theme installation."
 fi
 
-# Step 6: Install Noir Themes and Icons
+# Install Noir Themes and Icons
 echo "Install Noir Themes and Icons"
 
 # Prompt user for GTK themes and icons installation
