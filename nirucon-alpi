@@ -1,4 +1,3 @@
-
 #!/bin/bash
 
 # Welcome Message
@@ -13,22 +12,22 @@ echo ""
 # Confirmation to proceed with installation
 read -p "Are you sure you want to continue with the installation? [Y/n]: " confirm_install
 if [[ "$confirm_install" != [Nn]* ]]; then
-    echo "Alright, let's have some fun! Keep an eye on the screen as you will need to answer some Yes or No questions... Let's go!"
+	echo "Alright, let's have some fun! Keep an eye on the screen as you will need to answer some Yes or No questions... Let's go!"
 else
-    echo "Too bad! Maybe another time ;)"
-    exit 0
+	echo "Too bad! Maybe another time ;)"
+	exit 0
 fi
 
 # Install git, wget, and yay (AUR helper) if not already installed
 echo "Checking and installing (if needed) git, wget, and AUR helper yay along with dependencies..."
 
 install_if_needed() {
-    if ! command -v "$1" &> /dev/null; then
-        echo "Installing $1..."
-        sudo pacman -S --needed --noconfirm "$1"
-    else
-        echo "$1 is already installed"
-    fi
+	if ! command -v "$1" &>/dev/null; then
+		echo "Installing $1..."
+		sudo pacman -S --needed --noconfirm "$1"
+	else
+		echo "$1 is already installed"
+	fi
 }
 
 install_if_needed "git"
@@ -39,15 +38,15 @@ echo "Installing base-devel..."
 sudo pacman -S --needed --noconfirm base-devel
 
 # Install yay
-if ! command -v yay &> /dev/null; then
-    echo "Installing AUR helper yay..."
-    cd /opt
-    sudo git clone https://aur.archlinux.org/yay.git
-    sudo chown -R $(whoami):$(whoami) yay
-    cd yay
-    makepkg -si
+if ! command -v yay &>/dev/null; then
+	echo "Installing AUR helper yay..."
+	cd /opt
+	sudo git clone https://aur.archlinux.org/yay.git
+	sudo chown -R $(whoami):$(whoami) yay
+	cd yay
+	makepkg -si
 else
-    echo "yay is already installed"
+	echo "yay is already installed"
 fi
 
 # System optimization and update
@@ -60,59 +59,59 @@ echo "5. Update the system"
 
 read -p "Do you want to optimize and update the system before installing additional applications? [Y/n]: " optimize_choice
 if [[ "$optimize_choice" != [Nn]* ]]; then
-    echo "Optimizing system..."
+	echo "Optimizing system..."
 
-    # Enable parallel downloads, Color, ILoveCandy, and VerbosePkgLists
-    echo "Enabling parallel downloads, Color, ILoveCandy, and VerbosePkgLists in pacman.conf..."
+	# Enable parallel downloads, Color, ILoveCandy, and VerbosePkgLists
+	echo "Enabling parallel downloads, Color, ILoveCandy, and VerbosePkgLists in pacman.conf..."
 
-    # Define lines to be ensured in pacman.conf
-    declare -A lines=(
-      ["ParallelDownloads = 5"]="#ParallelDownloads = 5"
-      ["Color"]="#Color"
-      ["VerbosePkgLists"]="#VerbosePkgLists"
-    )
+	# Define lines to be ensured in pacman.conf
+	declare -A lines=(
+		["ParallelDownloads = 5"]="#ParallelDownloads = 5"
+		["Color"]="#Color"
+		["VerbosePkgLists"]="#VerbosePkgLists"
+	)
 
-    file="/etc/pacman.conf"
+	file="/etc/pacman.conf"
 
-    ensure_line() {
-      local line="$1"
-      local comment_line="$2"
-      local section="$3"
+	ensure_line() {
+		local line="$1"
+		local comment_line="$2"
+		local section="$3"
 
-      if grep -q "\[$section\]" "$file"; then
-        if grep -q "^$line" "$file"; then
-          echo "Line '$line' already present."
-        elif grep -q "^$comment_line" "$file"; then
-          echo "Uncommenting '$comment_line' to '$line'."
-          sudo sed -i "s/^$comment_line/$line/" "$file"
-        else
-          echo "Adding '$line' to the section [$section]."
-          sudo sed -i "/\[$section\]/a $line" "$file"
-        fi
-      else
-        echo "Section [$section] not found. Adding section and line."
-        echo -e "\n[$section]\n$line" | sudo tee -a "$file" > /dev/null
-      fi
-    }
+		if grep -q "\[$section\]" "$file"; then
+			if grep -q "^$line" "$file"; then
+				echo "Line '$line' already present."
+			elif grep -q "^$comment_line" "$file"; then
+				echo "Uncommenting '$comment_line' to '$line'."
+				sudo sed -i "s/^$comment_line/$line/" "$file"
+			else
+				echo "Adding '$line' to the section [$section]."
+				sudo sed -i "/\[$section\]/a $line" "$file"
+			fi
+		else
+			echo "Section [$section] not found. Adding section and line."
+			echo -e "\n[$section]\n$line" | sudo tee -a "$file" >/dev/null
+		fi
+	}
 
-    # Ensure ILoveCandy in [options] section
-    ensure_line "ILoveCandy" "#ILoveCandy" "options"
+	# Ensure ILoveCandy in [options] section
+	ensure_line "ILoveCandy" "#ILoveCandy" "options"
 
-    # Uncomment or add other lines (not section-specific)
-    for line in "${!lines[@]}"; do
-      ensure_line "$line" "${lines[$line]}" "options"
-    done
+	# Uncomment or add other lines (not section-specific)
+	for line in "${!lines[@]}"; do
+		ensure_line "$line" "${lines[$line]}" "options"
+	done
 
-    echo "pacman.conf configuration update complete."
+	echo "pacman.conf configuration update complete."
 
-    # Install pacman-contrib and enable paccache.timer
-    echo "Installing pacman-contrib and enabling paccache.timer for automatic package cache cleaning..."
-    sudo pacman -S --needed --noconfirm pacman-contrib
-    sudo systemctl enable paccache.timer
+	# Install pacman-contrib and enable paccache.timer
+	echo "Installing pacman-contrib and enabling paccache.timer for automatic package cache cleaning..."
+	sudo pacman -S --needed --noconfirm pacman-contrib
+	sudo systemctl enable paccache.timer
 
-    # Update the system
-    echo "Updating the system..."
-    sudo pacman -Syu
+	# Update the system
+	echo "Updating the system..."
+	sudo pacman -Syu
 fi
 
 # Install essential packages
@@ -135,12 +134,12 @@ yay -S --noconfirm ttf-font-awesome ttf-mononoki-nerd maim xautolock rofi fastfe
 
 # Check if btrfs and install timeshift-autosnap
 install_timeshift_if_btrfs() {
-    if grep -q 'btrfs' /etc/fstab; then
-        echo "btrfs filesystem detected. Installing timeshift-autosnap..."
-        yay -S --needed --noconfirm timeshift-autosnap
-    else
-        echo "No btrfs filesystem detected. Skipping timeshift-autosnap installation."
-    fi
+	if grep -q 'btrfs' /etc/fstab; then
+		echo "btrfs filesystem detected. Installing timeshift-autosnap..."
+		yay -S --needed --noconfirm timeshift-autosnap
+	else
+		echo "No btrfs filesystem detected. Skipping timeshift-autosnap installation."
+	fi
 }
 
 install_timeshift_if_btrfs
@@ -151,28 +150,28 @@ echo "Now you will go through a series of options for various categories of appl
 
 # Function to handle user choices for optional packages
 install_optional() {
-    local prompt="$1"
-    local packages_pacman=("${!2}")
-    local packages_yay=("${!3}")
-    local install_response
-    
-    read -p "$prompt [Y/n]: " install_response
-    install_response="${install_response,,}" # Convert to lowercase
-    
-    if [[ "$install_response" == "y" ]] || [[ -z "$install_response" ]]; then
-        if [ ${#packages_pacman[@]} -ne 0 ]; then
-            echo "Installing packages via pacman: ${packages_pacman[@]}"
-            sudo pacman -S --needed --noconfirm "${packages_pacman[@]}"
-        fi
-        if [ ${#packages_yay[@]} -ne 0 ]; then
-            echo "Installing packages via yay: ${packages_yay[@]}"
-            yay -S --noconfirm "${packages_yay[@]}"
-        fi
-        return 0
-    else
-        echo "Skipping installation for this option."
-        return 1
-    fi
+	local prompt="$1"
+	local packages_pacman=("${!2}")
+	local packages_yay=("${!3}")
+	local install_response
+
+	read -p "$prompt [Y/n]: " install_response
+	install_response="${install_response,,}" # Convert to lowercase
+
+	if [[ "$install_response" == "y" ]] || [[ -z "$install_response" ]]; then
+		if [ ${#packages_pacman[@]} -ne 0 ]; then
+			echo "Installing packages via pacman: ${packages_pacman[@]}"
+			sudo pacman -S --needed --noconfirm "${packages_pacman[@]}"
+		fi
+		if [ ${#packages_yay[@]} -ne 0 ]; then
+			echo "Installing packages via yay: ${packages_yay[@]}"
+			yay -S --noconfirm "${packages_yay[@]}"
+		fi
+		return 0
+	else
+		echo "Skipping installation for this option."
+		return 1
+	fi
 }
 
 # Internet browser
@@ -194,19 +193,19 @@ install_optional "Do you want to install Nextcloud client?" nextcloud_sync_pacma
 daw_apps_pacman=()
 daw_apps_yay=(reaper qpwgraph yabridge yabridgectl realtime-privileges)
 if install_optional "Do you want to install DAW apps?" daw_apps_pacman[@] daw_apps_yay[@]; then
-    # DAW Apps configuration if DAW apps are installed
-    if command -v pipewire &> /dev/null; then
-        echo "Configuring Pipewire latency scripts..."
-        sudo bash -c 'echo "PIPEWIRE_LATENCY=128/48000 reaper" > /usr/local/bin/reaper-pipewire-latency-128'
-        sudo bash -c 'echo "PIPEWIRE_LATENCY=256/48000 reaper" > /usr/local/bin/reaper-pipewire-latency-256'
-        sudo chmod +x /usr/local/bin/reaper-pipewire-latency-128 /usr/local/bin/reaper-pipewire-latency-256
-    fi
-    
-    echo "Configuring realtime-privileges..."
-    if ! grep -q '^realtime:' /etc/group; then
-        sudo groupadd realtime
-    fi
-    sudo usermod -a -G realtime "$USER"
+	# DAW Apps configuration if DAW apps are installed
+	if command -v pipewire &>/dev/null; then
+		echo "Configuring Pipewire latency scripts..."
+		sudo bash -c 'echo "PIPEWIRE_LATENCY=128/48000 reaper" > /usr/local/bin/reaper-pipewire-latency-128'
+		sudo bash -c 'echo "PIPEWIRE_LATENCY=256/48000 reaper" > /usr/local/bin/reaper-pipewire-latency-256'
+		sudo chmod +x /usr/local/bin/reaper-pipewire-latency-128 /usr/local/bin/reaper-pipewire-latency-256
+	fi
+
+	echo "Configuring realtime-privileges..."
+	if ! grep -q '^realtime:' /etc/group; then
+		sudo groupadd realtime
+	fi
+	sudo usermod -a -G realtime "$USER"
 fi
 
 # DAW Plugins
@@ -233,85 +232,85 @@ install_optional "Do you want to install Communication apps?" communication_pacm
 
 read -p "Do you want to install Suckless dwm, dmenu, st, slock, nirubar-dwm, dmenu scripts, my dot-files and some related stuff? [Y/n]: " choice
 if [[ "$choice" == [Yy]* ]] || [[ -z "$choice" ]]; then
-    echo "Installing Suckless etc..."
+	echo "Installing Suckless etc..."
 
-    # Create necessary directories
-    mkdir -p ~/.config/suckless ~/.dwm ~/Music ~/Downloads ~/Pictures ~/Videos ~/Temp ~/.config/dunst
+	# Create necessary directories
+	mkdir -p ~/.config/suckless ~/.dwm ~/Music ~/Downloads ~/Pictures ~/Videos ~/Temp ~/.config/dunst
 
-    # Clone and overwrite the existing repositories
-    rm -rf ~/Git/nirubar-dwm
-    git clone https://github.com/nirucon/nirubar-dwm ~/Git/nirubar-dwm
+	# Clone and overwrite the existing repositories
+	rm -rf ~/Git/nirubar-dwm
+	git clone https://github.com/nirucon/nirubar-dwm ~/Git/nirubar-dwm
 
-    rm -rf ~/Git/dunstrc
-    git clone https://github.com/nirucon/dunstrc ~/Git/dunstrc
+	rm -rf ~/Git/dunstrc
+	git clone https://github.com/nirucon/dunstrc ~/Git/dunstrc
 
-    # Copy Suckless related files and overwrite existing files
-    cp -rf ~/Git/nirubar-dwm/ ~/Git/nirucon-suckless-arch/dmenu ~/Git/nirucon-suckless-arch/st ~/Git/nirucon-suckless-arch/slock ~/Git/nirucon-suckless-arch/dwm ~/.config/suckless
-    cp -rf ~/Git/dunstrc/* ~/.config/dunst
-    cp -fr ~/Git/nirucon-suckless-arch/nirucon-greeter ~/.config/
+	# Copy Suckless related files and overwrite existing files
+	cp -rf ~/Git/nirubar-dwm/ ~/Git/nirucon-suckless-arch/dmenu ~/Git/nirucon-suckless-arch/st ~/Git/nirucon-suckless-arch/slock ~/Git/nirucon-suckless-arch/dwm ~/.config/suckless
+	cp -rf ~/Git/dunstrc/* ~/.config/dunst
+	cp -fr ~/Git/nirucon-suckless-arch/nirucon-greeter ~/.config/
 
-    # Compile and install Suckless software
-    sudo make -C ~/.config/suckless/dwm clean install
-    sudo make -C ~/.config/suckless/dmenu clean install
-    sudo make -C ~/.config/suckless/slock clean install
-    sudo make -C ~/.config/suckless/st clean install
+	# Compile and install Suckless software
+	sudo make -C ~/.config/suckless/dwm clean install
+	sudo make -C ~/.config/suckless/dmenu clean install
+	sudo make -C ~/.config/suckless/slock clean install
+	sudo make -C ~/.config/suckless/st clean install
 
-    # Copy configurations and dot files, overwriting existing files
-    cp -f ~/Git/nirucon-suckless-arch/.xinitrc ~/
-    cp -f ~/Git/nirucon-suckless-arch/autostart.sh ~/.dwm
-    cp -f ~/Git/nirucon-suckless-arch/.bashrc ~/
-    cp -f ~/Git/nirucon-suckless-arch/.bash_aliases ~/
-    sudo cp -f ~/Git/nirucon-suckless-arch/issue /etc/
-    chmod +x ~/.dwm/autostart.sh ~/.config/suckless/nirubar-dwm/nirubar-dwm ~/.config/nirucon-greeter/greeter
+	# Copy configurations and dot files, overwriting existing files
+	cp -f ~/Git/nirucon-suckless-arch/.xinitrc ~/
+	cp -f ~/Git/nirucon-suckless-arch/autostart.sh ~/.dwm
+	cp -f ~/Git/nirucon-suckless-arch/.bashrc ~/
+	cp -f ~/Git/nirucon-suckless-arch/.bash_aliases ~/
+	sudo cp -f ~/Git/nirucon-suckless-arch/issue /etc/
+	chmod +x ~/.dwm/autostart.sh ~/.config/suckless/nirubar-dwm/nirubar-dwm ~/.config/nirucon-greeter/greeter
 
-    # Clone and install the 'sverigesradio-dmenu' script
-    echo "Cloning and installing the 'sverigesradio-dmenu' script..."
-    rm -rf ~/Git/sverigesradio-dmenu
-    git clone https://github.com/nirucon/sverigesradio-dmenu ~/Git/sverigesradio-dmenu
-    cd ~/Git/sverigesradio-dmenu
-    sudo cp -f sverigesradio-dmenu /usr/local/bin/
-    sudo chmod +x /usr/local/bin/sverigesradio-dmenu
-    cd ~
-    rm -rf ~/Git/sverigesradio-dmenu
-    echo "The 'sverigesradio-dmenu' script has been cloned, installed to /usr/local/bin, made executable, and the repository has been removed."
+	# Clone and install the 'sverigesradio-dmenu' script
+	echo "Cloning and installing the 'sverigesradio-dmenu' script..."
+	rm -rf ~/Git/sverigesradio-dmenu
+	git clone https://github.com/nirucon/sverigesradio-dmenu ~/Git/sverigesradio-dmenu
+	cd ~/Git/sverigesradio-dmenu
+	sudo cp -f sverigesradio-dmenu /usr/local/bin/
+	sudo chmod +x /usr/local/bin/sverigesradio-dmenu
+	cd ~
+	rm -rf ~/Git/sverigesradio-dmenu
+	echo "The 'sverigesradio-dmenu' script has been cloned, installed to /usr/local/bin, made executable, and the repository has been removed."
 
-    # Clone and install the 'srpod-dmenu' script
-    echo "Cloning and installing the 'srpod-dmenu' script..."
-    rm -rf ~/Git/srpod-dmenu
-    git clone https://github.com/nirucon/srpod-dmenu ~/Git/srpod-dmenu
-    cd ~/Git/srpod-dmenu
-    sudo cp -f srpod-dmenu /usr/local/bin/
-    sudo chmod +x /usr/local/bin/srpod-dmenu
-    cd ~
-    rm -rf ~/Git/srpod-dmenu
-    echo "The 'srpod-dmenu' script has been cloned, installed to /usr/local/bin, made executable, and the repository has been removed."
+	# Clone and install the 'srpod-dmenu' script
+	echo "Cloning and installing the 'srpod-dmenu' script..."
+	rm -rf ~/Git/srpod-dmenu
+	git clone https://github.com/nirucon/srpod-dmenu ~/Git/srpod-dmenu
+	cd ~/Git/srpod-dmenu
+	sudo cp -f srpod-dmenu /usr/local/bin/
+	sudo chmod +x /usr/local/bin/srpod-dmenu
+	cd ~
+	rm -rf ~/Git/srpod-dmenu
+	echo "The 'srpod-dmenu' script has been cloned, installed to /usr/local/bin, made executable, and the repository has been removed."
 
-    # Install dwmexit-dmenu script
-    echo "Installing dwmexit-dmenu script..."
-    rm -rf ~/Git/dwmexit-dmenu
-    git clone https://github.com/nirucon/dwmexit-dmenu ~/Git/dwmexit-dmenu
-    cd ~/Git/dwmexit-dmenu
-    sudo cp -f dwmexit-dmenu /usr/local/bin/
-    sudo chmod +x /usr/local/bin/dwmexit-dmenu
-    cd ~
-    rm -rf ~/Git/dwmexit-dmenu
-    echo "The 'dwmexit-dmenu' script has been installed and the repository has been removed."
+	# Install dwmexit-dmenu script
+	echo "Installing dwmexit-dmenu script..."
+	rm -rf ~/Git/dwmexit-dmenu
+	git clone https://github.com/nirucon/dwmexit-dmenu ~/Git/dwmexit-dmenu
+	cd ~/Git/dwmexit-dmenu
+	sudo cp -f dwmexit-dmenu /usr/local/bin/
+	sudo chmod +x /usr/local/bin/dwmexit-dmenu
+	cd ~
+	rm -rf ~/Git/dwmexit-dmenu
+	echo "The 'dwmexit-dmenu' script has been installed and the repository has been removed."
 
-    # Install arch-optimizer-dmenu script
-    echo "Installing arch-optimizer-dmenu script..."
-    rm -rf ~/Git/arch-optimizer-dmenu
-    git clone https://github.com/nirucon/arch-optimizer-dmenu ~/Git/arch-optimizer-dmenu
-    cd ~/Git/arch-optimizer-dmenu
-    sudo cp -f arch-optimizer-dmenu /usr/local/bin/
-    sudo chmod +x /usr/local/bin/arch-optimizer-dmenu
-    cd ~
-    rm -rf ~/Git/arch-optimizer-dmenu
-    echo "The 'arch-optimizer-dmenu' script has been installed and the repository has been removed."
+	# Install arch-optimizer-dmenu script
+	echo "Installing arch-optimizer-dmenu script..."
+	rm -rf ~/Git/arch-optimizer-dmenu
+	git clone https://github.com/nirucon/arch-optimizer-dmenu ~/Git/arch-optimizer-dmenu
+	cd ~/Git/arch-optimizer-dmenu
+	sudo cp -f arch-optimizer-dmenu /usr/local/bin/
+	sudo chmod +x /usr/local/bin/arch-optimizer-dmenu
+	cd ~
+	rm -rf ~/Git/arch-optimizer-dmenu
+	echo "The 'arch-optimizer-dmenu' script has been installed and the repository has been removed."
 
-    # Install cmus themes
-    echo "Setting up cmus themes..."
-    mkdir -p ~/.config/cmus/
-    cp -f ~/Git/suckless-arch/.config/cmus/* ~/.config/cmus/
+	# Install cmus themes
+	echo "Setting up cmus themes..."
+	mkdir -p ~/.config/cmus/
+	cp -f ~/Git/suckless-arch/.config/cmus/* ~/.config/cmus/
 fi
 
 # Install custom grub theme
@@ -319,26 +318,26 @@ read -p "Do you want to install a custom grub theme - nirucon-death? [Y/n]: " gr
 grub_response=${grub_response,,} # Convert to lowercase
 
 if [[ "$grub_response" =~ ^(yes|y| ) ]] || [[ -z "$grub_response" ]]; then
-    echo "Installing custom grub theme..."
+	echo "Installing custom grub theme..."
 
-    # Clone the theme repository
-    git clone https://github.com/nirucon/nirucon-death-grubtheme ~/Git/nirucon-death-grubtheme
+	# Clone the theme repository
+	git clone https://github.com/nirucon/nirucon-death-grubtheme ~/Git/nirucon-death-grubtheme
 
-    # Create grub themes directory if it doesn't exist
-    sudo mkdir -p /boot/grub/themes
+	# Create grub themes directory if it doesn't exist
+	sudo mkdir -p /boot/grub/themes
 
-    # Copy the theme to grub themes directory
-    sudo cp -r ~/Git/nirucon-death-grubtheme/nirucon-death /boot/grub/themes/nirucon-death
+	# Copy the theme to grub themes directory
+	sudo cp -r ~/Git/nirucon-death-grubtheme/nirucon-death /boot/grub/themes/nirucon-death
 
-    # Update grub configuration to use the new theme
-    sudo sed -i 's|^#GRUB_THEME=.*|GRUB_THEME="/boot/grub/themes/nirucon-death/theme.txt"|' /etc/default/grub
+	# Update grub configuration to use the new theme
+	sudo sed -i 's|^#GRUB_THEME=.*|GRUB_THEME="/boot/grub/themes/nirucon-death/theme.txt"|' /etc/default/grub
 
-    # Apply grub configuration
-    sudo grub-mkconfig -o /boot/grub/grub.cfg
+	# Apply grub configuration
+	sudo grub-mkconfig -o /boot/grub/grub.cfg
 
-    echo "Custom grub theme installed."
+	echo "Custom grub theme installed."
 else
-    echo "Skipping custom grub theme installation."
+	echo "Skipping custom grub theme installation."
 fi
 
 # Install Noir Themes and Icons
@@ -354,75 +353,75 @@ rofi_response=${rofi_response,,} # Convert to lowercase
 
 # Install GTK theme and icons if user agrees
 if [[ "$gtk_response" =~ ^(yes|y| ) ]] || [[ -z "$gtk_response" ]]; then
-    echo "Installing Equilux theme and Papirus Dark Grey icons..."
+	echo "Installing Equilux theme and Papirus Dark Grey icons..."
 
-    # Install Equilux theme
-    git clone https://github.com/ddnexus/equilux-theme
-    if [ -d "equilux-theme" ]; then
-        cd equilux-theme
-        sudo ./install.sh
-        cd ..
-        rm -rf equilux-theme
-        echo "Equilux theme installed successfully."
-    else
-        echo "Failed to clone Equilux theme repository. Please check your internet connection."
-        exit 1
-    fi
+	# Install Equilux theme
+	git clone https://github.com/ddnexus/equilux-theme
+	if [ -d "equilux-theme" ]; then
+		cd equilux-theme
+		sudo ./install.sh
+		cd ..
+		rm -rf equilux-theme
+		echo "Equilux theme installed successfully."
+	else
+		echo "Failed to clone Equilux theme repository. Please check your internet connection."
+		exit 1
+	fi
 
-    # Install Papirus Dark Grey icons
-    git clone https://github.com/Intika-KDE-Plasmoids/plasmoid-papirus-dark-grey-icon-theme
-    if [ -d "plasmoid-papirus-dark-grey-icon-theme" ]; then
-        sudo mkdir -p /usr/share/icons/Papirus-Dark-Grey
-        sudo cp -r plasmoid-papirus-dark-grey-icon-theme/Papirus-Dark-Grey/* /usr/share/icons/Papirus-Dark-Grey/
-        rm -rf plasmoid-papirus-dark-grey-icon-theme
-        echo "Papirus Dark Grey icons installed successfully."
-    else
-        echo "Failed to clone Papirus Dark Grey icons repository. Please check your internet connection."
-        exit 1
-    fi
+	# Install Papirus Dark Grey icons
+	git clone https://github.com/Intika-KDE-Plasmoids/plasmoid-papirus-dark-grey-icon-theme
+	if [ -d "plasmoid-papirus-dark-grey-icon-theme" ]; then
+		sudo mkdir -p /usr/share/icons/Papirus-Dark-Grey
+		sudo cp -r plasmoid-papirus-dark-grey-icon-theme/Papirus-Dark-Grey/* /usr/share/icons/Papirus-Dark-Grey/
+		rm -rf plasmoid-papirus-dark-grey-icon-theme
+		echo "Papirus Dark Grey icons installed successfully."
+	else
+		echo "Failed to clone Papirus Dark Grey icons repository. Please check your internet connection."
+		exit 1
+	fi
 
-    # Set Equilux theme and Papirus Dark Grey icons as default using lxappearance
-    if command -v lxappearance >/dev/null 2>&1; then
-        mkdir -p ~/.config/gtk-3.0/
-        cat <<EOF > ~/.config/gtk-3.0/settings.ini
+	# Set Equilux theme and Papirus Dark Grey icons as default using lxappearance
+	if command -v lxappearance >/dev/null 2>&1; then
+		mkdir -p ~/.config/gtk-3.0/
+		cat <<EOF >~/.config/gtk-3.0/settings.ini
 [Settings]
 gtk-theme-name=Equilux
 gtk-icon-theme-name=Papirus-Dark-Grey
 EOF
-        echo "GTK theme and icons set successfully!"
-    else
-        echo "lxappearance is not installed. Please install it to set the theme and icons."
-    fi
+		echo "GTK theme and icons set successfully!"
+	else
+		echo "lxappearance is not installed. Please install it to set the theme and icons."
+	fi
 else
-    echo "Skipping GTK theme and icons installation."
+	echo "Skipping GTK theme and icons installation."
 fi
 
 # Install Rofi theme if user agrees
 if [[ "$rofi_response" =~ ^(yes|y| ) ]] || [[ -z "$rofi_response" ]]; then
-    echo "Installing and setting the Rofi custom theme..."
+	echo "Installing and setting the Rofi custom theme..."
 
-    sudo mkdir -p /usr/share/rofi/themes
-    mkdir -p ~/.config/rofi
-    
-    wget -O /tmp/nirucon.rasi https://raw.githubusercontent.com/nirucon/nirucon-rofi/master/nirucon.rasi
-    if [ $? -eq 0 ]; then
-        sudo mv -f /tmp/nirucon.rasi /usr/share/rofi/themes/
-        echo "Rofi theme downloaded and moved successfully."
-    else
-        echo "Failed to download Rofi theme. Please check the URL or your internet connection."
-        exit 1
-    fi
-    
-    wget -O /tmp/config.rasi https://raw.githubusercontent.com/nirucon/nirucon-rofi/master/config.rasi
-    if [ $? -eq 0 ]; then
-        mv -f /tmp/config.rasi ~/.config/rofi/config.rasi
-        echo "Rofi default configuration downloaded and set successfully."
-    else
-        echo "Failed to download default Rofi configuration. Please check the URL or your internet connection."
-        exit 1
-    fi
+	sudo mkdir -p /usr/share/rofi/themes
+	mkdir -p ~/.config/rofi
+
+	wget -O /tmp/nirucon.rasi https://raw.githubusercontent.com/nirucon/nirucon-rofi/master/nirucon.rasi
+	if [ $? -eq 0 ]; then
+		sudo mv -f /tmp/nirucon.rasi /usr/share/rofi/themes/
+		echo "Rofi theme downloaded and moved successfully."
+	else
+		echo "Failed to download Rofi theme. Please check the URL or your internet connection."
+		exit 1
+	fi
+
+	wget -O /tmp/config.rasi https://raw.githubusercontent.com/nirucon/nirucon-rofi/master/config.rasi
+	if [ $? -eq 0 ]; then
+		mv -f /tmp/config.rasi ~/.config/rofi/config.rasi
+		echo "Rofi default configuration downloaded and set successfully."
+	else
+		echo "Failed to download default Rofi configuration. Please check the URL or your internet connection."
+		exit 1
+	fi
 else
-    echo "Skipping Rofi custom theme installation."
+	echo "Skipping Rofi custom theme installation."
 fi
 
 # Final clean up
