@@ -169,7 +169,7 @@ install_optional() {
         fi
         return 0
     else
-        echo "Skipping installation for this category."
+        echo "Skipping installation for this option."
         return 1
     fi
 }
