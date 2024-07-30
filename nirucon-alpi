@@ -40,7 +40,7 @@ sudo pacman -S --needed --noconfirm base-devel
 
 # Install yay
 if ! command -v yay &> /dev/null; then
-    echo "Installing yay..."
+    echo "Installing AUR helper yay..."
     cd /opt
     sudo git clone https://aur.archlinux.org/yay.git
     sudo chown -R $(whoami):$(whoami) yay
