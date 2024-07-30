@@ -340,7 +340,7 @@ else
 fi
 
 # Step 6: Install Noir Themes and Icons
-echo "Step 7: Install Noir Themes and Icons"
+echo "Install Noir Themes and Icons"
 
 # Prompt user for GTK themes and icons installation
 read -r -p "Do you want to install the GTK theme and icons? [Y/n]: " gtk_response
