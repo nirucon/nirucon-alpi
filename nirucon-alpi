@@ -312,6 +312,33 @@ if [[ "$choice" == [Yy]* ]] || [[ -z "$choice" ]]; then
     cp -f ~/Git/suckless-arch/.config/cmus/* ~/.config/cmus/
 fi
 
+# Install custom grub theme
+read -p "Do you want to install a custom grub theme - nirucon-death? [Y/n]: " grub_response
+grub_response=${grub_response,,} # Convert to lowercase
+
+if [[ "$grub_response" =~ ^(yes|y| ) ]] || [[ -z "$grub_response" ]]; then
+    echo "Installing custom grub theme..."
+
+    # Clone the theme repository
+    git clone https://github.com/nirucon/nirucon-death-grubtheme ~/Git/nirucon-death-grubtheme
+
+    # Create grub themes directory if it doesn't exist
+    sudo mkdir -p /boot/grub/themes
+
+    # Copy the theme to grub themes directory
+    sudo cp -r ~/Git/nirucon-death-grubtheme/nirucon-death /boot/grub/themes/nirucon-death
+
+    # Update grub configuration to use the new theme
+    sudo sed -i 's|^#GRUB_THEME=.*|GRUB_THEME="/boot/grub/themes/nirucon-death/theme.txt"|' /etc/default/grub
+
+    # Apply grub configuration
+    sudo grub-mkconfig -o /boot/grub/grub.cfg
+
+    echo "Custom grub theme installed."
+else
+    echo "Skipping custom grub theme installation."
+fi
+
 # Step 6: Install Noir Themes and Icons
 echo "Step 7: Install Noir Themes and Icons"
 
