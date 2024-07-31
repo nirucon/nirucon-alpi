@@ -142,13 +142,13 @@ install_optional() {
 
 # Function: Clone and install Suckless utilities and configurations
 install_suckless() {
-    read -p "Do you want to install Suckless dwm, dmenu, st, slock, and related configurations? [Y/n]: " choice
+    read -p "Do you want to install suckless dwm, dmenu, st, slock and related configurations, dotfiles and some dmenu scripts? [Y/n]: " choice
     if [[ "$choice" == [Yy]* ]] || [[ -z "$choice" ]]; then
         echo "Installing Suckless utilities and configurations..."
         mkdir -p ~/Git && git clone https://github.com/nirucon/nirucon-suckless-arch ~/Git/nirucon-suckless-arch
         mkdir -p ~/.config/suckless ~/.dwm ~/Music ~/Downloads ~/Pictures ~/Videos ~/Temp ~/.config/dunst
 
-        declare -a repos=("nirubar-dwm" "dunstrc" "sverigesradio-dmenu" "srpod-dmenu" "dwmexit-dmenu" "havamal" "wifi-dmenu" "arch-optimizer-dmenu")
+        declare -a repos=("nirubar-dwm" "dunstrc" "sverigesradio-dmenu" "srpod-dmenu" "srplay-dmenu" "dwmexit-dmenu" "havamal" "wifi-dmenu" "arch-optimizer-dmenu")
         for repo in "${repos[@]}"; do
             rm -rf ~/Git/$repo
             git clone https://github.com/nirucon/$repo ~/Git/$repo
@@ -186,6 +186,14 @@ install_suckless() {
         sudo cp -f ~/Git/srpod-dmenu/srpod-dmenu /usr/local/bin/
         sudo chmod +x /usr/local/bin/srpod-dmenu
         rm -rf ~/Git/srpod-dmenu
+
+        # srplay-dmenu - dmenu script for sr play podcasts and radio
+        echo "Cloning and installing the 'srplay-dmenu' script..."
+        rm -rf ~/Git/srplay-dmenu
+        git clone https://github.com/nirucon/srplay-dmenu ~/Git/srplay-dmenu
+        sudo cp -f ~/Git/srplay-dmenu/srplay-dmenu /usr/local/bin/
+        sudo chmod +x /usr/local/bin/srplay-dmenu
+        rm -rf ~/Git/srplay-dmenu
 
         # dwmexit-dmenu - dmenu script for suspend, logout, restart, reboot
         echo "Installing dwmexit-dmenu script..."
