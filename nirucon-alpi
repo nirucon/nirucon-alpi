@@ -260,6 +260,7 @@ if [[ "$choice" == [Yy]* ]] || [[ -z "$choice" ]]; then
 	cp -f ~/Git/nirucon-suckless-arch/autostart.sh ~/.dwm
 	cp -f ~/Git/nirucon-suckless-arch/.bashrc ~/
 	cp -f ~/Git/nirucon-suckless-arch/.bash_aliases ~/
+	cp -rf ~/Git/nirucon-suckless-arch/nirucon-wallpapers ~/Pictures/
 	sudo cp -f ~/Git/nirucon-suckless-arch/issue /etc/
 	chmod +x ~/.dwm/autostart.sh ~/.config/suckless/nirubar-dwm/nirubar-dwm ~/.config/nirucon-greeter/greeter
 
