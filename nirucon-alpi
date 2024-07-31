@@ -296,6 +296,27 @@ if [[ "$choice" == [Yy]* ]] || [[ -z "$choice" ]]; then
 	rm -rf ~/Git/dwmexit-dmenu
 	echo "The 'dwmexit-dmenu' script has been installed and the repository has been removed."
 
+	# Install havamal script
+	echo "Installing havamal script..."
+	rm -rf ~/Git/havamal
+	git clone https://github.com/nirucon/havamal ~/Git/havamal
+	cp -fr havamal ~/.config/
+	chmod +x ~/.local/havamal/havamal
+	cd ~
+	rm -rf ~/Git/havamal
+	echo "The 'havamal' script has been installed and the repository has been removed."
+
+	# Install wifi-dmenu script
+	echo "Installing wifi-dmenu script..."
+	rm -rf ~/Git/wifi-dmenu
+	git clone https://github.com/nirucon/wifi-dmenu ~/Git/wifi-dmenu
+	cd ~/Git/wifi-dmenu
+	sudo cp -f wifi-dmenu /usr/local/bin/
+	sudo chmod +x /usr/local/bin/wifi-dmenu
+	cd ~
+	rm -rf ~/Git/wifi-dmenu
+	echo "The 'wifi-dmenu' script has been installed and the repository has been removed."
+
 	# Install arch-optimizer-dmenu script
 	echo "Installing arch-optimizer-dmenu script..."
 	rm -rf ~/Git/arch-optimizer-dmenu
