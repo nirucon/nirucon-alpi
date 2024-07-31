@@ -87,8 +87,8 @@ optimize_pacman_conf() {
     echo "pacman.conf configuration update complete."
 }
 
-# Function: Install essential packages via pacman and yay
-install_packages() {
+# Function: Install essential packages via pacman and aur yay
+install_packages() 
     local packages_pacman=(
         xorg-server xorg-xinit xorg-xrandr xorg-xsetroot noto-fonts noto-fonts-emoji playerctl
         lxappearance qt6ct breeze-icons pcmanfm arandr nitrogen picom openssh cmus scrot gnupg
@@ -139,7 +139,7 @@ install_optional() {
     fi
 }
 
-# Function: Clone and install Suckless utilities and configurations
+# Function: Clone and install nirucon-suckless-arch and various scripts and configurations
 install_suckless() {
     read -p "Do you want to install Suckless dwm, dmenu, st, slock, and related configurations? [Y/n]: " choice
     if [[ "$choice" == [Yy]* ]] || [[ -z "$choice" ]]; then
@@ -182,7 +182,7 @@ install_suckless() {
     fi
 }
 
-# Function: Install custom GRUB theme
+# Function: Install custom GRUB theme nirucon-death
 install_grub_theme() {
     read -p "Do you want to install a custom grub theme - nirucon-death? [Y/n]: " grub_response
     grub_response=${grub_response,,}
