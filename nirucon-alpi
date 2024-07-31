@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Welcome Message
+# 1: Welcome
 echo -e "       _\n _ __ (_)_ __ _   _  ___ ___  _ ___\n| '_ \\| | '__| | | |/ __/ _ \\| '_  |\n| | | | | |  | |_| | (__| (_) | | | |\n|_| |_|_|_|   \\__,_|\\___\\___/|_| |_| \nArch Linux Post Install"
 
 echo "Welcome to NIRUCON-ALPI - Nicklas Rudolfsson's post-install script of 'My Suckless Setup' for Arch Linux."
@@ -18,7 +18,9 @@ else
 	exit 0
 fi
 
-# Install git, wget, and yay (AUR helper) if not already installed
+# 2: Install "core" packages and other necessary packages and applications
+
+# git wget base-devel yay
 echo "Checking and installing (if needed) git, wget, and AUR helper yay along with dependencies..."
 
 install_if_needed() {
@@ -49,7 +51,8 @@ else
 	echo "yay is already installed"
 fi
 
-# System optimization and update
+# 3: System optimization
+
 echo "The following optimizations and updates will be performed if you choose to optimize the system:"
 echo "1. Enable parallel downloads in pacman.conf"
 echo "2. Enable Color, ILoveCandy, and VerbosePkgLists in pacman.conf"
@@ -114,13 +117,11 @@ if [[ "$optimize_choice" != [Nn]* ]]; then
 	sudo pacman -Syu
 fi
 
-# Install essential packages
+# 4: Installation of essential packages and applications
+
+# Text and code editors
 echo "Installing some essential packages: nano vim"
 sudo pacman -S --needed --noconfirm nano vim
-
-# Clone necessary files
-echo "Creating ~/Git (if it does not exist) and cloning the nirucon suckless-arch repository..."
-mkdir -p ~/Git && git clone https://github.com/nirucon/nirucon-suckless-arch ~/Git/nirucon-suckless-arch
 
 echo "The following packages and applications will be installed to ensure the system functions as intended:"
 echo "From pacman: xorg-server xorg-xinit xorg-xrandr xorg-xsetroot noto-fonts noto-fonts-emoji playerctl lxappearance qt6ct breeze-icons pcmanfm arandr nitrogen picom openssh cmus scrot gnupg pass brightnessctl mpv dunst unzip nano alsa-utils pavucontrol xarchiver xclip htop curl libnotify jq bc"
@@ -144,7 +145,7 @@ install_timeshift_if_btrfs() {
 
 install_timeshift_if_btrfs
 
-# Optional installations
+# 5: Optional installations of packages and applications
 
 echo "Now you will go through a series of options for various categories of applications that can be installed based on your needs."
 
@@ -228,28 +229,35 @@ communication_pacman=(thunderbird irssi signal-desktop)
 communication_yay=()
 install_optional "Do you want to install Communication apps?" communication_pacman[@] communication_yay[@]
 
-# Suckless Setup
+# 6: nirucon-suckles-arch setup
 
 read -p "Do you want to install Suckless dwm, dmenu, st, slock, nirubar-dwm, dmenu scripts, my dot-files and some related stuff? [Y/n]: " choice
 if [[ "$choice" == [Yy]* ]] || [[ -z "$choice" ]]; then
 	echo "Installing Suckless etc..."
 
+	# Clone nirucon-suckless-arch
+	echo "Creating ~/Git (if it does not exist) and cloning the nirucon suckless-arch repository..."
+	mkdir -p ~/Git && git clone https://github.com/nirucon/nirucon-suckless-arch ~/Git/nirucon-suckless-arch
+
 	# Create necessary directories
 	mkdir -p ~/.config/suckless ~/.dwm ~/Music ~/Downloads ~/Pictures ~/Videos ~/Temp ~/.config/dunst
 
-	# Clone and overwrite the existing repositories
+	# Clone some additional script repositories and overwrite the existing repositories
+
+	# nirubar-dwm - status bar for dwm
 	rm -rf ~/Git/nirubar-dwm
 	git clone https://github.com/nirucon/nirubar-dwm ~/Git/nirubar-dwm
 
+	# dunstrc - customized notifications
 	rm -rf ~/Git/dunstrc
 	git clone https://github.com/nirucon/dunstrc ~/Git/dunstrc
 
-	# Copy Suckless related files and overwrite existing files
+	# Copy suckless related files and overwrite existing files
 	cp -rf ~/Git/nirubar-dwm/ ~/Git/nirucon-suckless-arch/dmenu ~/Git/nirucon-suckless-arch/st ~/Git/nirucon-suckless-arch/slock ~/Git/nirucon-suckless-arch/dwm ~/.config/suckless
 	cp -rf ~/Git/dunstrc/* ~/.config/dunst
 	cp -fr ~/Git/nirucon-suckless-arch/nirucon-greeter ~/.config/
 
-	# Compile and install Suckless software
+	# Compile and install suckless software
 	sudo make -C ~/.config/suckless/dwm clean install
 	sudo make -C ~/.config/suckless/dmenu clean install
 	sudo make -C ~/.config/suckless/slock clean install
@@ -264,7 +272,7 @@ if [[ "$choice" == [Yy]* ]] || [[ -z "$choice" ]]; then
 	sudo cp -f ~/Git/nirucon-suckless-arch/issue /etc/
 	chmod +x ~/.dwm/autostart.sh ~/.config/suckless/nirubar-dwm/nirubar-dwm ~/.config/nirucon-greeter/greeter
 
-	# Clone and install the 'sverigesradio-dmenu' script
+	# sverigesradio-dmenu - dmenu script for sveriges radio
 	echo "Cloning and installing the 'sverigesradio-dmenu' script..."
 	rm -rf ~/Git/sverigesradio-dmenu
 	git clone https://github.com/nirucon/sverigesradio-dmenu ~/Git/sverigesradio-dmenu
@@ -275,7 +283,7 @@ if [[ "$choice" == [Yy]* ]] || [[ -z "$choice" ]]; then
 	rm -rf ~/Git/sverigesradio-dmenu
 	echo "The 'sverigesradio-dmenu' script has been cloned, installed to /usr/local/bin, made executable, and the repository has been removed."
 
-	# Clone and install the 'srpod-dmenu' script
+	# srpod-dmenu - dmenu script for sr play pod
 	echo "Cloning and installing the 'srpod-dmenu' script..."
 	rm -rf ~/Git/srpod-dmenu
 	git clone https://github.com/nirucon/srpod-dmenu ~/Git/srpod-dmenu
@@ -286,7 +294,7 @@ if [[ "$choice" == [Yy]* ]] || [[ -z "$choice" ]]; then
 	rm -rf ~/Git/srpod-dmenu
 	echo "The 'srpod-dmenu' script has been cloned, installed to /usr/local/bin, made executable, and the repository has been removed."
 
-	# Install dwmexit-dmenu script
+	# dwmexit-dmenu - dmenu script for suspend, logout, restart, reboot
 	echo "Installing dwmexit-dmenu script..."
 	rm -rf ~/Git/dwmexit-dmenu
 	git clone https://github.com/nirucon/dwmexit-dmenu ~/Git/dwmexit-dmenu
@@ -297,7 +305,7 @@ if [[ "$choice" == [Yy]* ]] || [[ -z "$choice" ]]; then
 	rm -rf ~/Git/dwmexit-dmenu
 	echo "The 'dwmexit-dmenu' script has been installed and the repository has been removed."
 
-	# Install havamal script
+	# havamal - script for random quotes in .bashrc
 	echo "Installing havamal script..."
 	rm -rf ~/Git/havamal
 	git clone https://github.com/nirucon/havamal ~/Git/havamal
@@ -307,7 +315,7 @@ if [[ "$choice" == [Yy]* ]] || [[ -z "$choice" ]]; then
 	rm -rf ~/Git/havamal
 	echo "The 'havamal' script has been installed and the repository has been removed."
 
-	# Install wifi-dmenu script
+	# wifi-dmenu - script for wifi in dmenu
 	echo "Installing wifi-dmenu script..."
 	rm -rf ~/Git/wifi-dmenu
 	git clone https://github.com/nirucon/wifi-dmenu ~/Git/wifi-dmenu
@@ -318,7 +326,7 @@ if [[ "$choice" == [Yy]* ]] || [[ -z "$choice" ]]; then
 	rm -rf ~/Git/wifi-dmenu
 	echo "The 'wifi-dmenu' script has been installed and the repository has been removed."
 
-	# Install arch-optimizer-dmenu script
+	# arch-optimizer-dmenu - script for optimizing arch linux in dmenu
 	echo "Installing arch-optimizer-dmenu script..."
 	rm -rf ~/Git/arch-optimizer-dmenu
 	git clone https://github.com/nirucon/arch-optimizer-dmenu ~/Git/arch-optimizer-dmenu
@@ -329,11 +337,13 @@ if [[ "$choice" == [Yy]* ]] || [[ -z "$choice" ]]; then
 	rm -rf ~/Git/arch-optimizer-dmenu
 	echo "The 'arch-optimizer-dmenu' script has been installed and the repository has been removed."
 
-	# Install cmus themes
+	# cmus themes - themes for cmus terminal music player
 	echo "Setting up cmus themes..."
 	mkdir -p ~/.config/cmus/
 	cp -f ~/Git/suckless-arch/.config/cmus/* ~/.config/cmus/
 fi
+
+# 7: Theming
 
 # Install custom grub theme
 read -p "Do you want to install a custom grub theme - nirucon-death? [Y/n]: " grub_response
@@ -446,10 +456,10 @@ else
 	echo "Skipping Rofi custom theme installation."
 fi
 
-# Final clean up
+# 8: Final clean up
 echo "Cleaning up temporary files..."
 rm -fr ~/Git/dunstrc ~/Git/nirubar-dwm ~/Git/nirucon-suckless-arch ~/Git/nirucon-death-grubtheme
 echo "All cloned and downloaded files in ~/Git have been deleted, except for the nirucon-alpi directory. Check for new versions of the script at https://github.com/nirucon/nirucon-alpi"
 
-# DONE
+# 9: Good buy
 echo "NIRUCON-ALPI Arch Linux Post Install Script Completed - NOW BE CREATIVE!"
