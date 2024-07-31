@@ -357,23 +357,23 @@ main() {
 
     local daw_apps_pacman=()
     local daw_apps_yay=(reaper qpwgraph yabridge yabridgectl realtime-privileges)
-    install_optional "Do you want to install DAW apps?" daw_apps_pacman[@] daw_apps_yay[@]
+    install_optional "Do you want to install DAW apps (reaper qpwgraph yabridge yabridgectl realtime-privileges)?" daw_apps_pacman[@] daw_apps_yay[@]
 
     local daw_plugins_pacman=()
     local daw_plugins_yay=(pro-audio lv2-plugins vst-plugins vst3-plugins)
-    install_optional "Do you want to install DAW plugins?" daw_plugins_pacman[@] daw_plugins_yay[@]
+    install_optional "Do you want to install DAW plugins (lots of lv2 and vst plugins)?" daw_plugins_pacman[@] daw_plugins_yay[@]
 
     local web_dev_pacman=(filezilla bluefish)
     local web_dev_yay=()
-    install_optional "Do you want to install Web development apps?" web_dev_pacman[@] web_dev_yay[@]
+    install_optional "Do you want to install Web development apps (bluefish filezilla)?" web_dev_pacman[@] web_dev_yay[@]
 
     local image_video_pacman=(obs-studio kdenlive gimp)
     local image_video_yay=()
-    install_optional "Do you want to install Image and Video editing apps?" image_video_pacman[@] image_video_yay[@]
+    install_optional "Do you want to install Image and Video editing apps (obs-studio kdenlive gimp)?" image_video_pacman[@] image_video_yay[@]
 
     local communication_pacman=(thunderbird irssi signal-desktop)
     local communication_yay=()
-    install_optional "Do you want to install Communication apps?" communication_pacman[@] communication_yay[@]
+    install_optional "Do you want to install Communication apps (thunderbird irssi signal-desktop)?" communication_pacman[@] communication_yay[@]
 
     install_suckless
     install_grub_theme
