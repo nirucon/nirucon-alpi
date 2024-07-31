@@ -235,7 +235,7 @@ install_optional "Do you want to install Image and Video editing apps?" obs-stud
 # Communication
 install_optional "Do you want to install Communication apps?" thunderbird irssi signal-desktop
 
-# 6: nirucon-suckles-arch setup
+# 6: nirucon-suckless-arch setup
 
 read -p "Do you want to install suckless dwm, dmenu, st, slock, nirubar-dwm, dmenu scripts, my dot-files, and some related stuff? [Y/n]: " choice
 if [[ "$choice" =~ ^[Yy]$ ]] || [[ -z "$choice" ]]; then
@@ -245,22 +245,30 @@ if [[ "$choice" =~ ^[Yy]$ ]] || [[ -z "$choice" ]]; then
     clone_repo() {
         local repo_url="$1"
         local dest_dir="$2"
-        
+
         if [ -d "$dest_dir" ]; then
+            echo "Removing existing directory $dest_dir"
             rm -rf "$dest_dir"
         fi
         
+        echo "Cloning repository from $repo_url to $dest_dir"
         git clone "$repo_url" "$dest_dir"
     }
 
     # Define a function to compile and install suckless software
     compile_install() {
         local dir="$1"
-        sudo make -C "$dir" clean install
+        if [ -d "$dir" ]; then
+            echo "Compiling and installing software in $dir"
+            sudo make -C "$dir" clean install
+        else
+            echo "Directory $dir does not exist. Skipping compilation and installation."
+        fi
     }
 
     echo "Creating ~/Git (if it does not exist) and cloning the nirucon suckless-arch repository..."
-    mkdir -p ~/Git && clone_repo "https://github.com/nirucon/nirucon-suckless-arch" "~/Git/nirucon-suckless-arch"
+    mkdir -p ~/Git
+    clone_repo "https://github.com/nirucon/nirucon-suckless-arch" "~/Git/nirucon-suckless-arch"
 
     # Create necessary directories
     mkdir -p ~/.config/suckless ~/.dwm ~/Music ~/Downloads ~/Pictures ~/Videos ~/Temp ~/.config/dunst
@@ -270,9 +278,23 @@ if [[ "$choice" =~ ^[Yy]$ ]] || [[ -z "$choice" ]]; then
     clone_repo "https://github.com/nirucon/dunstrc" "~/Git/dunstrc"
 
     # Copy suckless related files
-    cp -rf ~/Git/nirubar-dwm/ ~/Git/nirucon-suckless-arch/{dmenu,st,slock,dwm} ~/.config/suckless
-    cp -rf ~/Git/dunstrc/* ~/.config/dunst
-    cp -rf ~/Git/nirucon-suckless-arch/nirucon-greeter ~/.config/
+    if [ -d "~/Git/nirubar-dwm" ]; then
+        cp -rf ~/Git/nirubar-dwm/ ~/Git/nirucon-suckless-arch/{dmenu,st,slock,dwm} ~/.config/suckless
+    else
+        echo "Directory ~/Git/nirubar-dwm does not exist. Skipping copy."
+    fi
+    
+    if [ -d "~/Git/dunstrc" ]; then
+        cp -rf ~/Git/dunstrc/* ~/.config/dunst
+    else
+        echo "Directory ~/Git/dunstrc does not exist. Skipping copy."
+    fi
+    
+    if [ -d "~/Git/nirucon-suckless-arch" ]; then
+        cp -rf ~/Git/nirucon-suckless-arch/nirucon-greeter ~/.config/
+    else
+        echo "Directory ~/Git/nirucon-suckless-arch does not exist. Skipping copy."
+    fi
 
     # Compile and install suckless software
     for app in dwm dmenu slock st; do
@@ -280,11 +302,15 @@ if [[ "$choice" =~ ^[Yy]$ ]] || [[ -z "$choice" ]]; then
     done
 
     # Copy configurations and dot files
-    cp -f ~/Git/nirucon-suckless-arch/{.xinitrc,.bashrc,.bash_aliases} ~/
-    cp -f ~/Git/nirucon-suckless-arch/autostart.sh ~/.dwm
-    cp -rf ~/Git/nirucon-suckless-arch/nirucon-wallpapers ~/Pictures/
-    sudo cp -f ~/Git/nirucon-suckless-arch/issue /etc/
-    chmod +x ~/.dwm/autostart.sh ~/.config/suckless/nirubar-dwm/nirubar-dwm ~/.config/nirucon-greeter/greeter
+    if [ -d "~/Git/nirucon-suckless-arch" ]; then
+        cp -f ~/Git/nirucon-suckless-arch/{.xinitrc,.bashrc,.bash_aliases} ~/
+        cp -f ~/Git/nirucon-suckless-arch/autostart.sh ~/.dwm
+        cp -rf ~/Git/nirucon-suckless-arch/nirucon-wallpapers ~/Pictures/
+        sudo cp -f ~/Git/nirucon-suckless-arch/issue /etc/
+        chmod +x ~/.dwm/autostart.sh ~/.config/suckless/nirubar-dwm/nirubar-dwm ~/.config/nirucon-greeter/greeter
+    else
+        echo "Directory ~/Git/nirucon-suckless-arch does not exist. Skipping file copy."
+    fi
 
     # Define an array of scripts to be cloned and installed
     declare -A scripts=(
@@ -299,18 +325,30 @@ if [[ "$choice" =~ ^[Yy]$ ]] || [[ -z "$choice" ]]; then
     # Clone, install, and clean up scripts
     for script in "${!scripts[@]}"; do
         clone_repo "${scripts[$script]}" "~/Git/$script"
-        cd ~/Git/$script
-        sudo cp -f $script /usr/local/bin/
-        sudo chmod +x /usr/local/bin/$script
-        cd ~
-        rm -rf ~/Git/$script
-        echo "The '$script' script has been installed and the repository has been removed."
+        
+        if [ -d "~/Git/$script" ]; then
+            cd ~/Git/$script || continue
+            sudo cp -f $script /usr/local/bin/
+            sudo chmod +x /usr/local/bin/$script
+            cd ~ || continue
+            rm -rf ~/Git/$script
+            echo "The '$script' script has been installed and the repository has been removed."
+        else
+            echo "Directory ~/Git/$script does not exist. Skipping installation."
+        fi
     done
 
     # Setting up cmus themes
     echo "Setting up cmus themes..."
     mkdir -p ~/.config/cmus/
-    cp -f ~/Git/nirucon-suckless-arch/.config/cmus/* ~/.config/cmus/
+    if [ -d "~/Git/nirucon-suckless-arch/.config/cmus" ]; then
+        cp -f ~/Git/nirucon-suckless-arch/.config/cmus/* ~/.config/cmus/
+    else
+        echo "Directory ~/Git/nirucon-suckless-arch/.config/cmus does not exist. Skipping cmus theme setup."
+    fi
+
+else
+    echo "Skipping Suckless and related setups."
 fi
 
 # 7: Theming
