@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# Arch Linux Post Install script by Nicklas Rudolfsson
+# https://github.com/nirucon
+# The script is made for my own needs but is free to use and modify
+# Focus of the script: suckless dwm setup, dmenu scripts, noir theming, music and content creation applications + some extra stuff
+
 # Function: Display welcome message
 display_welcome() {
     echo -e "       _\n _ __ (_)_ __ _   _  ___ ___  _ ___\n| '_ \\| | '__| | | |/ __/ _ \\| '_  |\n| | | | | |  | |_| | (__| (_) | | | |\n|_| |_|_|_|   \\__,_|\\___\\___/|_| |_| \nArch Linux Post Install"
