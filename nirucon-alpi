@@ -2,6 +2,7 @@
 
 # nirucon-alpi - Arch Linux Post Installation script by Nicklas Rudolfsson
 # https://github.com/nirucon
+# Made for my self for my own use with Arch Linux but feel free to use and modify
 # Script version 2024-07-31.02
 
 # 1: Welcome
@@ -234,238 +235,226 @@ install_optional "Do you want to install Image and Video editing apps?" obs-stud
 # Communication
 install_optional "Do you want to install Communication apps?" thunderbird irssi signal-desktop
 
-
 # 6: nirucon-suckles-arch setup
 
-read -p "Do you want to install Suckless dwm, dmenu, st, slock, nirubar-dwm, dmenu scripts, my dot-files and some related stuff? [Y/n]: " choice
-if [[ "$choice" == [Yy]* ]] || [[ -z "$choice" ]]; then
-	echo "Installing Suckless etc..."
+read -p "Do you want to install suckless dwm, dmenu, st, slock, nirubar-dwm, dmenu scripts, my dot-files, and some related stuff? [Y/n]: " choice
+if [[ "$choice" =~ ^[Yy]$ ]] || [[ -z "$choice" ]]; then
+    echo "Installing Suckless etc..."
 
-	# Clone nirucon-suckless-arch
-	echo "Creating ~/Git (if it does not exist) and cloning the nirucon suckless-arch repository..."
-	mkdir -p ~/Git && git clone https://github.com/nirucon/nirucon-suckless-arch ~/Git/nirucon-suckless-arch
+    # Define a function for cloning and handling repositories
+    clone_repo() {
+        local repo_url="$1"
+        local dest_dir="$2"
+        
+        if [ -d "$dest_dir" ]; then
+            rm -rf "$dest_dir"
+        fi
+        
+        git clone "$repo_url" "$dest_dir"
+    }
 
-	# Create necessary directories
-	mkdir -p ~/.config/suckless ~/.dwm ~/Music ~/Downloads ~/Pictures ~/Videos ~/Temp ~/.config/dunst
+    # Define a function to compile and install suckless software
+    compile_install() {
+        local dir="$1"
+        sudo make -C "$dir" clean install
+    }
 
-	# Clone some additional script repositories and overwrite the existing repositories
+    echo "Creating ~/Git (if it does not exist) and cloning the nirucon suckless-arch repository..."
+    mkdir -p ~/Git && clone_repo "https://github.com/nirucon/nirucon-suckless-arch" "~/Git/nirucon-suckless-arch"
 
-	# nirubar-dwm - status bar for dwm
-	rm -rf ~/Git/nirubar-dwm
-	git clone https://github.com/nirucon/nirubar-dwm ~/Git/nirubar-dwm
+    # Create necessary directories
+    mkdir -p ~/.config/suckless ~/.dwm ~/Music ~/Downloads ~/Pictures ~/Videos ~/Temp ~/.config/dunst
 
-	# dunstrc - customized notifications
-	rm -rf ~/Git/dunstrc
-	git clone https://github.com/nirucon/dunstrc ~/Git/dunstrc
+    # Clone additional script repositories
+    clone_repo "https://github.com/nirucon/nirubar-dwm" "~/Git/nirubar-dwm"
+    clone_repo "https://github.com/nirucon/dunstrc" "~/Git/dunstrc"
 
-	# Copy suckless related files and overwrite existing files
-	cp -rf ~/Git/nirubar-dwm/ ~/Git/nirucon-suckless-arch/dmenu ~/Git/nirucon-suckless-arch/st ~/Git/nirucon-suckless-arch/slock ~/Git/nirucon-suckless-arch/dwm ~/.config/suckless
-	cp -rf ~/Git/dunstrc/* ~/.config/dunst
-	cp -fr ~/Git/nirucon-suckless-arch/nirucon-greeter ~/.config/
+    # Copy suckless related files
+    cp -rf ~/Git/nirubar-dwm/ ~/Git/nirucon-suckless-arch/{dmenu,st,slock,dwm} ~/.config/suckless
+    cp -rf ~/Git/dunstrc/* ~/.config/dunst
+    cp -rf ~/Git/nirucon-suckless-arch/nirucon-greeter ~/.config/
 
-	# Compile and install suckless software
-	sudo make -C ~/.config/suckless/dwm clean install
-	sudo make -C ~/.config/suckless/dmenu clean install
-	sudo make -C ~/.config/suckless/slock clean install
-	sudo make -C ~/.config/suckless/st clean install
+    # Compile and install suckless software
+    for app in dwm dmenu slock st; do
+        compile_install ~/.config/suckless/$app
+    done
 
-	# Copy configurations and dot files, overwriting existing files
-	cp -f ~/Git/nirucon-suckless-arch/.xinitrc ~/
-	cp -f ~/Git/nirucon-suckless-arch/autostart.sh ~/.dwm
-	cp -f ~/Git/nirucon-suckless-arch/.bashrc ~/
-	cp -f ~/Git/nirucon-suckless-arch/.bash_aliases ~/
-	cp -rf ~/Git/nirucon-suckless-arch/nirucon-wallpapers ~/Pictures/
-	sudo cp -f ~/Git/nirucon-suckless-arch/issue /etc/
-	chmod +x ~/.dwm/autostart.sh ~/.config/suckless/nirubar-dwm/nirubar-dwm ~/.config/nirucon-greeter/greeter
+    # Copy configurations and dot files
+    cp -f ~/Git/nirucon-suckless-arch/{.xinitrc,.bashrc,.bash_aliases} ~/
+    cp -f ~/Git/nirucon-suckless-arch/autostart.sh ~/.dwm
+    cp -rf ~/Git/nirucon-suckless-arch/nirucon-wallpapers ~/Pictures/
+    sudo cp -f ~/Git/nirucon-suckless-arch/issue /etc/
+    chmod +x ~/.dwm/autostart.sh ~/.config/suckless/nirubar-dwm/nirubar-dwm ~/.config/nirucon-greeter/greeter
 
-	# sverigesradio-dmenu - dmenu script for sveriges radio
-	echo "Cloning and installing the 'sverigesradio-dmenu' script..."
-	rm -rf ~/Git/sverigesradio-dmenu
-	git clone https://github.com/nirucon/sverigesradio-dmenu ~/Git/sverigesradio-dmenu
-	cd ~/Git/sverigesradio-dmenu
-	sudo cp -f sverigesradio-dmenu /usr/local/bin/
-	sudo chmod +x /usr/local/bin/sverigesradio-dmenu
-	cd ~
-	rm -rf ~/Git/sverigesradio-dmenu
-	echo "The 'sverigesradio-dmenu' script has been cloned, installed to /usr/local/bin, made executable, and the repository has been removed."
+    # Define an array of scripts to be cloned and installed
+    declare -A scripts=(
+        ["sverigesradio-dmenu"]="https://github.com/nirucon/sverigesradio-dmenu"
+        ["srpod-dmenu"]="https://github.com/nirucon/srpod-dmenu"
+        ["dwmexit-dmenu"]="https://github.com/nirucon/dwmexit-dmenu"
+        ["havamal"]="https://github.com/nirucon/havamal"
+        ["wifi-dmenu"]="https://github.com/nirucon/wifi-dmenu"
+        ["arch-optimizer-dmenu"]="https://github.com/nirucon/arch-optimizer-dmenu"
+    )
 
-	# srpod-dmenu - dmenu script for sr play pod
-	echo "Cloning and installing the 'srpod-dmenu' script..."
-	rm -rf ~/Git/srpod-dmenu
-	git clone https://github.com/nirucon/srpod-dmenu ~/Git/srpod-dmenu
-	cd ~/Git/srpod-dmenu
-	sudo cp -f srpod-dmenu /usr/local/bin/
-	sudo chmod +x /usr/local/bin/srpod-dmenu
-	cd ~
-	rm -rf ~/Git/srpod-dmenu
-	echo "The 'srpod-dmenu' script has been cloned, installed to /usr/local/bin, made executable, and the repository has been removed."
+    # Clone, install, and clean up scripts
+    for script in "${!scripts[@]}"; do
+        clone_repo "${scripts[$script]}" "~/Git/$script"
+        cd ~/Git/$script
+        sudo cp -f $script /usr/local/bin/
+        sudo chmod +x /usr/local/bin/$script
+        cd ~
+        rm -rf ~/Git/$script
+        echo "The '$script' script has been installed and the repository has been removed."
+    done
 
-	# dwmexit-dmenu - dmenu script for suspend, logout, restart, reboot
-	echo "Installing dwmexit-dmenu script..."
-	rm -rf ~/Git/dwmexit-dmenu
-	git clone https://github.com/nirucon/dwmexit-dmenu ~/Git/dwmexit-dmenu
-	cd ~/Git/dwmexit-dmenu
-	sudo cp -f dwmexit-dmenu /usr/local/bin/
-	sudo chmod +x /usr/local/bin/dwmexit-dmenu
-	cd ~
-	rm -rf ~/Git/dwmexit-dmenu
-	echo "The 'dwmexit-dmenu' script has been installed and the repository has been removed."
-
-	# havamal - script for random quotes in .bashrc
-	echo "Installing havamal script..."
-	rm -rf ~/Git/havamal
-	git clone https://github.com/nirucon/havamal ~/Git/havamal
-	cp -fr havamal ~/.config/
-	chmod +x ~/.local/havamal/havamal
-	cd ~
-	rm -rf ~/Git/havamal
-	echo "The 'havamal' script has been installed and the repository has been removed."
-
-	# wifi-dmenu - script for wifi in dmenu
-	echo "Installing wifi-dmenu script..."
-	rm -rf ~/Git/wifi-dmenu
-	git clone https://github.com/nirucon/wifi-dmenu ~/Git/wifi-dmenu
-	cd ~/Git/wifi-dmenu
-	sudo cp -f wifi-dmenu /usr/local/bin/
-	sudo chmod +x /usr/local/bin/wifi-dmenu
-	cd ~
-	rm -rf ~/Git/wifi-dmenu
-	echo "The 'wifi-dmenu' script has been installed and the repository has been removed."
-
-	# arch-optimizer-dmenu - script for optimizing arch linux in dmenu
-	echo "Installing arch-optimizer-dmenu script..."
-	rm -rf ~/Git/arch-optimizer-dmenu
-	git clone https://github.com/nirucon/arch-optimizer-dmenu ~/Git/arch-optimizer-dmenu
-	cd ~/Git/arch-optimizer-dmenu
-	sudo cp -f arch-optimizer-dmenu /usr/local/bin/
-	sudo chmod +x /usr/local/bin/arch-optimizer-dmenu
-	cd ~
-	rm -rf ~/Git/arch-optimizer-dmenu
-	echo "The 'arch-optimizer-dmenu' script has been installed and the repository has been removed."
-
-	# cmus themes - themes for cmus terminal music player
-	echo "Setting up cmus themes..."
-	mkdir -p ~/.config/cmus/
-	cp -f ~/Git/suckless-arch/.config/cmus/* ~/.config/cmus/
+    # Setting up cmus themes
+    echo "Setting up cmus themes..."
+    mkdir -p ~/.config/cmus/
+    cp -f ~/Git/nirucon-suckless-arch/.config/cmus/* ~/.config/cmus/
 fi
 
 # 7: Theming
 
-# Install custom grub theme
-read -p "Do you want to install a custom grub theme - nirucon-death? [Y/n]: " grub_response
-grub_response=${grub_response,,} # Convert to lowercase
+# Function to install a Git repository
+install_git_repo() {
+    local repo_url=$1
+    local target_dir=$2
 
-if [[ "$grub_response" =~ ^(yes|y| ) ]] || [[ -z "$grub_response" ]]; then
-	echo "Installing custom grub theme..."
+    if git clone "$repo_url" "$target_dir"; then
+        echo "Cloned repository from $repo_url to $target_dir"
+    else
+        echo "Failed to clone repository from $repo_url. Skipping..."
+        return 1
+    fi
+}
 
-	# Clone the theme repository
-	git clone https://github.com/nirucon/nirucon-death-grubtheme ~/Git/nirucon-death-grubtheme
+# Function to install the Rofi theme
+install_rofi_theme() {
+    local theme_url=$1
+    local config_url=$2
 
-	# Create grub themes directory if it doesn't exist
-	sudo mkdir -p /boot/grub/themes
+    echo "Installing Rofi custom theme..."
+    sudo mkdir -p /usr/share/rofi/themes
+    mkdir -p ~/.config/rofi
 
-	# Copy the theme to grub themes directory
-	sudo cp -r ~/Git/nirucon-death-grubtheme/nirucon-death /boot/grub/themes/nirucon-death
+    if wget -O /tmp/nirucon.rasi "$theme_url"; then
+        sudo mv -f /tmp/nirucon.rasi /usr/share/rofi/themes/
+        echo "Rofi theme downloaded and moved successfully."
+    else
+        echo "Failed to download Rofi theme. Skipping..."
+        return 1
+    fi
 
-	# Update grub configuration to use the new theme
-	sudo sed -i 's|^#GRUB_THEME=.*|GRUB_THEME="/boot/grub/themes/nirucon-death/theme.txt"|' /etc/default/grub
+    if wget -O /tmp/config.rasi "$config_url"; then
+        mv -f /tmp/config.rasi ~/.config/rofi/config.rasi
+        echo "Rofi default configuration downloaded and set successfully."
+    else
+        echo "Failed to download default Rofi configuration. Skipping..."
+        return 1
+    fi
+}
 
-	# Apply grub configuration
-	sudo grub-mkconfig -o /boot/grub/grub.cfg
+# Function to install GTK theme and icons
+install_gtk_and_icons() {
+    local theme_url=$1
+    local icon_url=$2
+    local theme_dir=$3
+    local icon_dir=$4
 
-	echo "Custom grub theme installed."
-else
-	echo "Skipping custom grub theme installation."
-fi
+    echo "Installing GTK theme and icons..."
 
-# Install Noir Themes and Icons
-echo "Install Noir Themes and Icons"
+    if git clone "$theme_url" equilux-theme && [ -d "equilux-theme" ]; then
+        cd equilux-theme || return 1
+        sudo ./install.sh
+        cd .. || return 1
+        rm -rf equilux-theme
+        echo "Equilux theme installed successfully."
+    else
+        echo "Failed to clone Equilux theme repository. Skipping..."
+    fi
 
-# Prompt user for GTK themes and icons installation
-read -r -p "Do you want to install the GTK theme and icons? [Y/n]: " gtk_response
-gtk_response=${gtk_response,,} # Convert to lowercase
+    if git clone "$icon_url" plasmoid-papirus-dark-grey-icon-theme && [ -d "plasmoid-papirus-dark-grey-icon-theme" ]; then
+        sudo mkdir -p "$icon_dir"
+        sudo cp -r plasmoid-papirus-dark-grey-icon-theme/Papirus-Dark-Grey/* "$icon_dir/"
+        rm -rf plasmoid-papirus-dark-grey-icon-theme
+        echo "Papirus Dark Grey icons installed successfully."
+    else
+        echo "Failed to clone Papirus Dark Grey icons repository. Skipping..."
+    fi
 
-# Prompt user for Rofi theme installation
-read -r -p "Do you want to install the Rofi custom theme? [Y/n]: " rofi_response
-rofi_response=${rofi_response,,} # Convert to lowercase
-
-# Install GTK theme and icons if user agrees
-if [[ "$gtk_response" =~ ^(yes|y| ) ]] || [[ -z "$gtk_response" ]]; then
-	echo "Installing Equilux theme and Papirus Dark Grey icons..."
-
-	# Install Equilux theme
-	git clone https://github.com/ddnexus/equilux-theme
-	if [ -d "equilux-theme" ]; then
-		cd equilux-theme
-		sudo ./install.sh
-		cd ..
-		rm -rf equilux-theme
-		echo "Equilux theme installed successfully."
-	else
-		echo "Failed to clone Equilux theme repository. Please check your internet connection."
-		exit 1
-	fi
-
-	# Install Papirus Dark Grey icons
-	git clone https://github.com/Intika-KDE-Plasmoids/plasmoid-papirus-dark-grey-icon-theme
-	if [ -d "plasmoid-papirus-dark-grey-icon-theme" ]; then
-		sudo mkdir -p /usr/share/icons/Papirus-Dark-Grey
-		sudo cp -r plasmoid-papirus-dark-grey-icon-theme/Papirus-Dark-Grey/* /usr/share/icons/Papirus-Dark-Grey/
-		rm -rf plasmoid-papirus-dark-grey-icon-theme
-		echo "Papirus Dark Grey icons installed successfully."
-	else
-		echo "Failed to clone Papirus Dark Grey icons repository. Please check your internet connection."
-		exit 1
-	fi
-
-	# Set Equilux theme and Papirus Dark Grey icons as default using lxappearance
-	if command -v lxappearance >/dev/null 2>&1; then
-		mkdir -p ~/.config/gtk-3.0/
-		cat <<EOF >~/.config/gtk-3.0/settings.ini
+    if command -v lxappearance >/dev/null 2>&1; then
+        mkdir -p ~/.config/gtk-3.0/
+        cat <<EOF >~/.config/gtk-3.0/settings.ini
 [Settings]
 gtk-theme-name=Equilux
 gtk-icon-theme-name=Papirus-Dark-Grey
 EOF
-		echo "GTK theme and icons set successfully!"
-	else
-		echo "lxappearance is not installed. Please install it to set the theme and icons."
-	fi
+        echo "GTK theme and icons set successfully!"
+    else
+        echo "lxappearance is not installed. Please install it to set the theme and icons."
+    fi
+}
+
+echo "Starting theming installation..."
+
+# Install custom GRUB theme
+read -p "Do you want to install a custom grub theme - nirucon-death? [Y/n]: " grub_response
+if [[ "$grub_response" =~ ^[Yy]$ ]] || [[ -z "$grub_response" ]]; then
+    echo "Installing custom grub theme..."
+    install_git_repo "https://github.com/nirucon/nirucon-death-grubtheme" "~/Git/nirucon-death-grubtheme"
+
+    sudo mkdir -p /boot/grub/themes
+    sudo cp -r ~/Git/nirucon-death-grubtheme/nirucon-death /boot/grub/themes/nirucon-death
+    sudo sed -i 's|^#GRUB_THEME=.*|GRUB_THEME="/boot/grub/themes/nirucon-death/theme.txt"|' /etc/default/grub
+    sudo grub-mkconfig -o /boot/grub/grub.cfg
+    echo "Custom grub theme installed."
 else
-	echo "Skipping GTK theme and icons installation."
+    echo "Skipping custom grub theme installation."
 fi
 
-# Install Rofi theme if user agrees
-if [[ "$rofi_response" =~ ^(yes|y| ) ]] || [[ -z "$rofi_response" ]]; then
-	echo "Installing and setting the Rofi custom theme..."
-
-	sudo mkdir -p /usr/share/rofi/themes
-	mkdir -p ~/.config/rofi
-
-	wget -O /tmp/nirucon.rasi https://raw.githubusercontent.com/nirucon/nirucon-rofi/master/nirucon.rasi
-	if [ $? -eq 0 ]; then
-		sudo mv -f /tmp/nirucon.rasi /usr/share/rofi/themes/
-		echo "Rofi theme downloaded and moved successfully."
-	else
-		echo "Failed to download Rofi theme. Please check the URL or your internet connection."
-		exit 1
-	fi
-
-	wget -O /tmp/config.rasi https://raw.githubusercontent.com/nirucon/nirucon-rofi/master/config.rasi
-	if [ $? -eq 0 ]; then
-		mv -f /tmp/config.rasi ~/.config/rofi/config.rasi
-		echo "Rofi default configuration downloaded and set successfully."
-	else
-		echo "Failed to download default Rofi configuration. Please check the URL or your internet connection."
-		exit 1
-	fi
+# Install GTK theme and icons
+read -r -p "Do you want to install the GTK theme and icons? [Y/n]: " gtk_response
+if [[ "$gtk_response" =~ ^[Yy]$ ]] || [[ -z "$gtk_response" ]]; then
+    install_gtk_and_icons \
+        "https://github.com/ddnexus/equilux-theme" \
+        "https://github.com/Intika-KDE-Plasmoids/plasmoid-papirus-dark-grey-icon-theme" \
+        "/usr/share/icons/Papirus-Dark-Grey"
 else
-	echo "Skipping Rofi custom theme installation."
+    echo "Skipping GTK theme and icons installation."
+fi
+
+# Install Rofi theme
+read -r -p "Do you want to install the Rofi custom theme? [Y/n]: " rofi_response
+if [[ "$rofi_response" =~ ^[Yy]$ ]] || [[ -z "$rofi_response" ]]; then
+    install_rofi_theme \
+        "https://raw.githubusercontent.com/nirucon/nirucon-rofi/master/nirucon.rasi" \
+        "https://raw.githubusercontent.com/nirucon/nirucon-rofi/master/config.rasi"
+else
+    echo "Skipping Rofi custom theme installation."
 fi
 
 # 8: Final clean up
-echo "Cleaning up temporary files..."
-rm -fr ~/Git/dunstrc ~/Git/nirubar-dwm ~/Git/nirucon-suckless-arch ~/Git/nirucon-death-grubtheme
-echo "All cloned and downloaded files in ~/Git have been deleted, except for the nirucon-alpi directory. Check for new versions of the script at https://github.com/nirucon/nirucon-alpi"
+
+# Function to clean up temporary files
+cleanup_temp_files() {
+    local directories=("dunstrc" "nirubar-dwm" "nirucon-suckless-arch" "nirucon-death-grubtheme")
+    echo "Cleaning up temporary files..."
+
+    for dir in "${directories[@]}"; do
+        local path=~/Git/$dir
+        if [ -d "$path" ]; then
+            rm -rf "$path"
+            echo "Removed $path"
+        else
+            echo "$path does not exist"
+        fi
+    done
+
+    echo "All cloned and downloaded files in ~/Git have been deleted, except for the nirucon-alpi directory."
+    echo "Check for new versions of the script at https://github.com/nirucon/nirucon-alpi"
+}
+
+cleanup_temp_files
 
 # 9: Good buy
 echo "NIRUCON-ALPI Arch Linux Post Install Script Completed - NOW BE CREATIVE!"
