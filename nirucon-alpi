@@ -4,7 +4,7 @@
 # https://github.com/nirucon
 # The script is made for my own needs but is free to use and modify
 # Focus of the script: suckless dwm setup, dmenu scripts, noir theming, music and content creation applications + some extra stuff
-# Script version: 2024-07-31.04
+# Script version: 2024-07-31.05
 
 # Function: Display welcome message
 display_welcome() {
@@ -171,11 +171,55 @@ install_suckless() {
         sudo cp -f ~/Git/nirucon-suckless-arch/issue /etc/
         chmod +x ~/.dwm/autostart.sh ~/.config/suckless/nirubar-dwm/nirubar-dwm ~/.config/nirucon-greeter/greeter
 
-        for repo in "${repos[@]:2}"; do
-            sudo cp -f ~/Git/$repo/$repo /usr/local/bin/
-            sudo chmod +x /usr/local/bin/$repo
-            rm -rf ~/Git/$repo
-        done
+        # sverigesradio-dmenu - dmenu script for sveriges radio
+        echo "Cloning and installing the 'sverigesradio-dmenu' script..."
+        rm -rf ~/Git/sverigesradio-dmenu
+        git clone https://github.com/nirucon/sverigesradio-dmenu ~/Git/sverigesradio-dmenu
+        sudo cp -f ~/Git/sverigesradio-dmenu/sverigesradio-dmenu /usr/local/bin/
+        sudo chmod +x /usr/local/bin/sverigesradio-dmenu
+        rm -rf ~/Git/sverigesradio-dmenu
+
+        # srpod-dmenu - dmenu script for sr play pod
+        echo "Cloning and installing the 'srpod-dmenu' script..."
+        rm -rf ~/Git/srpod-dmenu
+        git clone https://github.com/nirucon/srpod-dmenu ~/Git/srpod-dmenu
+        sudo cp -f ~/Git/srpod-dmenu/srpod-dmenu /usr/local/bin/
+        sudo chmod +x /usr/local/bin/srpod-dmenu
+        rm -rf ~/Git/srpod-dmenu
+
+        # dwmexit-dmenu - dmenu script for suspend, logout, restart, reboot
+        echo "Installing dwmexit-dmenu script..."
+        rm -rf ~/Git/dwmexit-dmenu
+        git clone https://github.com/nirucon/dwmexit-dmenu ~/Git/dwmexit-dmenu
+        sudo cp -f ~/Git/dwmexit-dmenu/dwmexit-dmenu /usr/local/bin/
+        sudo chmod +x /usr/local/bin/dwmexit-dmenu
+        rm -rf ~/Git/dwmexit-dmenu
+
+        # havamal - script for random quotes in .bashrc
+        echo "Installing havamal script..."
+        rm -rf ~/Git/havamal
+        git clone https://github.com/nirucon/havamal ~/Git/havamal
+        mkdir -p ~/.config/havamal
+        cp -fr ~/Git/havamal/* ~/.config/havamal/
+        chmod +x ~/.config/havamal/havamal
+        rm -rf ~/Git/havamal
+        echo "The 'havamal' script has been installed and the repository has been removed."
+
+        # wifi-dmenu - script for wifi in dmenu
+        echo "Installing wifi-dmenu script..."
+        rm -rf ~/Git/wifi-dmenu
+        git clone https://github.com/nirucon/wifi-dmenu ~/Git/wifi-dmenu
+        sudo cp -f ~/Git/wifi-dmenu/wifi-dmenu /usr/local/bin/
+        sudo chmod +x /usr/local/bin/wifi-dmenu
+        rm -rf ~/Git/wifi-dmenu
+
+        # arch-optimizer-dmenu - script for optimizing arch linux in dmenu
+        echo "Installing arch-optimizer-dmenu script..."
+        rm -rf ~/Git/arch-optimizer-dmenu
+        git clone https://github.com/nirucon/arch-optimizer-dmenu ~/Git/arch-optimizer-dmenu
+        sudo cp -f ~/Git/arch-optimizer-dmenu/arch-optimizer-dmenu /usr/local/bin/
+        sudo chmod +x /usr/local/bin/arch-optimizer-dmenu
+        rm -rf ~/Git/arch-optimizer-dmenu
 
         echo "Suckless utilities and configurations installed successfully."
     else
@@ -329,7 +373,7 @@ main() {
 
     echo "Cleaning up temporary files..."
     rm -fr ~/Git/dunstrc ~/Git/nirubar-dwm ~/Git/nirucon-suckless-arch ~/Git/nirucon-death-grubtheme
-    echo "NIRUCON-ALPI Arch Linux Post Install Script Completed - NOW BE CREATIVE!"
+    echo "NIRUCON-ALPI Arch Linux Post Install Script completed - NOW BE CREATIVE!"
 }
 
 main
