@@ -29,9 +29,9 @@ chmod +x nirucon-alpi
 - **install_packages**: Installs essential packages using `pacman` and `yay`.
 - **install_timeshift_if_btrfs**: Installs `timeshift-autosnap` if `btrfs` filesystem is detected.
 - **install_optional**: Installs optional packages based on user choice.
-- **install_suckless**: Installs Suckless utilities and related configurations.
+- **install_suckless**: Installs nirucon-suckless-arch and related configurations, scripts and dot-files.
 - **install_grub_theme**: Installs a custom GRUB theme.
-- **install_themes_icons**: Installs GTK themes, icon themes, and Rofi custom themes.
+- **install_themes_icons**: Installs GTK themes, icon themes and Rofi custom themes.
 
 ### Main Function
 Executes the script by calling the necessary functions in sequence to perform the post-installation tasks.
