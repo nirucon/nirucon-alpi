@@ -261,7 +261,7 @@ install_grub_theme() {
     fi
 }
 
-# Function: Install Noir Themes and Icons
+# Function: Install Graphite GTK Theme and Rofi Custom Theme
 install_themes_icons() {
     read -r -p "Do you want to install the GTK theme and icons? [Y/n]: " gtk_response
     gtk_response=${gtk_response,,}
@@ -269,25 +269,15 @@ install_themes_icons() {
     rofi_response=${rofi_response,,}
 
     if [[ "$gtk_response" =~ ^(yes|y| ) ]] || [[ -z "$gtk_response" ]]; then
-        echo "Installing Equilux theme and Papirus Dark Grey icons..."
-        git clone https://github.com/ddnexus/equilux-theme
-        if [ -d "equilux-theme" ]; then
-            cd equilux-theme
+        echo "Installing Graphite GTK theme..."
+        git clone https://github.com/vinceliuice/Graphite-gtk-theme
+        if [ -d "Graphite-gtk-theme" ]; then
+            cd Graphite-gtk-theme
             sudo ./install.sh
             cd ..
-            rm -rf equilux-theme
+            rm -rf Graphite-gtk-theme
         else
-            echo "Failed to clone Equilux theme repository. Please check your internet connection."
-            exit 1
-        fi
-
-        git clone https://github.com/Intika-KDE-Plasmoids/plasmoid-papirus-dark-grey-icon-theme
-        if [ -d "plasmoid-papirus-dark-grey-icon-theme" ]; then
-            sudo mkdir -p /usr/share/icons/Papirus-Dark-Grey
-            sudo cp -r plasmoid-papirus-dark-grey-icon-theme/Papirus-Dark-Grey/* /usr/share/icons/Papirus-Dark-Grey/
-            rm -rf plasmoid-papirus-dark-grey-icon-theme
-        else
-            echo "Failed to clone Papirus Dark Grey icons repository. Please check your internet connection."
+            echo "Failed to clone Graphite GTK theme repository. Please check your internet connection."
             exit 1
         fi
 
@@ -295,8 +285,8 @@ install_themes_icons() {
             mkdir -p ~/.config/gtk-3.0/
             cat <<EOF >~/.config/gtk-3.0/settings.ini
 [Settings]
-gtk-theme-name=Equilux
-gtk-icon-theme-name=Papirus-Dark-Grey
+gtk-theme-name=Graphite
+gtk-icon-theme-name=Papirus
 EOF
         else
             echo "lxappearance is not installed. Please install it to set the theme and icons."
