@@ -94,7 +94,7 @@ install_packages() {
         xorg-server xorg-xinit xorg-xrandr xorg-xsetroot noto-fonts noto-fonts-emoji playerctl
         lxappearance qt6ct breeze-icons pcmanfm arandr nitrogen picom openssh cmus scrot gnupg
         pass brightnessctl mpv dunst unzip nano alsa-utils pavucontrol xarchiver xclip htop curl
-        libnotify jq bc
+        libnotify jq bc reflector
     )
     local packages_yay=(
         ttf-font-awesome ttf-mononoki-nerd maim xautolock rofi fastfetch
