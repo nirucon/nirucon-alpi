@@ -186,7 +186,7 @@ install_suckless() {
         rm -rf ~/Git/nirucon-dmenu
         git clone https://github.com/nirucon/nirucon-dmenu ~/Git/nirucon-dmenu
         sudo cp -f ~/Git/nirucon-dmenu/nirucon-dmenu-scripts-launcher /usr/local/bin/
-        sudo chmod +x /usr/local/bin/nirucon-dmenu-nirucon-scripts-launcher
+        sudo chmod +x /usr/local/bin/nirucon-dmenu-scripts-launcher
         rm -rf ~/Git/nirucon-dmenu
 
         # sverigesradio-dmenu - dmenu script for sveriges radio
