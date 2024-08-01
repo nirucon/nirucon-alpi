@@ -303,7 +303,7 @@ install_themes_icons() {
             exit 1
         fi
 
-        # Manually move themes and icons to the correct directories if they exist
+        # Debugging: Print the paths where the themes and icons might be located
         echo "Checking for installed themes and icons in common directories..."
 
         echo "Contents of $HOME/.themes:"
@@ -321,9 +321,17 @@ install_themes_icons() {
         echo "Contents of $XDG_DATA_HOME/icons:"
         ls -la $XDG_DATA_HOME/icons
 
+        echo "Contents of /usr/share/themes:"
+        ls -la /usr/share/themes
+
+        echo "Contents of /usr/share/icons:"
+        ls -la /usr/share/icons
+
         # Moving themes and icons to the correct directories
         echo "Moving themes and icons to the correct directories..."
         sudo mkdir -p /usr/share/themes /usr/share/icons
+
+        # Copying Graphite theme to /usr/share/themes
         if [ -d "$HOME/.themes/Graphite-dark" ]; then
             sudo cp -r "$HOME/.themes/Graphite-dark" /usr/share/themes/
         elif [ -d "$HOME/.local/share/themes/Graphite-dark" ]; then
@@ -332,10 +340,13 @@ install_themes_icons() {
             sudo cp -r "$XDG_DATA_HOME/themes/Graphite-dark" /usr/share/themes/
         fi
 
+        # Copying Tela icons to /usr/share/icons
         if [ -d "$HOME/.local/share/icons/Tela-black" ]; then
             sudo cp -r "$HOME/.local/share/icons/Tela-black" /usr/share/icons/
         elif [ -d "$XDG_DATA_HOME/icons/Tela-black" ]; then
             sudo cp -r "$XDG_DATA_HOME/icons/Tela-black" /usr/share/icons/
+        elif [ -d "$HOME/.icons/Tela-black" ]; then
+            sudo cp -r "$HOME/.icons/Tela-black" /usr/share/icons/
         fi
 
         # Set GTK themes in the configuration files
