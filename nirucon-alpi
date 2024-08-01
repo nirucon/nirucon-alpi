@@ -271,7 +271,7 @@ install_grub_theme() {
     fi
 }
 
-# Function: Install Graphite GTK Theme (Black), Tela Circle Icons (Black) and nirucon Rofi Custom Theme
+# Function: Install Graphite GTK Theme (Dark), Tela Circle Icons (Black) and nirucon Rofi Custom Theme
 install_themes_icons() {
     read -r -p "Do you want to install the GTK theme and icons? [Y/n]: " gtk_response
     gtk_response=${gtk_response,,}
@@ -279,11 +279,11 @@ install_themes_icons() {
     rofi_response=${rofi_response,,}
 
     if [[ "$gtk_response" =~ ^(yes|y| ) ]] || [[ -z "$gtk_response" ]]; then
-        echo "Installing Graphite GTK theme (Black)..."
+        echo "Installing Graphite GTK theme (Dark)..."
         git clone https://github.com/vinceliuice/Graphite-gtk-theme
         if [ -d "Graphite-gtk-theme" ]; then
             cd Graphite-gtk-theme
-            sudo ./install.sh -d /usr/share/themes -t standard -c dark
+            sudo ./install.sh -d /usr/share/themes -c dark
             cd ..
             rm -rf Graphite-gtk-theme
         else
@@ -295,7 +295,7 @@ install_themes_icons() {
         git clone https://github.com/vinceliuice/Tela-circle-icon-theme
         if [ -d "Tela-circle-icon-theme" ]; then
             cd Tela-circle-icon-theme
-            sudo ./install.sh -d /usr/share/icons --tela-black
+            sudo ./install.sh -d /usr/share/icons -a black
             cd ..
             rm -rf Tela-circle-icon-theme
         else
@@ -324,12 +324,12 @@ install_themes_icons() {
         # Manually move themes and icons to the correct directories if they exist
         echo "Moving themes and icons to the correct directories..."
         sudo mkdir -p /usr/share/themes /usr/share/icons
-        if [ -d "$HOME/.themes/Graphite-Dark" ]; then
-            sudo cp -r "$HOME/.themes/Graphite-Dark" /usr/share/themes/
-        elif [ -d "$HOME/.local/share/themes/Graphite-Dark" ]; then
-            sudo cp -r "$HOME/.local/share/themes/Graphite-Dark" /usr/share/themes/
-        elif [ -d "$XDG_DATA_HOME/themes/Graphite-Dark" ]; then
-            sudo cp -r "$XDG_DATA_HOME/themes/Graphite-Dark" /usr/share/themes/
+        if [ -d "$HOME/.themes/Graphite-dark" ]; then
+            sudo cp -r "$HOME/.themes/Graphite-dark" /usr/share/themes/
+        elif [ -d "$HOME/.local/share/themes/Graphite-dark" ]; then
+            sudo cp -r "$HOME/.local/share/themes/Graphite-dark" /usr/share/themes/
+        elif [ -d "$XDG_DATA_HOME/themes/Graphite-dark" ]; then
+            sudo cp -r "$XDG_DATA_HOME/themes/Graphite-dark" /usr/share/themes/
         fi
 
         if [ -d "$HOME/.local/share/icons/Tela-black" ]; then
@@ -343,33 +343,33 @@ install_themes_icons() {
         mkdir -p ~/.config/gtk-4.0/
 
         # GTK2 settings
-        echo 'gtk-theme-name="Graphite-Dark"' > ~/.gtkrc-2.0
+        echo 'gtk-theme-name="Graphite-dark"' > ~/.gtkrc-2.0
         echo 'gtk-icon-theme-name="Tela-black"' >> ~/.gtkrc-2.0
 
         # GTK3 settings
         cat <<EOF > ~/.config/gtk-3.0/settings.ini
 [Settings]
-gtk-theme-name=Graphite-Dark
+gtk-theme-name=Graphite-dark
 gtk-icon-theme-name=Tela-black
 EOF
 
         # GTK4 settings
         cat <<EOF > ~/.config/gtk-4.0/settings.ini
 [Settings]
-gtk-theme-name=Graphite-Dark
+gtk-theme-name=Graphite-dark
 gtk-icon-theme-name=Tela-black
 EOF
 
         # Insert environment variables into .xinitrc
-        if ! grep -q 'export GTK_THEME="Graphite-Dark"' ~/.xinitrc; then
+        if ! grep -q 'export GTK_THEME="Graphite-dark"' ~/.xinitrc; then
             sed -i '/# Set default GTK and Icon themes/a \
-export GTK_THEME="Graphite-Dark" \
+export GTK_THEME="Graphite-dark" \
 export GTK2_RC_FILES="$HOME/.gtkrc-2.0" \
 export GTK3_SETTINGS="$HOME/.config/gtk-3.0/settings.ini" \
 export GTK4_SETTINGS="$HOME/.config/gtk-4.0/settings.ini"' ~/.xinitrc
         fi
 
-        echo "Theme set to Graphite-Dark and icon theme set to Tela-black."
+        echo "Theme set to Graphite-dark and icon theme set to Tela-black."
     else
         echo "Skipping GTK theme and icons installation."
     fi
