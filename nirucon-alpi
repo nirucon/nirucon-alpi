@@ -303,12 +303,29 @@ install_themes_icons() {
             exit 1
         fi
 
-        # Insert lines into .xinitrc file
-        sed -i '/# Set default GTK and Icon themes/a \
-gsettings set org.gnome.desktop.interface gtk-theme "Graphite-black" \
-gsettings set org.gnome.desktop.interface icon-theme "Tela-black"' ~/.xinitrc
+        # Set GTK themes in the configuration files
+        mkdir -p ~/.config/gtk-3.0/
+        mkdir -p ~/.config/gtk-4.0/
 
-        echo "Theme set to Graphite-black and icon theme set to Tela-black in .xinitrc."
+        # GTK2 settings
+        echo 'gtk-theme-name="Graphite-black"' > ~/.gtkrc-2.0
+        echo 'gtk-icon-theme-name="Tela-black"' >> ~/.gtkrc-2.0
+
+        # GTK3 settings
+        cat <<EOF > ~/.config/gtk-3.0/settings.ini
+[Settings]
+gtk-theme-name=Graphite-black
+gtk-icon-theme-name=Tela-black
+EOF
+
+        # GTK4 settings
+        cat <<EOF > ~/.config/gtk-4.0/settings.ini
+[Settings]
+gtk-theme-name=Graphite-black
+gtk-icon-theme-name=Tela-black
+EOF
+
+        echo "Theme set to Graphite-black and icon theme set to Tela-black."
     else
         echo "Skipping GTK theme and icons installation."
     fi
