@@ -325,12 +325,6 @@ gtk-theme-name=Graphite-black
 gtk-icon-theme-name=Tela-black
 EOF
 
-        # Ensure lxappearance is installed to set the theme
-        sudo pacman -S --needed --noconfirm lxappearance
-
-        # Set the theme using lxappearance
-        lxappearance &
-
         # Insert environment variables into .xinitrc
         if ! grep -q 'export GTK_THEME="Graphite-black"' ~/.xinitrc; then
             sed -i '/# Set default GTK and Icon themes/a \
@@ -340,7 +334,7 @@ export GTK3_SETTINGS="$HOME/.config/gtk-3.0/settings.ini" \
 export GTK4_SETTINGS="$HOME/.config/gtk-4.0/settings.ini"' ~/.xinitrc
         fi
 
-        echo "Theme set to Graphite-black and icon theme set to Tela-black using lxappearance."
+        echo "Theme set to Graphite-black and icon theme set to Tela-black."
     else
         echo "Skipping GTK theme and icons installation."
     fi
