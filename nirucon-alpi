@@ -253,6 +253,24 @@ install_suckless() {
     fi
 }
 
+# Function: Install custom GRUB theme
+install_grub_theme() {
+    read -p "Do you want to install a custom grub theme - nirucon-death? [Y/n]: " grub_response
+    grub_response=${grub_response,,}
+
+    if [[ "$grub_response" =~ ^(yes|y| ) ]] || [[ -z "$grub_response" ]]; then
+        echo "Installing custom grub theme..."
+        git clone https://github.com/nirucon/nirucon-death-grubtheme ~/Git/nirucon-death-grubtheme
+        sudo mkdir -p /boot/grub/themes
+        sudo cp -r ~/Git/nirucon-death-grubtheme/nirucon-death /boot/grub/themes/nirucon-death
+        sudo sed -i 's|^#GRUB_THEME=.*|GRUB_THEME="/boot/grub/themes/nirucon-death/theme.txt"|' /etc/default/grub
+        sudo grub-mkconfig -o /boot/grub/grub.cfg
+        echo "Custom grub theme installed."
+    else
+        echo "Skipping custom grub theme installation."
+    fi
+}
+
 # Function: Install Graphite GTK Theme (Black), Tela Circle Icons (Black) and nirucon Rofi Custom Theme
 install_themes_icons() {
     read -r -p "Do you want to install the GTK theme and icons? [Y/n]: " gtk_response
