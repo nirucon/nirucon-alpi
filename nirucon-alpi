@@ -5,13 +5,24 @@
 # The script is made for my own needs but is free to use and modify
 # Focus of the script: suckless dwm setup, dmenu scripts, noir theming, music and content creation applications + some extra stuff
 
+# Function: Check for internet connection
+check_internet_connection() {
+    if ping -q -c 1 -W 1 google.com >/dev/null; then
+        echo -e "\e[32mInternet connection: OK\e[0m"
+    else
+        echo -e "\e[31mInternet connection: DOWN\e[0m"
+        echo "This script requires an active internet connection. Please resolve the issue and run the script again."
+        exit 1
+    fi
+}
+
 # Function: Display welcome message
 display_welcome() {
     echo -e "       _\n _ __ (_)_ __ _   _  ___ ___  _ ___\n| '_ \\| | '__| | | |/ __/ _ \\| '_  |\n| | | | | |  | |_| | (__| (_) | | | |\n|_| |_|_|_|   \\__,_|\\___\\___/|_| |_| \nArch Linux Post Install"
     echo "Welcome to NIRUCON-ALPI - Nicklas Rudolfsson's post-install script of 'My Suckless Setup' for Arch Linux."
     echo "This is tailored for MY own needs (focus on noir theming and music and media production). Feel free to use and modify, but I disclaim all responsibility; proceed at your own risk!"
     echo "Contact: n@rudolfsson.net"
-    echo "Script version: 2024-08-01.01"
+    echo "Script version: 2024-08-01.02"
     echo ""
 }
 
@@ -91,7 +102,7 @@ optimize_pacman_conf() {
 install_packages() {
     local packages_pacman=(
         xorg-server xorg-xinit xorg-xrandr xorg-xsetroot noto-fonts noto-fonts-emoji playerctl
-        lxappearance qt6ct breeze-icons pcmanfm arandr nitrogen picom openssh cmus scrot gnupg
+        qt6ct breeze-icons pcmanfm arandr nitrogen picom openssh cmus scrot gnupg
         pass brightnessctl mpv dunst unzip nano alsa-utils pavucontrol xarchiver xclip htop curl
         libnotify jq bc reflector
     )
@@ -139,7 +150,7 @@ install_optional() {
     fi
 }
 
-# Function: Clone and install Suckless utilities and configurations
+# Function: Clone and install nirucon-sucklessa-arch and related files, scripts and dot files
 install_suckless() {
     read -p "Do you want to install suckless dwm, dmenu, st, slock and related configurations, dotfiles and some dmenu scripts? [Y/n]: " choice
     if [[ "$choice" == [Yy]* ]] || [[ -z "$choice" ]]; then
@@ -292,25 +303,12 @@ install_themes_icons() {
             exit 1
         fi
 
-        if command -v lxappearance >/dev/null 2>&1; then
-            # For GTK2
-            cat <<EOF >~/.gtkrc-2.0
-gtk-theme-name="Graphite-black"
-gtk-icon-theme-name="Tela-black"
-EOF
+        # Insert lines into .xinitrc file
+        sed -i '/# Set default GTK and Icon themes/a \
+gsettings set org.gnome.desktop.interface gtk-theme "Graphite-black" \
+gsettings set org.gnome.desktop.interface icon-theme "Tela-black"' ~/.xinitrc
 
-            # For GTK3
-            mkdir -p ~/.config/gtk-3.0/
-            cat <<EOF >~/.config/gtk-3.0/settings.ini
-[Settings]
-gtk-theme-name=Graphite-black
-gtk-icon-theme-name=Tela-black
-EOF
-
-            echo "Theme set to Graphite-black and icon theme set to Tela-black using lxappearance."
-        else
-            echo "lxappearance is not installed. Please install it to set the theme and icons."
-        fi
+        echo "Theme set to Graphite-black and icon theme set to Tela-black in .xinitrc."
     else
         echo "Skipping GTK theme and icons installation."
     fi
@@ -342,6 +340,7 @@ EOF
 
 # Main function to execute the script
 main() {
+    check_internet_connection
     display_welcome
     confirm_proceed
 
