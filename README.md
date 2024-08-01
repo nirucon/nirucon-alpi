@@ -1,81 +1,61 @@
-# nirucon-alpi
-
-# NIRUCON-ALPI: Arch Linux Post-Install
-
-Welcome to the **NIRUCON-ALPI** post-installation script, tailored for Arch Linux users who want a streamlined setup focused on suckless software, noir theming, and tools for music recording and media production. This script is designed to automate the setup process (with Y/n questions) of a custom environment with essential software and configurations. It’s built around my own preferences but is free for anyone to use at their own risk.
-
-Note: I am not particularly knowledgeable or skilled in bash scripting or programming, so this script and related scripts have been created to the best of my ability. There are certainly many things that could be improved, and I will likely discover them myself as well.
-
-## Table of Contents
-
-1. [Overview](#overview)
-2. [Installation Steps](#installation-steps)
-3. [Optional Configurations](#optional-configurations)
-4. [Suckless Installation](#suckless-installation)
-5. [Noir Theme and Icons](#noir-theme-and-icons)
-6. [Contact](#contact)
+# NIRUCON-ALPI: Arch Linux Post Install Script
 
 ## Overview
+**NIRUCON-ALPI** is an Arch Linux post-installation script tailored for a Suckless DWM setup, noir theming and music/content creation applications etc. This script is designed and maintained by Nicklas Rudolfsson and can be freely used and modified.
 
-This script automates the installation and configuration of:
+## Features
+- **Suckless DWM setup**: Installs and configures DWM, dmenu, st, and slock.
+- **Noir theming**: Custom themes for GTK, icons, and Rofi.
+- **Music and content creation** (optional): Installs DAW apps and plugins.
+- **Additional optional packages and software**: Includes installation of various essential packages and optional software.
 
-- Essential base programs and system optimizations
-- A variety of suckless software (like dwm, dmenu, slock and st)
-- Noir-themed aesthetics and icons
-- Various applications for music production, media editing, development and more...
+## Installation
+To run the script, ensure you have an active internet connection and execute the following command:
 
-**Disclaimer:** This script is tailored for my specific setup and preferences. While it is free to use and modify, it is provided as-is, and I disclaim all responsibility for any issues that may arise. Proceed with caution and at your own risk.
+```bash
+curl -O https://raw.githubusercontent.com/nirucon/nirucon-alpi/main/nirucon-alpi
+chmod +x nirucon-alpi
+./nirucon-alpi
+```
 
-## Installation Steps
+## Script Breakdown
+### Functions
+- **check_internet_connection**: Verifies internet connectivity.
+- **display_welcome**: Shows a welcome message.
+- **confirm_proceed**: Prompts for user confirmation to proceed.
+- **install_if_needed**: Installs a package if it's not already installed.
+- **install_yay**: Installs the AUR helper `yay`.
+- **optimize_pacman_conf**: Configures `pacman.conf` for optimal performance.
+- **install_packages**: Installs essential packages using `pacman` and `yay`.
+- **install_timeshift_if_btrfs**: Installs `timeshift-autosnap` if `btrfs` filesystem is detected.
+- **install_optional**: Installs optional packages based on user choice.
+- **install_suckless**: Installs Suckless utilities and related configurations.
+- **install_grub_theme**: Installs a custom GRUB theme.
+- **install_themes_icons**: Installs GTK themes, icon themes, and Rofi custom themes.
 
-1. **Base Programs Installation**
-   - Installs `git`, `wget`, and the AUR helper `yay` (if not installed).
-   - Essential system optimizations and updates.
+### Main Function
+Executes the script by calling the necessary functions in sequence to perform the post-installation tasks.
 
-2. **Essential Package Installation**
-   - Installs core packages like `xorg` and some more of my needed applications and tools.
-   - Adds additional applications from AUR.
+## Customization
+You can customize the script to fit your specific needs by modifying the functions and package lists. Ensure to read through the script and adjust the configurations and package selections accordingly.
 
-3. **Optional Applications**
-   - Provides options to install various categories of applications:
-     - **Browser**
-     - **Music Streaming**
-     - **File sync / Nextcloud Client**
-     - **DAW Apps**
-     - **DAW Plugins**
-     - **Web Development Apps**
-     - **Image and Video Apps**
-     - **Communication Apps**
+## GitHub Repositories Used
+The script utilizes various repositories from my [nirucon github repos](https://github.com/nirucon):
 
-4. **Custom Grub Theme**
-   - Installs a custom GRUB theme to enhance the boot menu appearance.
-   - https://github.com/nirucon/nirucon-death-grubtheme
-
-5. **Suckless Software**
-   - Installs and configures suckless software such as DWM, dmenu, and st.
-   - Includes custom scripts for enhanced functionality.
-
-6. **Noir Theme and Icons**
-   - Installs noir themes and icons for a stylish, dark appearance.
-
-## Suckless Installation
-
-The script will set up various suckless software with my "noir theming", including:
-- **dwm (Dynamic Window Manager)**
-- **dmenu (Dynamic Menu)**
-- **st (Simple Terminal)**
-- **slock (Simple Lock)**
-
-It also installs and configures additional scripts like nirubar-dwm and dotfiles for a customized experience.
-
-nirubar - my status bar for dwm: https://github.com/nirucon/nirubar-dwm
-
-## Noir Theme and Icons
-
-You can optionally install:
-- **Equilux Theme:** A dark GTK theme.
-- **Papirus Dark Grey Icons:** A dark icon theme.
-- **Rofi Theme:** A dark Rofi theme for enhanced aesthetics.
+- [nirucon-alpi](https://github.com/nirucon/nirucon-alpi)
+- [nirucon-suckless-arch](https://github.com/nirucon/nirucon-suckless-arch)
+- [nirubar-dwm](https://github.com/nirucon/nirubar-dwm)
+- [dunstrc](https://github.com/nirucon/dunstrc)
+- [nirucon-dmenu](https://github.com/nirucon/nirucon-dmenu)
+- [sverigesradio-dmenu](https://github.com/nirucon/sverigesradio-dmenu)
+- [srpod-dmenu](https://github.com/nirucon/srpod-dmenu)
+- [srplay-dmenu](https://github.com/nirucon/srplay-dmenu)
+- [dwmexit-dmenu](https://github.com/nirucon/dwmexit-dmenu)
+- [havamal](https://github.com/nirucon/havamal)
+- [wifi-dmenu](https://github.com/nirucon/wifi-dmenu)
+- [arch-optimizer-dmenu](https://github.com/nirucon/arch-optimizer-dmenu)
+- [nirucon-death-grubtheme](https://github.com/nirucon/nirucon-death-grubtheme)
+- [nirucon-rofi](https://github.com/nirucon/nirucon-rofi)
 
 ## License
 
