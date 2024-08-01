@@ -77,6 +77,6 @@ You can optionally install:
 - **Papirus Dark Grey Icons:** A dark icon theme.
 - **Rofi Theme:** A dark Rofi theme for enhanced aesthetics.
 
-## Contact
+## License
 
-For any questions or feedback, feel free to contact me at: [n@rudolfsson.net](mailto:n@rudolfsson.net)
+Feel free to use and modify, donate if you want :) https://www.paypal.com/paypalme/nicklasrudolfsson
