@@ -340,9 +340,6 @@ EOF
     fi
 }
 
-# Call the function to execute
-install_themes_icons
-
 # Main function to execute the script
 main() {
     display_welcome
