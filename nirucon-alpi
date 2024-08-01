@@ -260,7 +260,7 @@ install_grub_theme() {
     fi
 }
 
-# Function: Install Graphite GTK Theme and Rofi Custom Theme
+# Function: Install Graphite GTK Theme (Black), Tela Circle Icons (Black) and nirucon Rofi Custom Theme
 install_themes_icons() {
     read -r -p "Do you want to install the GTK theme and icons? [Y/n]: " gtk_response
     gtk_response=${gtk_response,,}
@@ -268,11 +268,11 @@ install_themes_icons() {
     rofi_response=${rofi_response,,}
 
     if [[ "$gtk_response" =~ ^(yes|y| ) ]] || [[ -z "$gtk_response" ]]; then
-        echo "Installing Graphite GTK theme..."
+        echo "Installing Graphite GTK theme (Black)..."
         git clone https://github.com/vinceliuice/Graphite-gtk-theme
         if [ -d "Graphite-gtk-theme" ]; then
             cd Graphite-gtk-theme
-            sudo ./install.sh
+            sudo ./install.sh -c black
             cd ..
             rm -rf Graphite-gtk-theme
         else
@@ -280,22 +280,34 @@ install_themes_icons() {
             exit 1
         fi
 
+        echo "Installing Tela Circle icon theme (Black)..."
+        git clone https://github.com/vinceliuice/Tela-circle-icon-theme
+        if [ -d "Tela-circle-icon-theme" ]; then
+            cd Tela-circle-icon-theme
+            ./install.sh -a black
+            cd ..
+            rm -rf Tela-circle-icon-theme
+        else
+            echo "Failed to clone Tela Circle icon theme repository. Please check your internet connection."
+            exit 1
+        fi
+
         if command -v lxappearance >/dev/null 2>&1; then
             # For GTK2
             cat <<EOF >~/.gtkrc-2.0
-gtk-theme-name="Graphite"
-gtk-icon-theme-name="Papirus"
+gtk-theme-name="Graphite-black"
+gtk-icon-theme-name="Tela-black"
 EOF
 
             # For GTK3
             mkdir -p ~/.config/gtk-3.0/
             cat <<EOF >~/.config/gtk-3.0/settings.ini
 [Settings]
-gtk-theme-name=Graphite
-gtk-icon-theme-name=Papirus
+gtk-theme-name=Graphite-black
+gtk-icon-theme-name=Tela-black
 EOF
 
-            echo "Theme set to Graphite and icon theme set to Papirus using lxappearance."
+            echo "Theme set to Graphite-black and icon theme set to Tela-black using lxappearance."
         else
             echo "lxappearance is not installed. Please install it to set the theme and icons."
         fi
@@ -327,6 +339,9 @@ EOF
         echo "Skipping Rofi custom theme installation."
     fi
 }
+
+# Call the function to execute
+install_themes_icons
 
 # Main function to execute the script
 main() {
