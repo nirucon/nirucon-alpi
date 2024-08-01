@@ -399,6 +399,7 @@ main() {
     echo "Cleaning up temporary files..."
     rm -fr ~/Git/dunstrc ~/Git/nirubar-dwm ~/Git/nirucon-suckless-arch ~/Git/nirucon-death-grubtheme
     echo "NIRUCON-ALPI Arch Linux Post Install Script completed - NOW BE CREATIVE!"
+    echo "You can now start suckless-nirucon-arch with the command: \e[32mstartx\e[0m"
 }
 
 main
