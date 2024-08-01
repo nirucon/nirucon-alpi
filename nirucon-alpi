@@ -4,7 +4,6 @@
 # https://github.com/nirucon
 # The script is made for my own needs but is free to use and modify
 # Focus of the script: suckless dwm setup, dmenu scripts, noir theming, music and content creation applications + some extra stuff
-# Script version: 2024-07-08.01
 
 # Function: Display welcome message
 display_welcome() {
@@ -12,7 +11,7 @@ display_welcome() {
     echo "Welcome to NIRUCON-ALPI - Nicklas Rudolfsson's post-install script of 'My Suckless Setup' for Arch Linux."
     echo "This is tailored for MY own needs (focus on noir theming and music and media production). Feel free to use and modify, but I disclaim all responsibility; proceed at your own risk!"
     echo "Contact: n@rudolfsson.net"
-    echo "Script version: 2024-07-31.01"
+    echo "Script version: 2024-08-01.01"
     echo ""
 }
 
