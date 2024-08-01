@@ -253,24 +253,6 @@ install_suckless() {
     fi
 }
 
-# Function: Install custom GRUB theme
-install_grub_theme() {
-    read -p "Do you want to install a custom grub theme - nirucon-death? [Y/n]: " grub_response
-    grub_response=${grub_response,,}
-
-    if [[ "$grub_response" =~ ^(yes|y| ) ]] || [[ -z "$grub_response" ]]; then
-        echo "Installing custom grub theme..."
-        git clone https://github.com/nirucon/nirucon-death-grubtheme ~/Git/nirucon-death-grubtheme
-        sudo mkdir -p /boot/grub/themes
-        sudo cp -r ~/Git/nirucon-death-grubtheme/nirucon-death /boot/grub/themes/nirucon-death
-        sudo sed -i 's|^#GRUB_THEME=.*|GRUB_THEME="/boot/grub/themes/nirucon-death/theme.txt"|' /etc/default/grub
-        sudo grub-mkconfig -o /boot/grub/grub.cfg
-        echo "Custom grub theme installed."
-    else
-        echo "Skipping custom grub theme installation."
-    fi
-}
-
 # Function: Install Graphite GTK Theme (Black), Tela Circle Icons (Black) and nirucon Rofi Custom Theme
 install_themes_icons() {
     read -r -p "Do you want to install the GTK theme and icons? [Y/n]: " gtk_response
@@ -283,7 +265,7 @@ install_themes_icons() {
         git clone https://github.com/vinceliuice/Graphite-gtk-theme
         if [ -d "Graphite-gtk-theme" ]; then
             cd Graphite-gtk-theme
-            sudo ./install.sh -d /usr/share/themes -c black
+            sudo ./install.sh -c black
             cd ..
             rm -rf Graphite-gtk-theme
         else
@@ -295,12 +277,29 @@ install_themes_icons() {
         git clone https://github.com/vinceliuice/Tela-circle-icon-theme
         if [ -d "Tela-circle-icon-theme" ]; then
             cd Tela-circle-icon-theme
-            sudo ./install.sh -d /usr/share/icons -a black
+            sudo ./install.sh -a black
             cd ..
             rm -rf Tela-circle-icon-theme
         else
             echo "Failed to clone Tela Circle icon theme repository. Please check your internet connection."
             exit 1
+        fi
+
+        # Manually move themes and icons to the correct directories
+        echo "Moving themes and icons to the correct directories..."
+        sudo mkdir -p /usr/share/themes /usr/share/icons
+        if [ -d "$HOME/.themes/Graphite-black" ]; then
+            sudo mv "$HOME/.themes/Graphite-black" /usr/share/themes/
+        elif [ -d "$HOME/.local/share/themes/Graphite-black" ]; then
+            sudo mv "$HOME/.local/share/themes/Graphite-black" /usr/share/themes/
+        elif [ -d "$XDG_DATA_HOME/themes/Graphite-black" ]; then
+            sudo mv "$XDG_DATA_HOME/themes/Graphite-black" /usr/share/themes/
+        fi
+
+        if [ -d "$HOME/.local/share/icons/Tela-black" ]; then
+            sudo mv "$HOME/.local/share/icons/Tela-black" /usr/share/icons/
+        elif [ -d "$XDG_DATA_HOME/icons/Tela-black" ]; then
+            sudo mv "$XDG_DATA_HOME/icons/Tela-black" /usr/share/icons/
         fi
 
         # Set GTK themes in the configuration files
