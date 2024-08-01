@@ -303,21 +303,39 @@ install_themes_icons() {
             exit 1
         fi
 
+        # Debugging: Print the paths where the themes and icons might be located
+        echo "Checking for installed themes and icons in common directories..."
+
+        echo "Contents of $HOME/.themes:"
+        ls -la $HOME/.themes
+
+        echo "Contents of $HOME/.local/share/themes:"
+        ls -la $HOME/.local/share/themes
+
+        echo "Contents of $XDG_DATA_HOME/themes:"
+        ls -la $XDG_DATA_HOME/themes
+
+        echo "Contents of $HOME/.local/share/icons:"
+        ls -la $HOME/.local/share/icons
+
+        echo "Contents of $XDG_DATA_HOME/icons:"
+        ls -la $XDG_DATA_HOME/icons
+
         # Manually move themes and icons to the correct directories
         echo "Moving themes and icons to the correct directories..."
         sudo mkdir -p /usr/share/themes /usr/share/icons
         if [ -d "$HOME/.themes/Graphite-black" ]; then
-            sudo mv "$HOME/.themes/Graphite-black" /usr/share/themes/
+            sudo cp -r "$HOME/.themes/Graphite-black" /usr/share/themes/
         elif [ -d "$HOME/.local/share/themes/Graphite-black" ]; then
-            sudo mv "$HOME/.local/share/themes/Graphite-black" /usr/share/themes/
+            sudo cp -r "$HOME/.local/share/themes/Graphite-black" /usr/share/themes/
         elif [ -d "$XDG_DATA_HOME/themes/Graphite-black" ]; then
-            sudo mv "$XDG_DATA_HOME/themes/Graphite-black" /usr/share/themes/
+            sudo cp -r "$XDG_DATA_HOME/themes/Graphite-black" /usr/share/themes/
         fi
 
         if [ -d "$HOME/.local/share/icons/Tela-black" ]; then
-            sudo mv "$HOME/.local/share/icons/Tela-black" /usr/share/icons/
+            sudo cp -r "$HOME/.local/share/icons/Tela-black" /usr/share/icons/
         elif [ -d "$XDG_DATA_HOME/icons/Tela-black" ]; then
-            sudo mv "$XDG_DATA_HOME/icons/Tela-black" /usr/share/icons/
+            sudo cp -r "$XDG_DATA_HOME/icons/Tela-black" /usr/share/icons/
         fi
 
         # Set GTK themes in the configuration files
