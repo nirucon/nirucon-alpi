@@ -325,23 +325,22 @@ gtk-theme-name=Graphite-black
 gtk-icon-theme-name=Tela-black
 EOF
 
-        # Ensure xsettingsd is installed
-        sudo pacman -S --needed --noconfirm xsettingsd
+        # Ensure lxappearance is installed to set the theme
+        sudo pacman -S --needed --noconfirm lxappearance
 
-        # Create xsettingsd configuration
-        mkdir -p ~/.config/xsettingsd/
-        cat <<EOF > ~/.config/xsettingsd/xsettingsd.conf
-Net/ThemeName "Graphite-black"
-Net/IconThemeName "Tela-black"
-EOF
+        # Set the theme using lxappearance
+        lxappearance &
 
-        # Insert xsettingsd startup into .xinitrc
-        if ! grep -q "xsettingsd &" ~/.xinitrc; then
+        # Insert environment variables into .xinitrc
+        if ! grep -q 'export GTK_THEME="Graphite-black"' ~/.xinitrc; then
             sed -i '/# Set default GTK and Icon themes/a \
-xsettingsd &' ~/.xinitrc
+export GTK_THEME="Graphite-black" \
+export GTK2_RC_FILES="$HOME/.gtkrc-2.0" \
+export GTK3_SETTINGS="$HOME/.config/gtk-3.0/settings.ini" \
+export GTK4_SETTINGS="$HOME/.config/gtk-4.0/settings.ini"' ~/.xinitrc
         fi
 
-        echo "Theme set to Graphite-black and icon theme set to Tela-black using xsettingsd."
+        echo "Theme set to Graphite-black and icon theme set to Tela-black using lxappearance."
     else
         echo "Skipping GTK theme and icons installation."
     fi
