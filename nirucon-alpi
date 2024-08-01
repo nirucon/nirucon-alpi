@@ -150,7 +150,7 @@ install_optional() {
     fi
 }
 
-# Function: Clone and install nirucon-sucklessa-arch and related files, scripts and dot files
+# Function: Clone and install nirucon-suckless-arch and related files, scripts and dot files
 install_suckless() {
     read -p "Do you want to install suckless dwm, dmenu, st, slock and related configurations, dotfiles and some dmenu scripts? [Y/n]: " choice
     if [[ "$choice" == [Yy]* ]] || [[ -z "$choice" ]]; then
@@ -367,6 +367,23 @@ export GTK4_SETTINGS="$HOME/.config/gtk-4.0/settings.ini"' ~/.xinitrc
     fi
 }
 
+# Function: Add user to realtime group if not already added
+configure_realtime_group() {
+    if grep -q "^realtime:" /etc/group; then
+        echo "Realtime group already exists."
+    else
+        echo "Creating realtime group..."
+        sudo groupadd realtime
+    fi
+
+    if id -nG "$USER" | grep -qw "realtime"; then
+        echo "User is already a member of the realtime group."
+    else
+        echo "Adding user to the realtime group..."
+        sudo usermod -a -G realtime $USER
+    fi
+}
+
 # Main function to execute the script
 main() {
     check_internet_connection
@@ -420,6 +437,11 @@ main() {
     local communication_pacman=(thunderbird irssi signal-desktop)
     local communication_yay=()
     install_optional "Do you want to install Communication apps (thunderbird irssi signal-desktop)?" communication_pacman[@] communication_yay[@]
+
+    # Add user to the realtime group if DAW apps and realtime-privileges are installed
+    if pacman -Qi reaper &>/dev/null && pacman -Qi realtime-privileges &>/dev/null; then
+        configure_realtime_group
+    fi
 
     install_suckless
     install_grub_theme
