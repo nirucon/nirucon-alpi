@@ -281,12 +281,21 @@ install_themes_icons() {
         fi
 
         if command -v lxappearance >/dev/null 2>&1; then
+            # For GTK2
+            cat <<EOF >~/.gtkrc-2.0
+gtk-theme-name="Graphite"
+gtk-icon-theme-name="Papirus"
+EOF
+
+            # For GTK3
             mkdir -p ~/.config/gtk-3.0/
             cat <<EOF >~/.config/gtk-3.0/settings.ini
 [Settings]
 gtk-theme-name=Graphite
 gtk-icon-theme-name=Papirus
 EOF
+
+            echo "Theme set to Graphite and icon theme set to Papirus using lxappearance."
         else
             echo "lxappearance is not installed. Please install it to set the theme and icons."
         fi
