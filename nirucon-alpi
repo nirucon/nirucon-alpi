@@ -283,7 +283,7 @@ install_themes_icons() {
         git clone https://github.com/vinceliuice/Graphite-gtk-theme
         if [ -d "Graphite-gtk-theme" ]; then
             cd Graphite-gtk-theme
-            sudo ./install.sh -c black
+            ./install.sh -c black
             cd ..
             rm -rf Graphite-gtk-theme
         else
@@ -295,7 +295,7 @@ install_themes_icons() {
         git clone https://github.com/vinceliuice/Tela-circle-icon-theme
         if [ -d "Tela-circle-icon-theme" ]; then
             cd Tela-circle-icon-theme
-            sudo ./install.sh -a black
+            ./install.sh -a black
             cd ..
             rm -rf Tela-circle-icon-theme
         else
