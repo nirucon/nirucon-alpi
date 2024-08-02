@@ -184,7 +184,7 @@ install_suckless() {
         chmod +x ~/.dwm/autostart.sh ~/.config/suckless/nirubar-dwm/nirubar-dwm ~/.config/nirucon-greeter/greeter
 
         # Insert nirubar-dwm in .xinitrc
-        line_to_insert="~/.config/suckless/nirubar-dwm/nirubar-dwm-void &"
+        line_to_insert="~/.config/suckless/nirubar-dwm-void/nirubar-dwm-void &"
         comment_line="# Start nirubar-dwm-*"
         if [[ -f ~/.xinitrc ]]; then
           sed -i "/$comment_line/a $line_to_insert" ~/.xinitrc
