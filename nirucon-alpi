@@ -460,7 +460,7 @@ main() {
     install_themes_icons
 
     echo "Cleaning up temporary files..."
-    rm -fr ~/Git/dunstrc ~/Git/nirubar-dwm ~/Git/nirucon-suckless ~/Git/nirucon-death-grubtheme
+    rm -fr ~/Git/dunstrc ~/Git/nirubar-dwm-arch ~/Git/nirucon-suckless ~/Git/nirucon-death-grubtheme
     echo "NIRUCON-ALPI Arch Linux Post Install script completed - NOW BE CREATIVE!"
     echo "Start nirucon-suckless with the command: startx"
 }
