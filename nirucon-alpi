@@ -158,13 +158,13 @@ install_suckless() {
         mkdir -p ~/Git && git clone https://github.com/nirucon/nirucon-suckless ~/Git/nirucon-suckless
         mkdir -p ~/.config/suckless ~/.dwm ~/Music ~/Downloads ~/Pictures ~/Videos ~/Temp ~/.config/dunst
 
-        declare -a repos=("nirubar-dwm" "dunstrc" "nirucon-dmenu" "sverigesradio-dmenu" "srpod-dmenu" "srplay-dmenu" "dwmexit-dmenu" "havamal" "wifi-dmenu" "system-optimizer-dmenu")
+        declare -a repos=("nirubar-dwm-arch" "dunstrc" "nirucon-dmenu" "sverigesradio-dmenu" "srpod-dmenu" "srplay-dmenu" "dwmexit-dmenu" "havamal" "wifi-dmenu" "system-optimizer-dmenu")
         for repo in "${repos[@]}"; do
             rm -rf ~/Git/$repo
             git clone https://github.com/nirucon/$repo ~/Git/$repo
         done
 
-        cp -rf ~/Git/nirubar-dwm/ ~/Git/nirucon-suckless/dmenu ~/Git/nirucon-suckless/st ~/Git/nirucon-suckless/slock ~/Git/nirucon-suckless/dwm ~/.config/suckless
+        cp -rf ~/Git/nirubar-dwm-arch/ ~/Git/nirucon-suckless/dmenu ~/Git/nirucon-suckless/st ~/Git/nirucon-suckless/slock ~/Git/nirucon-suckless/dwm ~/.config/suckless
         cp -rf ~/Git/dunstrc/* ~/.config/dunst
         cp -fr ~/Git/nirucon-suckless/nirucon-greeter ~/.config/
 
@@ -177,11 +177,11 @@ install_suckless() {
         cp -f ~/Git/nirucon-suckless/autostart.sh ~/.dwm
         cp -f ~/Git/nirucon-suckless/.bashrc ~/
         cp -f ~/Git/nirucon-suckless/.bash_aliases_arch ~/
-        cp -f ~/Git/nirucon-suckless/.bash_aliases_void ~/
-        cp -f ~/Git/nirucon-suckless/.bash_aliases_debian ~/
+        #cp -f ~/Git/nirucon-suckless/.bash_aliases_void ~/
+        #cp -f ~/Git/nirucon-suckless/.bash_aliases_debian ~/
         cp -rf ~/Git/nirucon-suckless/nirucon-wallpapers ~/Pictures/
         sudo cp -f ~/Git/nirucon-suckless/issue /etc/
-        chmod +x ~/.dwm/autostart.sh ~/.config/suckless/nirubar-dwm/nirubar-dwm ~/.config/nirucon-greeter/greeter
+        chmod +x ~/.dwm/autostart.sh ~/.config/suckless/nirubar-dwm-arch/nirubar-dwm-arch ~/.config/nirucon-greeter/greeter
 
         # Insert nirubar-dwm in .xinitrc
         line_to_insert="~/.config/suckless/nirubar-dwm-arch/nirubar-dwm-arch &"
