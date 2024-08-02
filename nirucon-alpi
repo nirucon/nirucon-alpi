@@ -150,35 +150,37 @@ install_optional() {
     fi
 }
 
-# Function: Clone and install nirucon-suckless-arch and related files, scripts and dot files
+# Function: Clone and install nirucon-suckless and related files, scripts and dot files
 install_suckless() {
     read -p "Do you want to install suckless dwm, dmenu, st, slock and related configurations, dotfiles and some dmenu scripts? [Y/n]: " choice
     if [[ "$choice" == [Yy]* ]] || [[ -z "$choice" ]]; then
         echo "Installing Suckless utilities and configurations..."
-        mkdir -p ~/Git && git clone https://github.com/nirucon/nirucon-suckless-arch ~/Git/nirucon-suckless-arch
+        mkdir -p ~/Git && git clone https://github.com/nirucon/nirucon-suckless ~/Git/nirucon-suckless
         mkdir -p ~/.config/suckless ~/.dwm ~/Music ~/Downloads ~/Pictures ~/Videos ~/Temp ~/.config/dunst
 
-        declare -a repos=("nirubar-dwm" "dunstrc" "nirucon-dmenu" "sverigesradio-dmenu" "srpod-dmenu" "srplay-dmenu" "dwmexit-dmenu" "havamal" "wifi-dmenu" "arch-optimizer-dmenu")
+        declare -a repos=("nirubar-dwm" "dunstrc" "nirucon-dmenu" "sverigesradio-dmenu" "srpod-dmenu" "srplay-dmenu" "dwmexit-dmenu" "havamal" "wifi-dmenu" "system-optimizer-dmenu")
         for repo in "${repos[@]}"; do
             rm -rf ~/Git/$repo
             git clone https://github.com/nirucon/$repo ~/Git/$repo
         done
 
-        cp -rf ~/Git/nirubar-dwm/ ~/Git/nirucon-suckless-arch/dmenu ~/Git/nirucon-suckless-arch/st ~/Git/nirucon-suckless-arch/slock ~/Git/nirucon-suckless-arch/dwm ~/.config/suckless
+        cp -rf ~/Git/nirubar-dwm/ ~/Git/nirucon-suckless/dmenu ~/Git/nirucon-suckless/st ~/Git/nirucon-suckless/slock ~/Git/nirucon-suckless/dwm ~/.config/suckless
         cp -rf ~/Git/dunstrc/* ~/.config/dunst
-        cp -fr ~/Git/nirucon-suckless-arch/nirucon-greeter ~/.config/
+        cp -fr ~/Git/nirucon-suckless/nirucon-greeter ~/.config/
 
         declare -a suckless_dirs=("dwm" "dmenu" "slock" "st")
         for dir in "${suckless_dirs[@]}"; do
             sudo make -C ~/.config/suckless/$dir clean install
         done
 
-        cp -f ~/Git/nirucon-suckless-arch/.xinitrc ~/
-        cp -f ~/Git/nirucon-suckless-arch/autostart.sh ~/.dwm
-        cp -f ~/Git/nirucon-suckless-arch/.bashrc ~/
-        cp -f ~/Git/nirucon-suckless-arch/.bash_aliases ~/
-        cp -rf ~/Git/nirucon-suckless-arch/nirucon-wallpapers ~/Pictures/
-        sudo cp -f ~/Git/nirucon-suckless-arch/issue /etc/
+        cp -f ~/Git/nirucon-suckless/.xinitrc ~/
+        cp -f ~/Git/nirucon-suckless/autostart.sh ~/.dwm
+        cp -f ~/Git/nirucon-suckless/.bashrc ~/
+        cp -f ~/Git/nirucon-suckless/.bash_aliases_arch ~/
+        cp -f ~/Git/nirucon-suckless/.bash_aliases_void ~/
+        cp -f ~/Git/nirucon-suckless/.bash_aliases_debian ~/
+        cp -rf ~/Git/nirucon-suckless/nirucon-wallpapers ~/Pictures/
+        sudo cp -f ~/Git/nirucon-suckless/issue /etc/
         chmod +x ~/.dwm/autostart.sh ~/.config/suckless/nirubar-dwm/nirubar-dwm ~/.config/nirucon-greeter/greeter
 
         # nirucon-dmenu - dmenu scripts launcher
@@ -239,13 +241,13 @@ install_suckless() {
         sudo chmod +x /usr/local/bin/wifi-dmenu
         rm -rf ~/Git/wifi-dmenu
 
-        # arch-optimizer-dmenu - script for optimizing arch linux in dmenu
-        echo "Installing arch-optimizer-dmenu script..."
-        rm -rf ~/Git/arch-optimizer-dmenu
-        git clone https://github.com/nirucon/arch-optimizer-dmenu ~/Git/arch-optimizer-dmenu
-        sudo cp -f ~/Git/arch-optimizer-dmenu/arch-optimizer-dmenu /usr/local/bin/
-        sudo chmod +x /usr/local/bin/arch-optimizer-dmenu
-        rm -rf ~/Git/arch-optimizer-dmenu
+        # system-optimizer-dmenu - script for optimizing system in dmenu
+        echo "Installing system-optimizer-dmenu script..."
+        rm -rf ~/Git/system-optimizer-dmenu
+        git clone https://github.com/nirucon/system-optimizer-dmenu ~/Git/system-optimizer-dmenu
+        sudo cp -f ~/Git/system-optimizer-dmenu/system-optimizer-dmenu /usr/local/bin/
+        sudo chmod +x /usr/local/bin/system-optimizer-dmenu
+        rm -rf ~/Git/system-optimizer-dmenu
 
         echo "Suckless utilities and configurations installed successfully."
     else
@@ -448,9 +450,9 @@ main() {
     install_themes_icons
 
     echo "Cleaning up temporary files..."
-    rm -fr ~/Git/dunstrc ~/Git/nirubar-dwm ~/Git/nirucon-suckless-arch ~/Git/nirucon-death-grubtheme
-    echo "NIRUCON-ALPI Arch Linux Post Install Script completed - NOW BE CREATIVE!"
-    echo "Start nirucon-suckless-arch with the command: startx"
+    rm -fr ~/Git/dunstrc ~/Git/nirubar-dwm ~/Git/nirucon-suckless ~/Git/nirucon-death-grubtheme
+    echo "NIRUCON-ALPI Arch Linux Post Install script completed - NOW BE CREATIVE!"
+    echo "Start nirucon-suckless with the command: startx"
 }
 
 main
