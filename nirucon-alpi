@@ -1,9 +1,10 @@
 #!/bin/bash
 
-# Arch Linux Post Install script by Nicklas Rudolfsson
-# https://github.com/nirucon
-# The script is made for my own needs but is free to use and modify
-# Focus of the script: suckless dwm setup, dmenu scripts, noir theming, music and content creation applications + some extra stuff
+# Nirucon-ALPI: Post Install script for Arch Linux
+# Author: Nicklas Rudolfsson
+# Version: 2024-08-03
+# License: Feel free to use and modify, donate if you want :) https://www.paypal.com/paypalme/nicklasrudolfsson
+# Disclaimer: I do not have any responsibility at all for this script and changes on your system!
 
 # Function: Check for internet connection
 check_internet_connection() {
@@ -18,23 +19,21 @@ check_internet_connection() {
 
 # Function: Display welcome message
 display_welcome() {
-    echo -e "       _\n _ __ (_)_ __ _   _  ___ ___  _ ___\n| '_ \\| | '__| | | |/ __/ _ \\| '_  |\n| | | | | |  | |_| | (__| (_) | | | |\n|_| |_|_|_|   \\__,_|\\___\\___/|_| |_| \nArch Linux Post Install"
-    echo "Welcome to NIRUCON-ALPI - Nicklas Rudolfsson's post-install script of 'My Suckless Setup' for Arch Linux."
-    echo "This is tailored for MY own needs (focus on noir theming and music and media production). Feel free to use and modify, but I disclaim all responsibility; proceed at your own risk!"
-    echo "Contact: n@rudolfsson.net"
-    echo "Script version: 2024-08-01.02"
-    echo ""
+    clear
+    echo -e "\e[1;34mWelcome to the Nirucon-ALPI Post Install script for Arch Linux\e[0m"
+    echo -e "\e[1;31mDisclaimer: Use at your own risk. The author assumes no responsibility for any changes made to your system.\e[0m"
+    echo "--------------------------------------------------------------------------"
 }
 
 # Function: Prompt confirmation to proceed
 confirm_proceed() {
     read -p "Are you sure you want to continue with the installation? [Y/n]: " confirm_install
-    if [[ "$confirm_install" != [Nn]* ]]; then
-        echo "Proceeding with installation..."
-    else
+    confirm_install="${confirm_install,,}" # Convert to lowercase
+    if [[ "$confirm_install" == "n" ]]; then
         echo "Installation aborted."
         exit 0
     fi
+    echo "Proceeding with installation..."
 }
 
 # Function: Install necessary packages if not already installed
@@ -153,7 +152,8 @@ install_optional() {
 # Function: Clone and install nirucon-suckless and related files, scripts and dot files
 install_suckless() {
     read -p "Do you want to install suckless dwm, dmenu, st, slock and related configurations, dotfiles and some dmenu scripts? [Y/n]: " choice
-    if [[ "$choice" == [Yy]* ]] || [[ -z "$choice" ]]; then
+    choice="${choice,,}"
+    if [[ "$choice" =~ ^(yes|y| ) ]] || [[ -z "$choice" ]]; then
         echo "Installing Suckless utilities and configurations..."
         mkdir -p ~/Git && git clone https://github.com/nirucon/nirucon-suckless ~/Git/nirucon-suckless
         mkdir -p ~/.config/suckless ~/.dwm ~/Music ~/Downloads ~/Pictures ~/Videos ~/Temp ~/.config/dunst
@@ -177,8 +177,6 @@ install_suckless() {
         cp -f ~/Git/nirucon-suckless/autostart.sh ~/.dwm
         cp -f ~/Git/nirucon-suckless/.bashrc ~/
         cp -f ~/Git/nirucon-suckless/.bash_aliases_arch ~/
-        #cp -f ~/Git/nirucon-suckless/.bash_aliases_void ~/
-        #cp -f ~/Git/nirucon-suckless/.bash_aliases_debian ~/
         cp -rf ~/Git/nirucon-suckless/nirucon-wallpapers ~/Pictures/
         sudo cp -f ~/Git/nirucon-suckless/issue /etc/
         chmod +x ~/.dwm/autostart.sh ~/.config/suckless/nirubar-dwm-arch/nirubar-dwm-arch ~/.config/nirucon-greeter/greeter
@@ -187,10 +185,10 @@ install_suckless() {
         line_to_insert="~/.config/suckless/nirubar-dwm-arch/nirubar-dwm-arch &"
         comment_line="# Start nirubar-dwm-*"
         if [[ -f ~/.xinitrc ]]; then
-          sed -i "/$comment_line/a $line_to_insert" ~/.xinitrc
-          echo "Line inserted successfully."
+            sed -i "/$comment_line/a $line_to_insert" ~/.xinitrc
+            echo "Line inserted successfully."
         else
-          echo "~/.xinitrc not found. Please ensure you have the file in your home directory."
+            echo "~/.xinitrc not found. Please ensure you have the file in your home directory."
         fi
 
         # nirucon-dmenu - dmenu scripts launcher
@@ -398,8 +396,8 @@ configure_realtime_group() {
 
 # Main function to execute the script
 main() {
-    check_internet_connection
     display_welcome
+    check_internet_connection
     confirm_proceed
 
     install_if_needed "git"
@@ -408,7 +406,8 @@ main() {
     install_yay
 
     read -p "Do you want to optimize and update the system before installing additional applications? [Y/n]: " optimize_choice
-    if [[ "$optimize_choice" != [Nn]* ]]; then
+    optimize_choice="${optimize_choice,,}"
+    if [[ "$optimize_choice" =~ ^(yes|y| ) ]] || [[ -z "$optimize_choice" ]]; then
         optimize_pacman_conf
         sudo pacman -S --needed --noconfirm pacman-contrib
         sudo systemctl enable paccache.timer
@@ -461,8 +460,12 @@ main() {
 
     echo "Cleaning up temporary files..."
     rm -fr ~/Git/dunstrc ~/Git/nirubar-dwm-arch ~/Git/nirucon-suckless ~/Git/nirucon-death-grubtheme
-    echo "NIRUCON-ALPI Arch Linux Post Install script completed - NOW BE CREATIVE!"
-    echo "Start nirucon-suckless with the command: startx"
+
+    read -p "Nirucon-ALPI is now installed, start with: startx, but it's very recommended to reboot, do you want to reboot now? [Y/n]: " reboot_choice
+    reboot_choice="${reboot_choice,,}"
+    if [[ "$reboot_choice" =~ ^(yes|y| ) ]] || [[ -z "$reboot_choice" ]]; then
+        sudo reboot
+    fi
 }
 
 main
