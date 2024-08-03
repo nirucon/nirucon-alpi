@@ -21,7 +21,7 @@ check_internet_connection() {
 display_welcome() {
     clear
     echo -e "\e[1;34mWelcome to the Nirucon-ALPI Post Install script for Arch Linux\e[0m"
-    echo -e "\e[1;31mDisclaimer: Use at your own risk. The author assumes no responsibility for any changes made to your system.\e[0m"
+    echo -e "\e[1;31mDisclaimer: Use at your own risk. The author does not have any responsibility at all for this script and changes on your system!\e[0m"
     echo "--------------------------------------------------------------------------"
 }
 
