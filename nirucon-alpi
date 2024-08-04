@@ -126,27 +126,90 @@ install_timeshift_if_btrfs() {
     fi
 }
 
-# Function: Install optional packages based on user choice
-install_optional() {
-    local prompt="$1"
-    local packages_pacman=("${!2}")
-    local packages_yay=("${!3}")
+# Function: Install optional packages for Arch Linux
+install_optional_packages() {
+    declare -a pacman_packages=("firefox" "thunderbird" "bluefish" "filezilla" "gimp" "obs-studio" "kdenlive")
+    declare -a aur_packages=("surf")
+    declare -a not_installed_pacman_packages=()
+    declare -a not_installed_aur_packages=()
+    declare -a selected_pacman_packages=()
+    declare -a selected_aur_packages=()
+    declare package_choice
 
-    read -p "$prompt [Y/n]: " install_response
-    install_response="${install_response,,}" # Convert to lowercase
+    echo "Optional Packages Installation"
+    echo "Checking for already installed packages..."
 
-    if [[ "$install_response" == "y" ]] || [[ -z "$install_response" ]]; then
-        if [ ${#packages_pacman[@]} -ne 0 ]; then
-            echo "Installing packages via pacman: ${packages_pacman[@]}"
-            sudo pacman -S --needed --noconfirm "${packages_pacman[@]}"
+    for package in "${pacman_packages[@]}"; do
+        if ! pacman -Qq "$package" &> /dev/null; then
+            not_installed_pacman_packages+=("$package")
         fi
-        if [ ${#packages_yay[@]} -ne 0 ]; then
-            echo "Installing packages via yay: ${packages_yay[@]}"
-            yay -S --noconfirm "${packages_yay[@]}"
+    done
+
+    for package in "${aur_packages[@]}"; do
+        if ! yay -Qq "$package" &> /dev/null; then
+            not_installed_aur_packages+=("$package")
         fi
-    else
-        echo "Skipping installation for this option."
+    done
+
+    if [[ ${#not_installed_pacman_packages[@]} -eq 0 ]] && [[ ${#not_installed_aur_packages[@]} -eq 0 ]]; then
+        echo "All optional packages are already installed."
+        return
     fi
+
+    echo "Please answer with [Y]yes / [n]no (Yes is default if pressing enter) for each package."
+
+    for package in "${not_installed_pacman_packages[@]}"; do
+        read -p "Do you want to install $package (official repo)? [Y/n]: " package_choice
+        package_choice="${package_choice,,}" # Convert to lowercase
+        if [[ "$package_choice" =~ ^(yes|y| ) ]] || [[ -z "$package_choice" ]]; then
+            selected_pacman_packages+=("$package")
+        fi
+    done
+
+    for package in "${not_installed_aur_packages[@]}"; do
+        read -p "Do you want to install $package (AUR)? [Y/n]: " package_choice
+        package_choice="${package_choice,,}" # Convert to lowercase
+        if [[ "$package_choice" =~ ^(yes|y| ) ]] || [[ -z "$package_choice" ]]; then
+            selected_aur_packages+=("$package")
+        fi
+    done
+
+    if [[ ${#selected_pacman_packages[@]} -eq 0 ]] && [[ ${#selected_aur_packages[@]} -eq 0 ]]; then
+        echo -e "\e[31mNo optional packages selected for installation.\e[0m"
+        return
+    fi
+
+    echo "These packages will be installed:"
+    for package in "${selected_pacman_packages[@]}"; do
+        echo "- $package (official repo)"
+    done
+    for package in "${selected_aur_packages[@]}"; do
+        echo "- $package (AUR)"
+    done
+
+    while true; do
+        read -p "Are you sure you want to install all these? [Y]yes / [n]no / [c]choose again: " final_choice
+        final_choice="${final_choice,,}" # Convert to lowercase
+        if [[ "$final_choice" =~ ^(yes|y| ) ]] || [[ -z "$final_choice" ]]; then
+            if [[ ${#selected_pacman_packages[@]} -gt 0 ]]; then
+                sudo pacman -Syu --noconfirm "${selected_pacman_packages[@]}"
+                echo -e "\e[32mSelected official repo packages installed.\e[0m"
+            fi
+            if [[ ${#selected_aur_packages[@]} -gt 0 ]]; then
+                yay -Syu --noconfirm "${selected_aur_packages[@]}"
+                echo -e "\e[32mSelected AUR packages installed.\e[0m"
+            fi
+            break
+        elif [[ "$final_choice" == "no" || "$final_choice" == "n" ]]; then
+            echo -e "\e[31mInstallation of optional packages aborted.\e[0m"
+            break
+        elif [[ "$final_choice" == "choose" || "$final_choice" == "c" ]]; then
+            install_optional_packages
+            break
+        else
+            echo -e "\e[31mInvalid choice. Please select [Y]yes / [n]no / [c]choose again.\e[0m"
+        fi
+    done
 }
 
 # Function: Clone and install nirucon-suckless and related files, scripts and dot files
@@ -416,38 +479,7 @@ main() {
 
     install_packages
     install_timeshift_if_btrfs
-
-    local browser_pacman=()
-    local browser_yay=(brave-bin)
-    install_optional "Do you want to install Brave browser?" browser_pacman[@] browser_yay[@]
-
-    local music_streaming_pacman=()
-    local music_streaming_yay=(spotify)
-    install_optional "Do you want to install Spotify?" music_streaming_pacman[@] music_streaming_yay[@]
-
-    local nextcloud_sync_pacman=(nextcloud-client)
-    local nextcloud_sync_yay=()
-    install_optional "Do you want to install Nextcloud client?" nextcloud_sync_pacman[@] nextcloud_sync_yay[@]
-
-    local daw_apps_pacman=()
-    local daw_apps_yay=(reaper qpwgraph yabridge yabridgectl realtime-privileges)
-    install_optional "Do you want to install DAW apps (reaper qpwgraph yabridge yabridgectl realtime-privileges)?" daw_apps_pacman[@] daw_apps_yay[@]
-
-    local daw_plugins_pacman=()
-    local daw_plugins_yay=(pro-audio lv2-plugins vst-plugins vst3-plugins)
-    install_optional "Do you want to install DAW plugins (lots of lv2 and vst plugins)?" daw_plugins_pacman[@] daw_plugins_yay[@]
-
-    local web_dev_pacman=(filezilla bluefish)
-    local web_dev_yay=()
-    install_optional "Do you want to install Web development apps (bluefish filezilla)?" web_dev_pacman[@] web_dev_yay[@]
-
-    local image_video_pacman=(obs-studio kdenlive gimp)
-    local image_video_yay=()
-    install_optional "Do you want to install Image and Video editing apps (obs-studio kdenlive gimp)?" image_video_pacman[@] image_video_yay[@]
-
-    local communication_pacman=(thunderbird irssi signal-desktop)
-    local communication_yay=()
-    install_optional "Do you want to install Communication apps (thunderbird irssi signal-desktop)?" communication_pacman[@] communication_yay[@]
+    install_optional_packages
 
     # Add user to the realtime group if DAW apps and realtime-privileges are installed
     if pacman -Qi reaper &>/dev/null && pacman -Qi realtime-privileges &>/dev/null; then
