@@ -420,6 +420,46 @@ configure_realtime_group() {
     fi
 }
 
+# Check PipeWire
+check_pipewire_reaper() {
+    # Function to check if PipeWire is installed
+    is_pipewire_installed() {
+        if pacman -Q pipewire &> /dev/null; then
+            return 0
+        else
+            return 1
+        fi
+    }
+
+    # Clone the repository and copy files if PipeWire is installed
+    if is_pipewire_installed; then
+        echo "PipeWire is installed. Cloning the repository and copying files..."
+
+        # Create a temporary directory for cloning the repository
+        temp_dir=$(mktemp -d)
+        git clone https://github.com/nirucon/reaper-pipewire "$temp_dir"
+
+        # Check if cloning was successful
+        if [ $? -ne 0 ]; then
+            echo "Failed to clone the repository."
+            return 1
+        fi
+
+        # Copy the reaper-pipewire-* files to /usr/local/bin/ and make them executable
+        sudo cp "$temp_dir/reaper-pipewire-"* /usr/local/bin/
+        sudo chmod +x /usr/local/bin/reaper-pipewire-*
+
+        # Clean up the temporary directory
+        rm -rf "$temp_dir"
+
+        echo "Files copied and made executable successfully."
+    else
+        echo "PipeWire is not installed. Continuing with the rest of the script..."
+    fi
+
+    return 0
+}
+
 # Main function to execute the script
 main() {
     display_welcome
@@ -452,6 +492,7 @@ main() {
     install_suckless
     install_grub_theme
     install_themes_icons
+    check_pipewire_reaper
 
     echo "Cleaning up temporary files..."
     rm -fr /tmp/nirucon-death-grubtheme /tmp/Graphite-gtk-theme /tmp/Tela-circle-icon-theme
