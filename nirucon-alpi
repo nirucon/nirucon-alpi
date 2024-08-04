@@ -1,10 +1,17 @@
 #!/bin/bash
 
 # Nirucon-ALPI: Post Install script for Arch Linux
+# Version: 2024-08-04 (Ensure you have the latest version!)
 # Author: Nicklas Rudolfsson
-# Version: 2024-08-03
-# License: Feel free to use and modify, donate if you want :) https://www.paypal.com/paypalme/nicklasrudolfsson
-# Disclaimer: I do not have any responsibility at all for this script and changes on your system!
+# GitHub: https://github.com/nirucon
+# Email: n@rudolfsson.net
+# License: Feel free to use and modify. Donations are welcome :) https://www.paypal.com/paypalme/nicklasrudolfsson
+# Disclaimer and Warning:
+# 1. I do not take any responsibility for this script or any changes/problems it might cause on your system!
+# 2. I am not a professional programmer, hacker, or tech expert. I am an old n00b who uses Linux as my daily driver and sometimes enjoys tinkering with my setup to make it easier for myself.
+# 3. Consider this script a work in progress. But there is a risk that it may not be improved or updated at all, and I cannot offer any guarantees.
+# Dependencies: If not listed here - YOU are responsible to look in the script.
+# Related scripts: https://github.com/nirucon/nirucon-linux-postinstall (main script)
 
 # Function: Check for internet connection
 check_internet_connection() {
