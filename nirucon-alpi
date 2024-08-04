@@ -318,97 +318,109 @@ install_suckless() {
     fi
 }
 
-# Function: Install custom GRUB theme
-install_grub_theme() {
-    read -p "Do you want to install a custom grub theme - nirucon-death? [Y/n]: " grub_response
-    grub_response=${grub_response,,}
+# Function: Optional theming
+install_theming() {
+    read -r -p "Do you want to install themes etc? You will be prompted for each install option [Y/n]? (Yes default on enter): " response
+    response=${response,,}
 
-    if [[ "$grub_response" =~ ^(yes|y| ) ]] || [[ -z "$grub_response" ]]; then
-        echo "Installing custom grub theme..."
-        git clone https://github.com/nirucon/nirucon-death-grubtheme /tmp/nirucon-death-grubtheme
-        sudo mkdir -p /boot/grub/themes
-        sudo cp -r /tmp/nirucon-death-grubtheme/nirucon-death /boot/grub/themes/nirucon-death
-        sudo sed -i 's|^#GRUB_THEME=.*|GRUB_THEME="/boot/grub/themes/nirucon-death/theme.txt"|' /etc/default/grub
-        sudo grub-mkconfig -o /boot/grub/grub.cfg
-        echo "Custom grub theme installed."
-        rm -rf /tmp/nirucon-death-grubtheme
-    else
-        echo "Skipping custom grub theme installation."
-    fi
-}
+    if [[ "$response" =~ ^(yes|y| ) ]] || [[ -z "$response" ]]; then
+        read -r -p "Do you want to install GTK Theme Graphite (Dark)? [Y/n]: " gtk_response
+        gtk_response=${gtk_response,,}
 
-# Function: Install Graphite GTK Theme (Dark), Tela Circle Icons (Black) and nirucon Rofi Custom Theme
-install_themes_icons() {
-    read -r -p "Do you want to install the GTK theme and icons? [Y/n]: " gtk_response
-    gtk_response=${gtk_response,,}
-    read -r -p "Do you want to install the Rofi custom theme? [Y/n]: " rofi_response
-    rofi_response=${rofi_response,,}
+        read -r -p "Do you want to install Tela Circle Icons? [Y/n]: " icons_response
+        icons_response=${icons_response,,}
 
-    if [[ "$gtk_response" =~ ^(yes|y| ) ]] || [[ -z "$gtk_response" ]]; then
-        echo "Installing Graphite GTK theme (Dark)..."
-        git clone https://github.com/vinceliuice/Graphite-gtk-theme /tmp/Graphite-gtk-theme
-        cd /tmp/Graphite-gtk-theme
-        sudo ./install.sh -d /usr/share/themes -c dark
-        cd - &>/dev/null
-        rm -rf /tmp/Graphite-gtk-theme
+        read -r -p "Do you want to install Rofi (nirucon custom theme)? [Y/n]: " rofi_response
+        rofi_response=${rofi_response,,}
+        
+        read -r -p "Do you want to install a custom grub theme - nirucon-death? [Y/n]: " grub_response
+        grub_response=${grub_response,,}
 
-        echo "Installing Tela Circle icon theme (Black)..."
-        git clone https://github.com/vinceliuice/Tela-circle-icon-theme /tmp/Tela-circle-icon-theme
-        cd /tmp/Tela-circle-icon-theme
-        sudo ./install.sh -a
-        cd - &>/dev/null
-        rm -rf /tmp/Tela-circle-icon-theme
+        if [[ "$gtk_response" =~ ^(yes|y| ) ]] || [[ -z "$gtk_response" ]]; then
+            echo "Installing Graphite GTK theme (Dark)..."
+            git clone https://github.com/vinceliuice/Graphite-gtk-theme /tmp/Graphite-gtk-theme
+            cd /tmp/Graphite-gtk-theme
+            sudo ./install.sh -d /usr/share/themes -c dark
+            cd - &>/dev/null
+            rm -rf /tmp/Graphite-gtk-theme
+        else
+            echo "Skipping GTK theme installation."
+        fi
 
-        # Ensure the themes and icons are correctly set in the configuration files
-        echo "Ensuring themes and icons are correctly set in the configuration files..."
+        if [[ "$icons_response" =~ ^(yes|y| ) ]] || [[ -z "$icons_response" ]]; then
+            echo "Installing Tela Circle icon theme (Black)..."
+            git clone https://github.com/vinceliuice/Tela-circle-icon-theme /tmp/Tela-circle-icon-theme
+            cd /tmp/Tela-circle-icon-theme
+            sudo ./install.sh -a
+            cd - &>/dev/null
+            rm -rf /tmp/Tela-circle-icon-theme
+        else
+            echo "Skipping Tela Circle icon theme installation."
+        fi
 
-        mkdir -p ~/.config/gtk-3.0/
-        mkdir -p ~/.config/gtk-4.0/
+        if [[ "$gtk_response" =~ ^(yes|y| ) ]] || [[ -z "$gtk_response" ]] || [[ "$icons_response" =~ ^(yes|y| ) ]] || [[ -z "$icons_response" ]]; then
+            echo "Ensuring themes and icons are correctly set in the configuration files..."
+            mkdir -p ~/.config/gtk-3.0/
+            mkdir -p ~/.config/gtk-4.0/
 
-        # GTK2 settings
-        echo 'gtk-theme-name="Graphite-Dark"' > ~/.gtkrc-2.0
-        echo 'gtk-icon-theme-name="Tela-circle-black"' >> ~/.gtkrc-2.0
+            # GTK2 settings
+            echo 'gtk-theme-name="Graphite-Dark"' > ~/.gtkrc-2.0
+            echo 'gtk-icon-theme-name="Tela-circle-black"' >> ~/.gtkrc-2.0
 
-        # GTK3 settings
-        cat <<EOF > ~/.config/gtk-3.0/settings.ini
+            # GTK3 settings
+            cat <<EOF > ~/.config/gtk-3.0/settings.ini
 [Settings]
 gtk-theme-name=Graphite-Dark
 gtk-icon-theme-name=Tela-circle-black
 EOF
 
-        # GTK4 settings
-        cat <<EOF > ~/.config/gtk-4.0/settings.ini
+            # GTK4 settings
+            cat <<EOF > ~/.config/gtk-4.0/settings.ini
 [Settings]
 gtk-theme-name=Graphite-Dark
 gtk-icon-theme-name=Tela-circle-black
 EOF
 
-        # Insert environment variables into .xinitrc
-        if ! grep -q 'export GTK_THEME="Graphite-Dark"' ~/.xinitrc; then
-            sed -i '/# Set default GTK and Icon themes/a \
+            # Insert environment variables into .xinitrc
+            if ! grep -q 'export GTK_THEME="Graphite-Dark"' ~/.xinitrc; then
+                sed -i '/# Set default GTK and Icon themes/a \
 export GTK_THEME="Graphite-Dark" \
 export GTK_ICON_THEME="Tela-circle-black" \
 export GTK2_RC_FILES="$HOME/.gtkrc-2.0" \
 export GTK3_SETTINGS="$HOME/.config/gtk-3.0/settings.ini" \
 export GTK4_SETTINGS="$HOME/.config/gtk-4.0/settings.ini"' ~/.xinitrc
+            fi
+
+            echo "Theme set to Graphite-Dark and icon theme set to Tela-circle-black."
         fi
 
-        echo "Theme set to Graphite-Dark and icon theme set to Tela-circle-black."
-    else
-        echo "Skipping GTK theme and icons installation."
-    fi
+        if [[ "$rofi_response" =~ ^(yes|y| ) ]] || [[ -z "$rofi_response" ]]; then
+            echo "Installing and setting the Rofi custom theme..."
+            sudo mkdir -p /usr/share/rofi/themes
+            mkdir -p ~/.config/rofi
 
-    if [[ "$rofi_response" =~ ^(yes|y| ) ]] || [[ -z "$rofi_response" ]]; then
-        echo "Installing and setting the Rofi custom theme..."
-        sudo mkdir -p /usr/share/rofi/themes
-        mkdir -p ~/.config/rofi
+            wget -O /tmp/nirucon.rasi https://raw.githubusercontent.com/nirucon/nirucon-rofi/master/nirucon.rasi
+            sudo mv -f /tmp/nirucon.rasi /usr/share/rofi/themes/
+            wget -O /tmp/config.rasi https://raw.githubusercontent.com/nirucon/nirucon-rofi/master/config.rasi
+            mv -f /tmp/config.rasi ~/.config/rofi/config.rasi
+        else
+            echo "Skipping Rofi custom theme installation."
+        fi
 
-        wget -O /tmp/nirucon.rasi https://raw.githubusercontent.com/nirucon/nirucon-rofi/master/nirucon.rasi
-        sudo mv -f /tmp/nirucon.rasi /usr/share/rofi/themes/
-        wget -O /tmp/config.rasi https://raw.githubusercontent.com/nirucon/nirucon-rofi/master/config.rasi
-        mv -f /tmp/config.rasi ~/.config/rofi/config.rasi
+        if [[ "$grub_response" =~ ^(yes|y| ) ]] || [[ -z "$grub_response" ]]; then
+            echo "Installing custom grub theme..."
+            git clone https://github.com/nirucon/nirucon-death-grubtheme /tmp/nirucon-death-grubtheme
+            sudo mkdir -p /boot/grub/themes
+            sudo cp -r /tmp/nirucon-death-grubtheme/nirucon-death /boot/grub/themes/nirucon-death
+            sudo sed -i 's|^#GRUB_THEME=.*|GRUB_THEME="/boot/grub/themes/nirucon-death/theme.txt"|' /etc/default/grub
+            sudo grub-mkconfig -o /boot/grub/grub.cfg
+            echo "Custom grub theme installed."
+            rm -rf /tmp/nirucon-death-grubtheme
+        else
+            echo "Skipping custom grub theme installation."
+        fi
     else
-        echo "Skipping Rofi custom theme installation."
+        echo "Skipping themes and icons installation."
     fi
 }
 
@@ -499,8 +511,7 @@ main() {
     fi
 
     install_suckless
-    install_grub_theme
-    install_themes_icons
+    install_theming
     check_pipewire_reaper
 
     echo "Cleaning up temporary files..."
