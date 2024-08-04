@@ -136,8 +136,8 @@ install_timeshift_if_btrfs() {
 
 # Function: Install optional packages for Arch Linux
 install_optional_packages() {
-    declare -a pacman_packages=("thunderbird" "signal-desktop" "nextcloud-client" "bluefish" "filezilla" "gimp" "obs-studio" "kdenlive" "realtime-privileges")
-    declare -a aur_packages=("brave" "reaper")
+    declare -a pacman_packages=("thunderbird" "signal-desktop" "nextcloud-client" "irssi" "bluefish" "filezilla" "gimp" "obs-studio" "kdenlive" "realtime-privileges")
+    declare -a aur_packages=("brave" "spotify" "reaper" "qpwgraph" "yabridge" "yabridgectl" "pro-audio" "lv2-plugins" "vst-plugins" "vst3-plugins")
     declare -a selected_pacman_packages=()
     declare -a selected_aur_packages=()
     declare package_choice
