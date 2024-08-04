@@ -230,6 +230,7 @@ install_suckless() {
         cp -rf ~/Git/nirubar-dwm-arch/ ~/Git/nirucon-suckless/dmenu ~/Git/nirucon-suckless/st ~/Git/nirucon-suckless/slock ~/Git/nirucon-suckless/dwm ~/.config/suckless
         cp -rf ~/Git/dunstrc/* ~/.config/dunst
         cp -fr ~/Git/nirucon-suckless/nirucon-greeter ~/.config/
+        sudo cp -fr ~/Git/nirucon-suckless/fonts/* /usr/share/fonts/
 
         declare -a suckless_dirs=("dwm" "dmenu" "slock" "st")
         for dir in "${suckless_dirs[@]}"; do
