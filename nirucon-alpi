@@ -333,7 +333,7 @@ install_theming() {
         read -r -p "Do you want to install Rofi (nirucon custom theme)? [Y/n]: " rofi_response
         rofi_response=${rofi_response,,}
         
-        read -r -p "Do you want to install a custom grub theme - nirucon-death? [Y/n]: " grub_response
+        read -r -p "Do you want to install a custom Grub theme (nirucon-death)? [Y/n]: " grub_response
         grub_response=${grub_response,,}
 
         if [[ "$gtk_response" =~ ^(yes|y| ) ]] || [[ -z "$gtk_response" ]]; then
