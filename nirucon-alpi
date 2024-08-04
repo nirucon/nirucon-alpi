@@ -143,65 +143,74 @@ install_optional_packages() {
     declare package_choice
 
     echo "Optional Packages Installation"
-    echo "Checking for already installed packages..."
 
-    for package in "${pacman_packages[@]}"; do
-        if ! pacman -Qq "$package" &> /dev/null; then
-            read -p "Do you want to install $package (official repo)? [Y/n]: " package_choice
-            package_choice="${package_choice,,}" # Convert to lowercase
-            if [[ "$package_choice" =~ ^(yes|y| ) ]] || [[ -z "$package_choice" ]]; then
-                selected_pacman_packages+=("$package")
+    read -p "Do you want to install some suggested optional packages and applications? You will be prompted for each install [Y]yes / [n]no? (Yes default on enter): " initial_choice
+    initial_choice="${initial_choice,,}" # Convert to lowercase
+
+    if [[ "$initial_choice" =~ ^(yes|y| ) ]] || [[ -z "$initial_choice" ]]; then
+        echo "Checking for already installed packages..."
+
+        for package in "${pacman_packages[@]}"; do
+            if ! pacman -Qq "$package" &> /dev/null; then
+                read -p "Do you want to install $package (official repo)? [Y/n]: " package_choice
+                package_choice="${package_choice,,}" # Convert to lowercase
+                if [[ "$package_choice" =~ ^(yes|y| ) ]] || [[ -z "$package_choice" ]]; then
+                    selected_pacman_packages+=("$package")
+                fi
             fi
-        fi
-    done
+        done
 
-    for package in "${aur_packages[@]}"; do
-        if ! yay -Qq "$package" &> /dev/null; then
-            read -p "Do you want to install $package (AUR)? [Y/n]: " package_choice
-            package_choice="${package_choice,,}" # Convert to lowercase
-            if [[ "$package_choice" =~ ^(yes|y| ) ]] || [[ -z "$package_choice" ]]; then
-                selected_aur_packages+=("$package")
+        for package in "${aur_packages[@]}"; do
+            if ! yay -Qq "$package" &> /dev/null; then
+                read -p "Do you want to install $package (AUR)? [Y/n]: " package_choice
+                package_choice="${package_choice,,}" # Convert to lowercase
+                if [[ "$package_choice" =~ ^(yes|y| ) ]] || [[ -z "$package_choice" ]]; then
+                    selected_aur_packages+=("$package")
+                fi
             fi
-        fi
-    done
+        done
 
-    if [[ ${#selected_pacman_packages[@]} -eq 0 ]] && [[ ${#selected_aur_packages[@]} -eq 0 ]]; then
-        echo -e "\e[31mNo optional packages selected for installation.\e[0m"
-        return
+        if [[ ${#selected_pacman_packages[@]} -eq 0 ]] && [[ ${#selected_aur_packages[@]} -eq 0 ]]; then
+            echo -e "\e[31mNo optional packages selected for installation.\e[0m"
+            return
+        fi
+
+        echo "These packages will be installed:"
+        for package in "${selected_pacman_packages[@]}"; do
+            echo "- $package (official repo)"
+        done
+        for package in "${selected_aur_packages[@]}"; do
+            echo "- $package (AUR)"
+        done
+
+        while true; do
+            read -p "Are you sure you want to install all these? [Y]yes / [n]no / [c]choose again: " final_choice
+            final_choice="${final_choice,,}" # Convert to lowercase
+            if [[ "$final_choice" =~ ^(yes|y| ) ]] || [[ -z "$final_choice" ]]; then
+                if [[ ${#selected_pacman_packages[@]} -gt 0 ]]; then
+                    sudo pacman -Syu --noconfirm "${selected_pacman_packages[@]}"
+                    echo -e "\e[32mSelected official repo packages installed.\e[0m"
+                fi
+                if [[ ${#selected_aur_packages[@]} -gt 0 ]]; then
+                    yay -Syu --noconfirm "${selected_aur_packages[@]}"
+                    echo -e "\e[32mSelected AUR packages installed.\e[0m"
+                fi
+                break
+            elif [[ "$final_choice" == "no" || "$final_choice" == "n" ]]; then
+                echo -e "\e[31mInstallation of optional packages aborted.\e[0m"
+                break
+            elif [[ "$final_choice" == "choose" || "$final_choice" == "c" ]]; then
+                install_optional_packages
+                break
+            else
+                echo -e "\e[31mInvalid choice. Please select [Y]yes / [n]no / [c]choose again.\e[0m"
+            fi
+        done
+    else
+        echo -e "\e[31mSkipping optional packages installation.\e[0m"
     fi
-
-    echo "These packages will be installed:"
-    for package in "${selected_pacman_packages[@]}"; do
-        echo "- $package (official repo)"
-    done
-    for package in "${selected_aur_packages[@]}"; do
-        echo "- $package (AUR)"
-    done
-
-    while true; do
-        read -p "Are you sure you want to install all these? [Y]yes / [n]no / [c]choose again: " final_choice
-        final_choice="${final_choice,,}" # Convert to lowercase
-        if [[ "$final_choice" =~ ^(yes|y| ) ]] || [[ -z "$final_choice" ]]; then
-            if [[ ${#selected_pacman_packages[@]} -gt 0 ]]; then
-                sudo pacman -Syu --noconfirm "${selected_pacman_packages[@]}"
-                echo -e "\e[32mSelected official repo packages installed.\e[0m"
-            fi
-            if [[ ${#selected_aur_packages[@]} -gt 0 ]]; then
-                yay -Syu --noconfirm "${selected_aur_packages[@]}"
-                echo -e "\e[32mSelected AUR packages installed.\e[0m"
-            fi
-            break
-        elif [[ "$final_choice" == "no" || "$final_choice" == "n" ]]; then
-            echo -e "\e[31mInstallation of optional packages aborted.\e[0m"
-            break
-        elif [[ "$final_choice" == "choose" || "$final_choice" == "c" ]]; then
-            install_optional_packages
-            break
-        else
-            echo -e "\e[31mInvalid choice. Please select [Y]yes / [n]no / [c]choose again.\e[0m"
-        fi
-    done
 }
+
 
 # Function: Clone and install nirucon-suckless and related files, scripts and dot files
 install_suckless() {
