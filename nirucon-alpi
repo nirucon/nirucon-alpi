@@ -219,9 +219,9 @@ install_suckless() {
     if [[ "$choice" =~ ^(yes|y| ) ]] || [[ -z "$choice" ]]; then
         echo "Installing Suckless utilities and configurations..."
         mkdir -p ~/Git && git clone https://github.com/nirucon/nirucon-suckless ~/Git/nirucon-suckless
-        mkdir -p ~/.config/suckless ~/.dwm ~/Music ~/Downloads ~/Pictures ~/Videos ~/Temp ~/.config/dunst
+        mkdir -p ~/.config/suckless ~/.dwm ~/Music ~/Downloads ~/Pictures ~/Videos ~/Temp ~/Scripts ~/.config/dunst
 
-        declare -a repos=("nirubar-dwm-arch" "dunstrc" "nirucon-dmenu" "sverigesradio-dmenu" "srpod-dmenu" "srplay-dmenu" "dwmexit-dmenu" "havamal" "wifi-dmenu" "system-optimizer-dmenu")
+        declare -a repos=("nirubar-dwm-arch" "dunstrc" "nirucon-dmenu" "sverigesradio-dmenu" "srpod-dmenu" "srplay-dmenu" "dwmexit-dmenu" "havamal" "wifi-dmenu" "system-optimizer-dmenu" "nirucon-suckless-modscript")
         for repo in "${repos[@]}"; do
             rm -rf ~/Git/$repo
             git clone https://github.com/nirucon/$repo ~/Git/$repo
@@ -230,6 +230,7 @@ install_suckless() {
         cp -rf ~/Git/nirubar-dwm-arch/ ~/Git/nirucon-suckless/dmenu ~/Git/nirucon-suckless/st ~/Git/nirucon-suckless/slock ~/Git/nirucon-suckless/dwm ~/Git/nirucon-suckless/dwm_systray ~/.config/suckless
         cp -rf ~/Git/dunstrc/* ~/.config/dunst
         cp -fr ~/Git/nirucon-suckless/nirucon-greeter ~/.config/
+        cp -fr ~/Git/nirucon-suckless-modscript/*sh ~/Scripts
         sudo cp -fr ~/Git/nirucon-suckless/fonts/* /usr/share/fonts/
 
         declare -a suckless_dirs=("dwm" "dmenu" "slock" "st")
@@ -313,7 +314,7 @@ install_suckless() {
         sudo chmod +x /usr/local/bin/system-optimizer-dmenu
 
         echo "Suckless utilities and configurations installed successfully."
-        rm -rf ~/Git/nirucon-suckless ~/Git/dunstrc ~/Git/nirubar-dwm-arch ~/Git/nirucon-dmenu ~/Git/sverigesradio-dmenu ~/Git/srpod-dmenu ~/Git/srplay-dmenu ~/Git/dwmexit-dmenu ~/Git/havamal ~/Git/wifi-dmenu ~/Git/system-optimizer-dmenu
+        rm -rf ~/Git/nirucon-suckless ~/Git/dunstrc ~/Git/nirubar-dwm-arch ~/Git/nirucon-dmenu ~/Git/sverigesradio-dmenu ~/Git/srpod-dmenu ~/Git/srplay-dmenu ~/Git/dwmexit-dmenu ~/Git/havamal ~/Git/wifi-dmenu ~/Git/system-optimizer-dmenu ~/Git/nirucon-suckless-modscript
     else
         echo "Skipping Suckless utilities installation."
     fi
