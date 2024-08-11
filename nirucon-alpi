@@ -108,7 +108,10 @@ optimize_pacman_conf() {
 # Function: Install essential packages via pacman and yay
 install_packages() {
     local packages_pacman=(
-        xorg-server xorg-xinit xorg-xrandr xorg-xsetroot imlib2 playerctl qt6ct pcmanfm arandr nitrogen picom openssh cmus scrot gnupg pyfiglet pass brightnessctl mpv dunst unzip nano alsa-utils pavucontrol xarchiver xclip htop curl libnotify jq bc reflector flameshot maim volumeicon vim
+        xorg-server xorg-xinit xorg-xrandr xorg-xsetroot imlib2
+        playerctl qt6ct pcmanfm arandr nitrogen picom openssh cmus scrot gnupg python-pyfiglet
+        pass brightnessctl mpv dunst unzip nano alsa-utils pavucontrol xarchiver xclip htop curl
+        libnotify jq bc reflector flameshot maim volumeicon vim
     )
     local packages_yay=(
         ttf-font-awesome ttf-mononoki-nerd maim xautolock rofi fastfetch
