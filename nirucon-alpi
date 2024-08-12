@@ -221,7 +221,7 @@ install_suckless() {
         mkdir -p ~/Git && git clone https://github.com/nirucon/nirucon-suckless ~/Git/nirucon-suckless
         mkdir -p ~/.config/suckless ~/.dwm ~/Music ~/Downloads ~/Pictures ~/Videos ~/Temp ~/Scripts ~/.config/dunst
 
-        declare -a repos=("nirubar-dwm-arch" "dunstrc" "nirucon-dmenu" "sverigesradio-dmenu" "srpod-dmenu" "srplay-dmenu" "dwmexit-dmenu" "havamal" "wifi-dmenu" "system-optimizer-dmenu" "nirucon-suckless-modscript")
+        declare -a repos=("nirubar-dwm-arch" "nirucon-cmus-themes" "dunstrc" "nirucon-dmenu" "sverigesradio-dmenu" "srpod-dmenu" "srplay-dmenu" "dwmexit-dmenu" "havamal" "wifi-dmenu" "system-optimizer-dmenu" "nirucon-suckless-modscript")
         for repo in "${repos[@]}"; do
             rm -rf ~/Git/$repo
             git clone https://github.com/nirucon/$repo ~/Git/$repo
@@ -229,6 +229,7 @@ install_suckless() {
 
         cp -rf ~/Git/nirubar-dwm-arch/ ~/Git/nirucon-suckless/dmenu ~/Git/nirucon-suckless/st ~/Git/nirucon-suckless/slock ~/Git/nirucon-suckless/dwm ~/Git/nirucon-suckless/dwm_systray ~/.config/suckless
         cp -rf ~/Git/dunstrc/* ~/.config/dunst
+        cp -rf ~/Git/nirucon-cmus-themes/* ~/.config/cmus
         cp -fr ~/Git/nirucon-suckless/nirucon-greeter ~/.config/
         cp -fr ~/Git/nirucon-suckless/fastfetch ~/.config/
         cp -fr ~/Git/nirucon-suckless-modscript/*sh ~/Scripts
