@@ -317,7 +317,7 @@ install_suckless() {
         sudo chmod +x /usr/local/bin/system-optimizer-dmenu
 
         echo "Suckless utilities and configurations installed successfully."
-        rm -rf ~/Git/nirucon-suckless ~/Git/dunstrc ~/Git/nirubar-dwm-arch ~/Git/nirucon-dmenu ~/Git/sverigesradio-dmenu ~/Git/srpod-dmenu ~/Git/srplay-dmenu ~/Git/dwmexit-dmenu ~/Git/havamal ~/Git/wifi-dmenu ~/Git/system-optimizer-dmenu ~/Git/nirucon-suckless-modscript
+        rm -rf ~/Git/nirucon-suckless ~/Git/nirucon-cmus-themes ~/Git/dunstrc ~/Git/nirubar-dwm-arch ~/Git/nirucon-dmenu ~/Git/sverigesradio-dmenu ~/Git/srpod-dmenu ~/Git/srplay-dmenu ~/Git/dwmexit-dmenu ~/Git/havamal ~/Git/wifi-dmenu ~/Git/system-optimizer-dmenu ~/Git/nirucon-suckless-modscript
     else
         echo "Skipping Suckless utilities installation."
     fi
