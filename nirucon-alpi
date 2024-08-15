@@ -486,6 +486,55 @@ check_pipewire_reaper() {
     return 0
 }
 
+# Photogimp
+install_photogimp() {
+    # Check if GIMP is installed
+    if ! command -v gimp &> /dev/null; then
+        echo "GIMP is not installed. Please install GIMP and try again."
+        exit 1
+    fi
+
+    # Check if GIMP has been started at least once
+    GIMP_CONFIG_DIR="$HOME/.config/GIMP/2.10"
+    if [ ! -d "$GIMP_CONFIG_DIR" ]; then
+        echo "GIMP has not been started before. Launching GIMP..."
+        gimp &  # Start GIMP in the background
+        sleep 10  # Give GIMP some time to start and initialize the config directory
+        pkill gimp  # Close GIMP after initialization
+        echo "GIMP has been initialized and closed."
+    fi
+
+    # Download the PhotoGIMP patch
+    local url="https://github.com/Diolinux/PhotoGIMP/archive/master.zip"
+    local zip_path="/tmp/PhotoGIMP.zip"
+    echo "Downloading PhotoGIMP..."
+    curl -L "$url" -o "$zip_path"
+    echo "PhotoGIMP download complete."
+
+    # Unzip the PhotoGIMP patch
+    local extract_dir="/tmp/PhotoGIMP-master"
+    echo "Unzipping PhotoGIMP..."
+    unzip "$zip_path" -d "/tmp/"
+    echo "Unzipping complete."
+
+    # Apply the PhotoGIMP patch
+    local photogimp_dir="$extract_dir/.var/app/org.gimp.GIMP/config/GIMP/2.10"
+    if [ -d "$photogimp_dir" ]; then
+        echo "Applying PhotoGIMP patch..."
+        mkdir -p "$GIMP_CONFIG_DIR"
+        cp -r "$photogimp_dir/"* "$GIMP_CONFIG_DIR/"
+        echo "PhotoGIMP patch applied successfully."
+    else
+        echo "PhotoGIMP patch directory not found."
+    fi
+
+    # Clean up temporary files
+    echo "Cleaning up..."
+    rm -rf "$zip_path" "$extract_dir"
+    echo "Cleanup complete."
+    echo "PhotoGIMP has been successfully installed!"
+}
+
 # Main function to execute the script
 main() {
     display_welcome
@@ -518,6 +567,7 @@ main() {
     install_suckless
     install_theming
     check_pipewire_reaper
+    install_photogimp
 
     echo "Cleaning up temporary files..."
     rm -fr /tmp/nirucon-death-grubtheme /tmp/Graphite-gtk-theme /tmp/Tela-circle-icon-theme
