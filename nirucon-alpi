@@ -112,6 +112,7 @@ install_packages() {
         playerctl qt6ct pcmanfm arandr nitrogen picom openssh cmus scrot gnupg python-pyfiglet
         pass brightnessctl mpv dunst unzip nano alsa-utils pavucontrol xarchiver xclip htop curl
         libnotify jq bc reflector flameshot maim volumeicon vim gvfs ghostscript ranger sxiv ueberzug
+        thefuck bash-completion
     )
     local packages_yay=(
         ttf-font-awesome ttf-mononoki-nerd maim xautolock rofi fastfetch
